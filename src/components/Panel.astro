@@ -1,0 +1,44 @@
+---
+import Icon from './Icon.astro';
+import { REVIEW_MODE } from '../data/site';
+
+interface Props {
+  id: string;
+  title: string;
+  icon: string;
+  open: boolean;
+  meta?: string;
+  wide?: boolean;
+  small?: boolean;
+  review?: boolean;
+}
+const { id, title, icon, open, meta, wide = false, small = false, review = true } = Astro.props;
+---
+<section
+  class:list={['panel', { 'panel--wide': wide, 'panel--small': small }]}
+  id={`panel-${id}`}
+  data-surface={id}
+  aria-labelledby={`panel-${id}-title`}
+  hidden={!open}
+>
+  <div class="panel__sheet">
+    <header class="panel__head">
+      <span class="panel__tab" aria-hidden="true"><Icon name={icon} size={26} /></span>
+      <div class="panel__titles">
+        <h2 class="panel__title" id={`panel-${id}-title`} tabindex="-1">{title}</h2>
+        {meta && <p class="panel__meta">{meta}</p>}
+      </div>
+      <a class="panel__close" href="/" data-nav="home" aria-label={`Close ${title}`}>
+        <Icon name="close" size={22} />
+      </a>
+    </header>
+    {REVIEW_MODE && review && (
+      <p class="panel__review" data-review-mode>
+        Local review preview · entries await owner approval and are excluded from release builds.
+      </p>
+    )}
+    <div class="panel__body">
+      <slot />
+    </div>
+  </div>
+</section>

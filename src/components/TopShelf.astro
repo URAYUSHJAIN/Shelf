@@ -1,0 +1,160 @@
+---
+import { leafPath, ribPath, vine } from './art';
+import { portrait, copy } from '../data/site';
+
+interface Props {
+  active?: string | null;
+}
+const { active = null } = Astro.props;
+
+const spines = [
+  { id: 'blogs', label: 'Blogs', title: 'Blogs: articles' },
+  { id: 'notes', label: 'Notes', title: 'Notes: build walkthroughs' },
+  { id: 'ideas', label: 'Ideas', title: 'Ideas: invention applications' },
+  { id: 'album', label: 'Album', title: 'Album: photographs' },
+];
+
+// Trailing pothos on the top-right of the shelf (plant-local coordinates).
+const vines = [
+  vine([150, 86], [118, 40], [50, 34], 5, 42, 58, 0.2),
+  vine([160, 84], [168, 24], [214, 16], 4, 40, 55, 0.15),
+  vine([186, 88], [250, 62], [292, 46], 4, 39, 60, 0.2),
+  vine([196, 96], [300, 150], [266, 312], 8, 38, 64, 0.3),
+  vine([124, 96], [44, 112], [26, 226], 6, 37, 62, 0.3),
+  vine([142, 92], [96, 102], [84, 160], 3, 34, 55, 0.1),
+  vine([176, 90], [214, 130], [206, 200], 3, 34, 60, 0.1),
+];
+const rimLeaves = [
+  { x: 132, y: 86, a: -40, s: 44 },
+  { x: 180, y: 84, a: 34, s: 44 },
+  { x: 156, y: 82, a: -6, s: 48 },
+];
+---
+<div class="g-top" aria-label="Top shelf">
+  <!-- flat book under the frame and the lamp foot -->
+  <svg class="obj top-decor" viewBox="0 0 230 30" aria-hidden="true">
+    <path d="M6 8h214l6 6v10H4V12z" fill="#9b6a42" stroke="var(--ink)" stroke-width="2.2" stroke-linejoin="round" />
+    <path d="M10 8h206v8H10z" fill="#f4e6cd" stroke="var(--ink)" stroke-width="1.6" />
+    <path d="M14 12h196" stroke="#cdb38f" stroke-width="1" />
+  </svg>
+
+  <svg class="obj bookend-left" viewBox="0 0 104 182" aria-hidden="true">
+    <path d="M6 180 46 180 60 12 22 4Z" fill="url(#bookDark)" stroke="var(--ink)" stroke-width="2.4" stroke-linejoin="round" />
+    <path d="M13 150 49 152M17 120 52 122M26 30 57 34" stroke="#3a2416" stroke-width="2" />
+    <path d="M44 180h44l4-174-44-2z" fill="url(#bookCream)" stroke="var(--ink)" stroke-width="2.4" stroke-linejoin="round" />
+    <path d="M47 24h42M47 30h42M45 156h44M45 162h44" stroke="#b28c62" stroke-width="1.6" />
+  </svg>
+
+  {spines.map((s) => (
+    <a
+      class:list={['obj spine', `spine--${s.id}`]}
+      href={`/writing/?tab=${s.id}`}
+      data-nav="writing"
+      data-tab={s.id}
+      aria-label={s.title}
+      aria-current={active === 'writing' ? 'true' : undefined}
+    >
+      <span class="spine__label">{s.label}</span>
+    </a>
+  ))}
+
+  <svg class="obj bookend-right" viewBox="0 0 44 136" aria-hidden="true">
+    <path d="M4 134h26l12-124-24-6z" fill="url(#bookDark)" stroke="var(--ink)" stroke-width="2.4" stroke-linejoin="round" />
+    <path d="M8 112 34 114M12 30 38 32" stroke="#3a2416" stroke-width="2" />
+  </svg>
+
+  <div class="obj globe" data-globe>
+    <svg class="globe__stand" viewBox="0 0 163 224" aria-hidden="true">
+      <path d="M80 168v38" stroke="var(--ink)" stroke-width="9" stroke-linecap="round" />
+      <path d="M80 168v38" stroke="url(#brass)" stroke-width="5" stroke-linecap="round" />
+      <circle cx="80" cy="186" r="7" fill="url(#brass)" stroke="var(--ink)" stroke-width="2" />
+      <ellipse cx="80" cy="213" rx="52" ry="10" fill="#7a4a22" stroke="var(--ink)" stroke-width="2.2" />
+      <ellipse cx="80" cy="208" rx="46" ry="8" fill="url(#brass)" stroke="var(--ink)" stroke-width="2.2" />
+    </svg>
+    <canvas class="globe__map" width="140" height="140" aria-hidden="true"></canvas>
+    <svg class="globe__front" viewBox="0 0 163 224" aria-hidden="true">
+      <defs>
+        <radialGradient id="globeShade" cx="0.36" cy="0.3" r="0.78">
+          <stop offset="0" stop-color="#fff8e6" stop-opacity=".45" />
+          <stop offset=".45" stop-color="#fff2d8" stop-opacity="0" />
+          <stop offset="1" stop-color="#5a3414" stop-opacity=".42" />
+        </radialGradient>
+      </defs>
+      <circle cx="80" cy="92" r="70" fill="url(#globeShade)" stroke="var(--ink)" stroke-width="2.4" />
+      <g transform="rotate(-18 80 92)">
+        <path d="M80 8a84 84 0 0 1 0 168" fill="none" stroke="var(--ink)" stroke-width="9" />
+        <path d="M80 8a84 84 0 0 1 0 168" fill="none" stroke="url(#brass)" stroke-width="5" />
+        <circle cx="80" cy="12" r="4.5" fill="url(#brass)" stroke="var(--ink)" stroke-width="1.6" />
+      </g>
+    </svg>
+    <span class="sr-only" id="globe-hint">Use the arrow keys to rotate. Home returns to the starting position.</span>
+  </div>
+
+  <a class="obj frame" href="/about/" data-nav="about" aria-label="About Ayush Jain">
+    <span class="frame__mat">
+      {portrait ? (
+        <img src={portrait.src} width={portrait.width} height={portrait.height} alt={copy.photoAlt} decoding="async" fetchpriority="low" />
+      ) : (
+        <span class="frame__empty" aria-hidden="true"></span>
+      )}
+    </span>
+  </a>
+
+  <div class="obj lamp" data-control="lamp" aria-label="Desk lamp">
+    <svg viewBox="0 0 294 232" aria-hidden="true">
+      <ellipse class="lamp__halo" cx="66" cy="80" rx="58" ry="40" fill="url(#bulbHalo)" />
+      <ellipse cx="252" cy="220" rx="42" ry="9" fill="#6e3f1a" stroke="var(--ink)" stroke-width="2.2" />
+      <ellipse cx="252" cy="214" rx="34" ry="7" fill="url(#brass)" stroke="var(--ink)" stroke-width="2.2" />
+      <path d="M252 212 258 58M258 54 122 34" stroke="var(--ink)" stroke-width="10" stroke-linecap="round" fill="none" />
+      <path d="M252 212 258 58M258 54 122 34" stroke="url(#brass)" stroke-width="5.5" stroke-linecap="round" fill="none" />
+      <circle cx="258" cy="54" r="9" fill="url(#brass)" stroke="var(--ink)" stroke-width="2.2" />
+      <g class="lamp__head" transform="translate(66 72) rotate(14)">
+        <path d="M44 -55 L62 -44" stroke="var(--ink)" stroke-width="8" stroke-linecap="round" />
+        <path d="M44 -55 L62 -44" stroke="url(#brass)" stroke-width="4" stroke-linecap="round" />
+        <circle cx="0" cy="0" r="0" />
+        <path d="M-56 0C-56-36-32-58 0-58S56-36 56 0Z" fill="url(#shade)" stroke="var(--ink)" stroke-width="2.4" stroke-linejoin="round" />
+        <path d="M-30-40C-20-50-8-53 4-53" stroke="#f4c983" stroke-width="3" stroke-linecap="round" fill="none" opacity=".8" />
+        <ellipse cx="0" cy="0" rx="56" ry="9" fill="#5b3414" stroke="var(--ink)" stroke-width="2.2" />
+        <ellipse class="lamp__bulb" cx="0" cy="3" rx="24" ry="9" fill="#fff4c4" stroke="var(--ink)" stroke-width="1.8" />
+      </g>
+      <circle cx="122" cy="34" r="7" fill="url(#brass)" stroke="var(--ink)" stroke-width="2" />
+    </svg>
+  </div>
+
+  <svg class="obj plant-top" viewBox="0 0 310 318" aria-hidden="true" data-sway>
+    <g class="sway sway--a">
+      {vines.slice(0, 3).map((v) => (
+        <g>
+          <path d={v.d} fill="none" stroke="#4d6b2a" stroke-width="2" />
+          {v.leaves.map((l, i) => (
+            <g transform={`translate(${l.x} ${l.y}) rotate(${l.a})`}>
+              <path d={leafPath(l.s)} fill={i % 2 ? 'url(#leafA)' : 'url(#leafB)'} stroke="#2c4716" stroke-width="1.7" />
+              <path d={ribPath(l.s)} stroke="#3e6b20" stroke-width="1.1" fill="none" />
+            </g>
+          ))}
+        </g>
+      ))}
+    </g>
+    <g class="sway sway--b">
+      {vines.slice(3).map((v) => (
+        <g>
+          <path d={v.d} fill="none" stroke="#4d6b2a" stroke-width="2" />
+          {v.leaves.map((l, i) => (
+            <g transform={`translate(${l.x} ${l.y}) rotate(${l.a})`}>
+              <path d={leafPath(l.s)} fill={i % 2 ? 'url(#leafB)' : 'url(#leafA)'} stroke="#2c4716" stroke-width="1.7" />
+              <path d={ribPath(l.s)} stroke="#3e6b20" stroke-width="1.1" fill="none" />
+            </g>
+          ))}
+        </g>
+      ))}
+    </g>
+    <path d="M120 96h76l-8 54q-1 6-7 6h-46q-6 0-7-6z" fill="url(#pot)" stroke="var(--ink)" stroke-width="2.4" stroke-linejoin="round" />
+    <rect x="114" y="82" width="88" height="16" rx="4" fill="#fbf6ec" stroke="var(--ink)" stroke-width="2.4" />
+    {rimLeaves.map((l, i) => (
+      <g transform={`translate(${l.x} ${l.y}) rotate(${l.a})`}>
+        <path d={leafPath(l.s)} fill={i % 2 ? 'url(#leafA)' : 'url(#leafB)'} stroke="#2c4716" stroke-width="1.7" />
+        <path d={ribPath(l.s)} stroke="#3e6b20" stroke-width="1.1" fill="none" />
+      </g>
+    ))}
+  </svg>
+</div>

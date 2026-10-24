@@ -1,0 +1,467 @@
+---
+import Icon from './Icon.astro';
+import Panel from './Panel.astro';
+import {
+  projects, patents, experience, education, achievements, credentials, skills, articles, social,
+  copy, portrait, groups, site, fmtDate, fmtMonth, REVIEW_MODE,
+} from '../data/site';
+
+interface Props {
+  active: string | null;
+  record?: string | null;
+}
+const { active, record = null } = Astro.props;
+
+const EXT = { target: '_blank', rel: 'noopener noreferrer' };
+const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
+
+const KIND: Record<string, string> = {
+  hackathon: 'Hackathon build',
+  'group-project': 'Group project',
+  'work-assignment': 'Assignment',
+  experiment: 'Experiment',
+  'course-work': 'Coursework',
+  original: 'Earlier portfolio',
+};
+const STATE: Record<string, string> = { prototype: 'Prototype' };
+const CRED_KIND: Record<string, string> = {
+  'course-certificate': 'Course certificate',
+  'training-badge': 'Training badge',
+  'statement-of-achievement': 'Statement of achievement',
+  participation: 'Participation',
+  badge: 'Badge',
+};
+const groupOrder = ['ai', 'full-stack', 'web3', 'healthcare', 'tools', 'early-work'];
+const usedGroups = groupOrder.filter((g) => projects.some((p) => p.group === g));
+
+const work = experience.filter((e) => e.section === 'work');
+const leadership = experience.filter((e) => e.section === 'leadership');
+const EXP_TYPE: Record<string, string> = {
+  internship: 'Internship',
+  'trainee-programme': 'Trainee programme',
+  leadership: 'Student leadership',
+  mentor: 'Mentoring',
+  organizer: 'Event organizing',
+  volunteer: 'Volunteer',
+};
+const span = (e: { startDate?: string; endDate?: string; datesWithheld?: boolean }) => {
+  if (e.datesWithheld) return 'Dates under review';
+  const a = fmtMonth(e.startDate);
+  const b = fmtMonth(e.endDate);
+  if (a && b) return a === b ? a : `${a} – ${b}`;
+  return a ? `From ${a}` : '';
+};
+
+const projBySkill = (s: { evidence?: string[] }) =>
+  (s.evidence ?? []).filter((id) => projects.some((p) => p.id === id)).length;
+const langSkills = skills.filter((s) => s.category === 'language');
+const toolSkills = skills.filter((s) => s.category !== 'language');
+
+const blogPosts = articles.filter((a) => a.category === 'articles' && a.canonicalUrl);
+const walkthroughs = projects.filter((p) => p.videos.length > 0);
+const SOCIAL_NAME: Record<string, string> = { github: 'GitHub', linkedin: 'LinkedIn', x: 'X' };
+---
+<div data-panels>
+  <!-- About -->
+  <Panel id="about" title="About Me" icon="person" open={active === 'about'}>
+    <div class="about">
+      {portrait && (
+        <img class="about__photo" src={portrait.src} width={portrait.width} height={portrait.height} alt={copy.photoAlt} loading="lazy" decoding="async" />
+      )}
+      <div>
+        <p class="lead">{copy.statement}</p>
+        <p>{copy.about}</p>
+        {REVIEW_MODE && education[0] && <p class="muted">{education[0].summary}</p>}
+      </div>
+    </div>
+    <h3 class="sub">Contact</h3>
+    <p>{copy.contact}</p>
+    <div class="actions">
+      <a class="btn btn--solid" href={`mailto:${site.email}`}><Icon name="mail" size={18} /> {site.email}</a>
+      <button type="button" class="btn needs-js" data-copy={site.email}><Icon name="copy" size={18} /> Copy email address</button>
+      <a class="btn" href="/contact/" data-nav="contact">Write a message</a>
+    </div>
+    <p class="status-line" role="status" aria-live="polite" data-copy-status></p>
+    {social.length > 0 && (
+      <>
+        <h3 class="sub">Profiles</h3>
+        <ul class="linklist" role="list">
+          {social.map((s) => (
+            <li><a href={s.url} {...EXT}>{SOCIAL_NAME[s.platform] ?? s.platform} · @{s.handle}<span class="sr-only"> (opens in a new tab)</span></a></li>
+          ))}
+        </ul>
+      </>
+    )}
+  </Panel>
+
+  <!-- Projects -->
+  <Panel id="projects" title="Projects" icon="code" open={active === 'projects'} meta={projects.length ? plural(projects.length, 'folder', 'folders') : undefined} wide>
+    {projects.length === 0 ? (
+      <p class="empty">No public project entries are approved yet. Project folders appear here once the owner approves them.</p>
+    ) : (
+      <>
+        <div data-project-list hidden={!!record}>
+          <div class="toolbar needs-js">
+            <label class="search">
+              <Icon name="search" size={18} />
+              <span class="sr-only">Search projects</span>
+              <input type="search" placeholder="Search by name or technology" data-project-search autocomplete="off" />
+            </label>
+            <div class="filters" role="group" aria-label="Filter projects by group">
+              <button type="button" class="filter" aria-pressed="true" data-group="all">All</button>
+              {usedGroups.map((g) => (
+                <button type="button" class="filter" aria-pressed="false" data-group={g}>{groups[g]}</button>
+              ))}
+            </div>
+            <p class="status-line" role="status" aria-live="polite" data-project-count></p>
+          </div>
+          <ul class="folders" role="list">
+            {projects.map((p) => {
+              const img = p.images[0];
+              return (
+                <li data-group={p.group} data-search={`${p.title} ${(p.technologies ?? []).join(' ')} ${groups[p.group] ?? ''}`.toLowerCase()}>
+                  <a class="folder" href={`/projects/${p.slug}/`} data-nav="projects" data-record={p.slug}>
+                    <span class="folder__tab" aria-hidden="true"></span>
+                    <span class="folder__art" aria-hidden="true">
+                      {img?.thumb ? (
+                        <img src={img.thumb.src} width={img.thumb.width} height={img.thumb.height} alt="" loading="lazy" decoding="async" />
+                      ) : (
+                        <span class="folder__glyph"><Icon name={p.videos.length ? 'play' : 'folder'} size={30} /></span>
+                      )}
+                    </span>
+                    <span class="folder__title">{p.title}</span>
+                    <span class="folder__meta">{groups[p.group] ?? p.group}{p.featuredOrder ? ' · Featured' : ''}</span>
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+          <p class="empty" hidden data-project-empty>No matching folders. Try a different search or clear the filters.</p>
+        </div>
+
+        {projects.map((p) => (
+          <article class="record" id={`record-${p.slug}`} data-record-view={p.slug} hidden={record !== p.slug} aria-labelledby={`record-${p.slug}-title`}>
+            <a class="back" href="/projects/" data-nav="projects"><Icon name="back" size={18} /> Projects</a>
+            <h3 class="record__title" id={`record-${p.slug}-title`} tabindex="-1">{p.title}</h3>
+            <p class="record__kicker">
+              {[groups[p.group], KIND[p.kind] ?? null, STATE[p.deploymentState] ?? null].filter(Boolean).join(' · ')}
+            </p>
+            <p class="lead">{p.summary}</p>
+            {(p.technologies ?? []).length > 0 && (
+              <ul class="tags" role="list" aria-label="Technologies">
+                {(p.technologies ?? []).map((t: string) => <li>{t}</li>)}
+              </ul>
+            )}
+            <div class="actions">
+              {p.demo && <a class="btn btn--solid" href={p.demo} {...EXT}>Open demo <Icon name="external" size={16} /><span class="sr-only"> (opens in a new tab)</span></a>}
+              {p.repo && <a class="btn" href={p.repo} {...EXT}><Icon name="github" size={18} /> View source on GitHub<span class="sr-only"> (opens in a new tab)</span></a>}
+            </div>
+
+            {p.videos.length > 0 && (
+              <figure class="media">
+                {p.videos.slice(0, 1).map((v) => (
+                  <video
+                    controls
+                    preload="none"
+                    playsinline
+                    src={v.start ? `${v.src}#t=${v.start}` : v.src}
+                    poster={p.images[0]?.full.src}
+                    data-start={v.start ?? undefined}
+                    aria-label={`${p.title} walkthrough video`}
+                  ></video>
+                ))}
+                <figcaption>
+                  Project walkthrough{p.videos[0].shared ? ' — part of a combined BuildLog episode; it starts at this project’s segment' : ''}. No captions are available; the description below covers the same work.
+                </figcaption>
+              </figure>
+            )}
+            {p.images.length > 0 && (
+              <ul class="gallery" role="list" aria-label="Screenshots">
+                {p.images.map((im) => (
+                  <li>
+                    <a href={im.full.src} {...EXT} aria-label={`View larger image: ${im.alt} (opens in a new tab)`}>
+                      <img src={(im.thumb ?? im.full).src} width={(im.thumb ?? im.full).width} height={(im.thumb ?? im.full).height} alt={im.alt} loading="lazy" decoding="async" />
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            {p.problem && (<><h4>Problem</h4><p>{p.problem}</p></>)}
+            {p.body && (<><h4>What it does</h4><p>{p.body}</p></>)}
+            {(p.features ?? []).length > 0 && (
+              <>
+                <h4>Verified features</h4>
+                <ul class="bullets">{(p.features ?? []).map((f: string) => <li>{f}</li>)}</ul>
+              </>
+            )}
+            {p.architecture && (<><h4>Architecture</h4><p>{p.architecture}</p></>)}
+            {REVIEW_MODE && (
+              <p class="flag" data-review-mode>
+                Needs owner review{p.hasConflict ? ' · some details conflict between sources and are withheld' : ''}{p.images.length + p.videos.length > 0 ? ' · media not yet cleared for release' : ''}.
+              </p>
+            )}
+          </article>
+        ))}
+      </>
+    )}
+  </Panel>
+
+  <!-- Patents -->
+  <Panel id="patents" title="Patents" icon="doc" open={active === 'patents'} meta={patents.length ? plural(patents.length, 'application record', 'application records') : undefined} wide>
+    {patents.length === 0 ? (
+      <p class="empty">No public invention-application records are approved yet.</p>
+    ) : (
+      <>
+        <p class="muted">
+          Invention applications on which Ayush Jain is a named inventor. Statuses come from dated official snapshots; current legal status has not been verified, and no application is presented as a grant.
+        </p>
+        <ul class="files" role="list">
+          {patents.map((p) => (
+            <li>
+              <details class="file" id={`patent-${p.slug}`}>
+                <summary>
+                  <Icon name="doc" size={28} class="file__icon" />
+                  <span class="file__main">
+                    <span class="file__title">{p.title}</span>
+                    <span class="file__sub">{p.applicationNumber ? `Application No. ${p.applicationNumber}` : 'Official record pending'}</span>
+                  </span>
+                  <span class:list={['pill', p.status === 'application-published' ? 'pill--ok' : 'pill--muted']}>
+                    {p.status === 'application-published' ? 'Application published' : 'Status not verified'}
+                  </span>
+                </summary>
+                <div class="file__body">
+                  <p>{p.summary}</p>
+                  {p.body && <p class="muted">{p.body}</p>}
+                  <dl class="facts">
+                    {p.officialTitle && (<><dt>Official title</dt><dd>{p.officialTitle}</dd></>)}
+                    {p.role && (<><dt>Role</dt><dd>{p.role}</dd></>)}
+                    {(p.applicants ?? []).length > 0 && (<><dt>Applicant</dt><dd>{(p.applicants ?? []).join(', ')}</dd></>)}
+                    {p.office && (<><dt>Office</dt><dd>{p.office}</dd></>)}
+                    {p.filingDate && (<><dt>Filed</dt><dd>{fmtDate(p.filingDate)}</dd></>)}
+                    {p.publicationDate && (<><dt>Published</dt><dd>{fmtDate(p.publicationDate)}{p.journalIssue ? ` · Journal issue ${p.journalIssue}` : ''}</dd></>)}
+                    {p.statusCopy && (<><dt>Status note</dt><dd>{p.statusCopy}</dd></>)}
+                  </dl>
+                  {p.officialSearchUrl && (
+                    <a class="btn" href={p.officialSearchUrl} {...EXT}>Search Indian Patent Office <Icon name="external" size={16} /><span class="sr-only"> (opens in a new tab)</span></a>
+                  )}
+                </div>
+              </details>
+            </li>
+          ))}
+        </ul>
+      </>
+    )}
+  </Panel>
+
+  <!-- Experience -->
+  <Panel id="experience" title="Experience" icon="briefcase" open={active === 'experience'} meta={experience.length ? plural(experience.length, 'entry', 'entries') : undefined}>
+    {experience.length === 0 ? (
+      <p class="empty">No public experience entries are approved yet.</p>
+    ) : (
+      [['Work', work], ['Clubs & leadership', leadership]].map(([label, list]) =>
+        (list as typeof experience).length > 0 && (
+          <section>
+            <h3 class="sub">{label}</h3>
+            <ol class="timeline" role="list">
+              {(list as typeof experience).map((e) => (
+                <li class="timeline__item">
+                  <h4 class="timeline__title">{e.organization} <span>— {e.role}</span></h4>
+                  <p class="timeline__meta">{[EXP_TYPE[e.type] ?? null, span(e) || null].filter(Boolean).join(' · ')}</p>
+                  <p>{e.summary}</p>
+                  {e.body && <p class="muted">{e.body}</p>}
+                </li>
+              ))}
+            </ol>
+          </section>
+        ),
+      )
+    )}
+  </Panel>
+
+  <!-- Education -->
+  <Panel id="education" title="Education" icon="cap" open={active === 'education'}>
+    {education.length === 0 ? (
+      <p class="empty">No public education entries are approved yet.</p>
+    ) : (
+      <ul class="cards" role="list">
+        {education.map((e) => (
+          <li class="card">
+            <h3 class="card__title">{e.institution}</h3>
+            <p class="card__meta">{[e.program, e.discipline].filter(Boolean).join(' · ')}</p>
+            <p class="card__meta">
+              {e.startYear ? `${e.startYear}–${e.endYear ?? ''}` : e.endYear ? `Completed ${e.endYear}` : ''}
+              {e.endYearKind === 'expected' ? ' (expected)' : ''}
+            </p>
+            <p>{e.summary}</p>
+            {e.institutionUrl && <a href={e.institutionUrl} {...EXT}>Institution website<span class="sr-only"> (opens in a new tab)</span></a>}
+          </li>
+        ))}
+      </ul>
+    )}
+  </Panel>
+
+  <!-- Achievements -->
+  <Panel id="achievements" title="Achievements" icon="trophy" open={active === 'achievements'}>
+    {achievements.length === 0 ? (
+      <p class="empty">No public achievement entries are approved yet.</p>
+    ) : (
+      <ul class="cards" role="list">
+        {achievements.map((a) => (
+          <li class="card">
+            <h3 class="card__title">{a.title}</h3>
+            <p class="card__meta">{[a.issuer, a.date ? fmtDate(a.date) : null].filter(Boolean).join(' · ')}</p>
+            <p>{a.summary}</p>
+            {a.credentialUrl && <a href={a.credentialUrl} {...EXT}>View public record<span class="sr-only"> (opens in a new tab)</span></a>}
+          </li>
+        ))}
+      </ul>
+    )}
+  </Panel>
+
+  <!-- Skills & Toolbox -->
+  <Panel id="toolbox" title="Skills & Toolbox" icon="layers" open={active === 'toolbox'} meta={skills.length ? plural(skills.length, 'tool', 'tools') : undefined}>
+    {skills.length === 0 ? (
+      <p class="empty">No public toolbox entries are approved yet.</p>
+    ) : (
+      <>
+        <p class="muted">Each tool appears in at least one project on the shelf. Select one to see those projects.</p>
+        {[['Languages', langSkills], ['Frameworks, services & tools', toolSkills]].map(([label, list]) => (
+          <section>
+            <h3 class="sub">{label}</h3>
+            <ul class="skills" role="list">
+              {(list as typeof skills).map((s) => {
+                const n = projBySkill(s);
+                return (
+                  <li>
+                    <a class="skill" href={`/projects/?q=${encodeURIComponent(s.name)}`} data-nav="projects" data-q={s.name}>
+                      {s.name}{n > 0 && <span class="skill__n" aria-label={`, ${plural(n, 'project', 'projects')}`}>{n}</span>}
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+        ))}
+      </>
+    )}
+  </Panel>
+
+  <!-- Certifications -->
+  <Panel id="certifications" title="Certifications" icon="badge" open={active === 'certifications'} meta={credentials.length ? plural(credentials.length, 'credential', 'credentials') : undefined} wide>
+    {credentials.length === 0 ? (
+      <p class="empty">No public credential entries are approved yet.</p>
+    ) : (
+      <>
+        <p class="muted">Courses, training badges and participation records, each labelled with its kind. None is presented as a professional certification exam.</p>
+        <ul class="creds" role="list">
+          {credentials.map((c) => (
+            <li class="cred">
+              <span class="cred__art" aria-hidden="true">
+                {c.badge ? <img src={c.badge} alt="" width="96" height="96" loading="lazy" decoding="async" /> : <Icon name="badge" size={34} />}
+              </span>
+              <div>
+                <h3 class="cred__title">{c.title}</h3>
+                <p class="card__meta">{CRED_KIND[c.kind] ?? c.kind} · {c.issuer}</p>
+                {(c.issueDate || c.hours) && (
+                  <p class="card__meta">{[c.issueDate ? fmtDate(c.issueDate) : null, c.hours ? `${c.hours} hours` : null].filter(Boolean).join(' · ')}</p>
+                )}
+                {c.verifyUrl && <a href={c.verifyUrl} {...EXT}>Verify credential<span class="sr-only"> (opens in a new tab)</span></a>}
+              </div>
+            </li>
+          ))}
+        </ul>
+      </>
+    )}
+  </Panel>
+
+  <!-- Open book: writing, notes, ideas, album -->
+  <Panel id="writing" title="My Writings" icon="book" open={active === 'writing'} wide>
+    <div class="book">
+      <div class="book__tabs needs-js" role="tablist" aria-label="Book sections">
+        <button type="button" role="tab" id="tab-blogs" aria-controls="sec-blogs" aria-selected="true" data-tab="blogs">Blogs</button>
+        <button type="button" role="tab" id="tab-notes" aria-controls="sec-notes" aria-selected="false" data-tab="notes" tabindex="-1">Notes</button>
+        <button type="button" role="tab" id="tab-ideas" aria-controls="sec-ideas" aria-selected="false" data-tab="ideas" tabindex="-1">Ideas</button>
+        <button type="button" role="tab" id="tab-album" aria-controls="sec-album" aria-selected="false" data-tab="album" tabindex="-1">Album</button>
+      </div>
+      <section class="book__page" id="sec-blogs" role="tabpanel" aria-labelledby="tab-blogs" data-tabpanel="blogs">
+        <h3 class="sub">Blogs</h3>
+        {blogPosts.length ? (
+          <ul class="entries" role="list">
+            {blogPosts.map((a) => (
+              <li>
+                <a class="entry" href={a.canonicalUrl} {...EXT}>
+                  <span class="entry__title">{a.title}</span>
+                  <span class="entry__meta">{a.publishedAt ? fmtDate(a.publishedAt) : ''} · Read on Medium<span class="sr-only"> (opens in a new tab)</span></span>
+                  <span class="entry__sum">{a.summary}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p class="empty">No public articles are approved yet.</p>
+        )}
+      </section>
+      <section class="book__page" id="sec-notes" role="tabpanel" aria-labelledby="tab-notes" data-tabpanel="notes">
+        <h3 class="sub">Notes · build walkthroughs</h3>
+        {walkthroughs.length ? (
+          <>
+            <p class="muted">Short BuildLog walkthroughs showing each interface, an action and the result. They open inside the project’s folder.</p>
+            <ul class="entries entries--compact" role="list">
+              {walkthroughs.map((p) => (
+                <li><a class="entry" href={`/projects/${p.slug}/`} data-nav="projects" data-record={p.slug}><span class="entry__title">{p.title}</span><span class="entry__meta">Walkthrough video</span></a></li>
+              ))}
+            </ul>
+          </>
+        ) : (
+          <p class="empty">No public build notes are approved yet.</p>
+        )}
+      </section>
+      <section class="book__page" id="sec-ideas" role="tabpanel" aria-labelledby="tab-ideas" data-tabpanel="ideas">
+        <h3 class="sub">Ideas · invention applications</h3>
+        {patents.length ? (
+          <ul class="entries entries--compact" role="list">
+            {patents.map((p) => (
+              <li><a class="entry" href={`/patents/#patent-${p.slug}`} data-nav="patents" data-patent={p.slug}><span class="entry__title">{p.title}</span><span class="entry__meta">{p.status === 'application-published' ? 'Application published' : 'Status not verified'}</span></a></li>
+            ))}
+          </ul>
+        ) : (
+          <p class="empty">No public idea records are approved yet.</p>
+        )}
+      </section>
+      <section class="book__page" id="sec-album" role="tabpanel" aria-labelledby="tab-album" data-tabpanel="album">
+        <h3 class="sub">Album</h3>
+        <div class="album-empty">
+          <Icon name="image" size={40} />
+          <p>No photographs have been approved for the album yet. This page stays empty rather than showing placeholder pictures.</p>
+        </div>
+      </section>
+    </div>
+  </Panel>
+
+  <!-- Laptop -->
+  <Panel id="laptop" title={site.resumeUrl ? 'Original portfolio & résumé' : 'Original portfolio'} icon="code" open={active === 'laptop'} small review={false}>
+    <p>The earlier portfolio is still online. It opens in a new tab and is never embedded here.</p>
+    <div class="actions">
+      <a class="btn btn--solid" href={site.originalPortfolio} {...EXT}>Open original portfolio <Icon name="external" size={16} /><span class="sr-only"> (opens in a new tab)</span></a>
+      {site.resumeUrl && <a class="btn" href={site.resumeUrl} {...EXT}>View résumé (PDF)<span class="sr-only"> (opens in a new tab)</span></a>}
+      <a class="btn" href={`mailto:${site.email}`}><Icon name="mail" size={18} /> Email Ayush</a>
+    </div>
+  </Panel>
+
+  <!-- Pen: contact -->
+  <Panel id="contact" title="Write to Ayush" icon="mail" open={active === 'contact'} small review={false}>
+    <p>{copy.contact}</p>
+    <form class="contact" action={`mailto:${site.email}`} method="get" enctype="text/plain" data-contact>
+      <label>Your name <input name="name" autocomplete="name" maxlength="80" /></label>
+      <label>Subject <input name="subject" maxlength="120" required value="Hello from The Shelf" /></label>
+      <label>Message <textarea name="body" rows="6" maxlength="2000" required></textarea></label>
+      <div class="actions">
+        <button type="submit" class="btn btn--solid"><Icon name="mail" size={18} /> Open in my email app</button>
+        <button type="button" class="btn needs-js" data-copy-message>Copy message and address</button>
+      </div>
+      <p class="muted small">This page does not send anything itself. It prepares the message in your own email app, addressed to {site.email}.</p>
+      <p class="status-line" role="status" aria-live="polite" data-contact-status></p>
+    </form>
+  </Panel>
+</div>

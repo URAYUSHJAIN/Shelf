@@ -1,0 +1,27 @@
+---
+import Shelf from '../components/Shelf.astro';
+import { SURFACE_TITLES, type SurfaceId } from '../data/site';
+
+export function getStaticPaths() {
+  return (Object.keys(SURFACE_TITLES) as SurfaceId[]).map((surface) => ({ params: { surface } }));
+}
+
+const surface = Astro.params.surface as SurfaceId;
+const DESCRIPTIONS: Partial<Record<SurfaceId, string>> = {
+  about: 'About Ayush Jain: a Computer Science student who builds web applications and AI-assisted tools.',
+  projects: 'Software projects, experiments and early work by Ayush Jain.',
+  patents: 'Invention application records on which Ayush Jain is a named inventor.',
+  experience: 'Software-development roles, internships and student leadership.',
+  education: 'Education and study timelines.',
+  achievements: 'Results and open-source activity.',
+  toolbox: 'Tools and technologies, linked to the projects that use them.',
+  certifications: 'Courses, training badges and participation records.',
+  writing: 'Articles, build notes and ideas from Ayush Jain.',
+};
+---
+<Shelf
+  active={surface}
+  title={`${SURFACE_TITLES[surface]} — The Shelf · Ayush Jain`}
+  description={DESCRIPTIONS[surface]}
+  noindex={surface === 'laptop' || surface === 'contact'}
+/>

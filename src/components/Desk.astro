@@ -1,0 +1,202 @@
+---
+import Icon from './Icon.astro';
+import { leafPath, ribPath, vine } from './art';
+import { social, site, featured } from '../data/site';
+
+interface Props {
+  active?: string | null;
+}
+const { active = null } = Astro.props;
+
+const SOCIAL_ICON: Record<string, string> = { github: 'github', linkedin: 'linkedin', x: 'x' };
+const SOCIAL_NAME: Record<string, string> = { github: 'GitHub', linkedin: 'LinkedIn', x: 'X' };
+const links = [
+  ...social.map((s) => ({ href: s.url, icon: SOCIAL_ICON[s.platform] ?? 'external', label: `${SOCIAL_NAME[s.platform] ?? s.platform} (opens in a new tab)`, external: true })),
+  { href: `mailto:${site.email}`, icon: 'mail', label: `Email Ayush Jain at ${site.email}`, external: false },
+];
+
+// Small desk plant (plant-local coordinates).
+const deskVines = [
+  vine([92, 118], [66, 74], [30, 52], 4, 34, 58, 0.15),
+  vine([98, 116], [100, 50], [128, 8], 4, 34, 50, 0.15),
+  vine([104, 118], [150, 80], [178, 70], 3, 32, 58, 0.1),
+];
+
+// Sticky note: owner-supplied current items (D-12) or verified featured projects.
+const noteItems = site.currentlyBuilding
+  ? site.currentlyBuilding.map((t) => ({ label: t, href: null as string | null, slug: null as string | null }))
+  : featured.slice(0, 3).map((p) => ({ label: p.title, href: `/projects/${p.slug}/`, slug: p.slug }));
+const noteTitle = site.currentlyBuilding ? 'Currently Building:' : 'Pinned builds:';
+
+// Rubik's cube faces: a fixed scramble so turning reveals different colours.
+const C = { r: '#d63a2a', o: '#f08a24', y: '#f4d02a', g: '#3e9f4a', b: '#2f6fd0', w: '#f5f1e6' };
+const faces: Record<string, string> = {
+  front: 'rroyrrorr',
+  right: 'bbwbwbbyb',
+  top: 'yygyyoygy',
+  back: 'ggwgbgogg',
+  left: 'oorowrooy',
+  bottom: 'wwrwwbwgw',
+};
+---
+<div class="g-note" hidden={noteItems.length === 0}>
+  <div class="note">
+    <span class="note__pin" aria-hidden="true"></span>
+    <h2 class="note__title">{noteTitle}</h2>
+    <ul class="note__list" role="list">
+      {noteItems.map((n) => (
+        <li>
+          <span class="note__box" aria-hidden="true"></span>
+          {n.href ? (
+            <a href={n.href} data-nav="projects" data-record={n.slug}>{n.label}</a>
+          ) : (
+            <span>{n.label}</span>
+          )}
+        </li>
+      ))}
+    </ul>
+  </div>
+</div>
+
+<div class="g-desk">
+  <svg class="obj desk-books" viewBox="0 0 204 62" aria-hidden="true">
+    <path d="M6 34h188l6 6v16l-4 4H8l-4-4V40z" fill="#a8744a" stroke="var(--ink)" stroke-width="2.2" stroke-linejoin="round" />
+    <path d="M10 38h182v9H10z" fill="#f2e3c7" stroke="var(--ink)" stroke-width="1.5" />
+    <path d="M24 8h150l5 5v15l-4 4H26l-4-4V13z" fill="#6f4426" stroke="var(--ink)" stroke-width="2.2" stroke-linejoin="round" />
+    <path d="M27 12h146v8H27z" fill="#efdfc1" stroke="var(--ink)" stroke-width="1.5" />
+  </svg>
+
+  <svg class="obj desk-plant" viewBox="0 0 186 176" aria-hidden="true" data-sway>
+    <g class="sway sway--a">
+      {deskVines.map((v) => (
+        <g>
+          <path d={v.d} fill="none" stroke="#4d6b2a" stroke-width="2" />
+          {v.leaves.map((l, i) => (
+            <g transform={`translate(${l.x} ${l.y}) rotate(${l.a})`}>
+              <path d={leafPath(l.s)} fill={i % 2 ? 'url(#leafA)' : 'url(#leafB)'} stroke="#2c4716" stroke-width="1.7" />
+              <path d={ribPath(l.s)} stroke="#3e6b20" stroke-width="1.1" fill="none" />
+            </g>
+          ))}
+        </g>
+      ))}
+      <g transform="translate(96 114) rotate(-8)"><path d={leafPath(40)} fill="url(#leafB)" stroke="#2c4716" stroke-width="1.7" /><path d={ribPath(40)} stroke="#3e6b20" stroke-width="1.1" fill="none" /></g>
+    </g>
+    <path d="M68 124h64l-6 44q-1 6-7 6H81q-6 0-7-6z" fill="url(#pot)" stroke="var(--ink)" stroke-width="2.4" stroke-linejoin="round" />
+    <rect x="63" y="112" width="74" height="15" rx="4" fill="#fbf6ec" stroke="var(--ink)" stroke-width="2.4" />
+  </svg>
+
+  <ul class="socials" role="list" aria-label="Profiles and email">
+    {links.map((l) => (
+      <li>
+        <a class="social" href={l.href} aria-label={l.label} target={l.external ? '_blank' : undefined} rel={l.external ? 'noopener noreferrer me' : undefined}>
+          <Icon name={l.icon} size={26} />
+        </a>
+      </li>
+    ))}
+  </ul>
+
+  <a class="obj open-book" href="/writing/" data-nav="writing" aria-label="Open book: writing, notes and albums" aria-current={active === 'writing' ? 'true' : undefined}>
+    <svg viewBox="0 0 405 160" aria-hidden="true">
+      <ellipse cx="205" cy="148" rx="196" ry="12" fill="#6b4320" opacity=".18" />
+      <path d="M10 44 200 26 394 16 402 132 206 152 4 154Z" fill="#8f5d34" stroke="var(--ink)" stroke-width="2.4" stroke-linejoin="round" />
+      <path d="M200 32C150 16 74 22 24 40L16 142C72 128 150 128 203 148Z" fill="#fbf3e2" stroke="var(--ink)" stroke-width="2.2" stroke-linejoin="round" />
+      <path d="M200 32C252 12 334 8 388 20L396 124C340 114 260 120 203 148Z" fill="#fdf6e8" stroke="var(--ink)" stroke-width="2.2" stroke-linejoin="round" />
+      <path d="M20 46 13 146M24 44 17 144" stroke="#c9b08c" stroke-width="1.2" />
+      <path d="M392 24 400 126M388 22 396 124" stroke="#c9b08c" stroke-width="1.2" />
+      <path d="M200 32C201 70 202 110 203 148" stroke="#b49a76" stroke-width="1.6" fill="none" />
+      <g stroke="var(--ink)" stroke-width="1.7" fill="none" stroke-linecap="round">
+        <path d="M70 58a13 13 0 1 1 18 12v8h-12v-8a13 13 0 0 1-6-12z" />
+        <path d="M76 84h12M58 46l-6-5M79 36v-7M100 46l6-5M52 62h-7M104 62h8" />
+        <path d="M120 54h58M120 66h50M120 78h56M42 100h120M42 112h96" stroke="#8c7558" />
+        <path d="M232 60h56M232 72h44M232 84h52M232 104h40" stroke="#8c7558" />
+        <path d="M302 104V58M302 104h66" />
+        <path d="M312 104V90h9v14M328 104V80h9v24M344 104V70h9v34M360 104V62h8v42" />
+        <path d="M262 118h20M272 110v16" />
+      </g>
+      <path d="M198 146l3 14 5-6 5 6-1-15z" fill="#d9822b" stroke="var(--ink)" stroke-width="1.6" stroke-linejoin="round" />
+    </svg>
+  </a>
+
+  <div class="obj cube-wrap" data-control="cube" aria-label="Rubik’s cube: turn it">
+    <div class="cube" data-cube>
+      {Object.entries(faces).map(([face, s]) => (
+        <div class:list={['cube__face', `cube__face--${face}`]}>
+          {[...s].map((c) => <span style={`background:${C[c as keyof typeof C]}`}></span>)}
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <a class:list={['obj laptop', { 'is-open': active === 'laptop' }]} href="/laptop/" data-nav="laptop" aria-label={site.resumeUrl ? 'Laptop: original portfolio and résumé' : 'Laptop: original portfolio and contact'} aria-current={active === 'laptop' ? 'true' : undefined}>
+    <span class="laptop__screen" aria-hidden="true">
+      <span class="laptop__display">
+        <b>THE SHELF.</b>
+        <span>Original portfolio</span>
+        <span>{site.resumeUrl ? 'Résumé' : 'Contact'}</span>
+      </span>
+    </span>
+    <svg class="laptop__deck" viewBox="0 0 468 120" aria-hidden="true">
+      <ellipse cx="234" cy="112" rx="232" ry="9" fill="#5a3a1c" opacity=".22" />
+      <path d="M6 98h456l-4 12q-2 5-10 5H20q-8 0-10-5z" fill="#8f9298" stroke="var(--ink)" stroke-width="2.2" stroke-linejoin="round" />
+      <path d="M44 10h380q8 0 10 6l28 80q2 8-6 8H12q-8 0-6-8l28-80q2-6 10-6z" fill="url(#alu)" stroke="var(--ink)" stroke-width="2.4" stroke-linejoin="round" />
+      <path d="M204 104h60l-3 4h-54z" fill="#6c6f75" />
+      <g fill="#2c2d31">
+        {Array.from({ length: 4 }, (_, row) =>
+          Array.from({ length: 13 }, (_, k) => (
+            <rect x={78 + k * 24 - row * 4 + (row === 0 ? 0 : 0)} y={20 + row * 13} width="19" height="9" rx="2" transform={`translate(${row * 3} 0)`} />
+          )),
+        )}
+        <rect x="150" y="72" width="170" height="8" rx="2" />
+      </g>
+      <rect x="190" y="84" width="88" height="14" rx="3" fill="#c3c5ca" stroke="#8f9298" />
+    </svg>
+    <svg class="laptop__lid" viewBox="0 0 468 120" aria-hidden="true">
+      <path d="M46 8h376q8 0 10 6l27 78q2 8-6 8H15q-8 0-6-8l27-78q2-6 10-6z" fill="url(#alu)" stroke="var(--ink)" stroke-width="2.4" stroke-linejoin="round" />
+      <path d="M60 18 120 18 66 92 24 92z" fill="#fff" opacity=".22" />
+      <ellipse cx="234" cy="54" rx="12" ry="9" fill="none" stroke="#9fa2a8" stroke-width="2" />
+    </svg>
+  </a>
+
+  <a class="obj pen" href="/contact/" data-nav="contact" aria-label="Pen: write a message to Ayush" aria-current={active === 'contact' ? 'true' : undefined}>
+    <svg viewBox="0 0 196 70" aria-hidden="true">
+      <ellipse cx="100" cy="60" rx="84" ry="5" fill="#5a3a1c" opacity=".2" transform="rotate(14 100 60)" />
+      <g transform="rotate(15 98 30)">
+        <rect x="6" y="22" width="68" height="17" rx="8" fill="#1f1a17" stroke="var(--ink)" stroke-width="2" />
+        <path d="M18 22v-4h34v4" fill="none" stroke="#c9963d" stroke-width="3" />
+        <rect x="72" y="21" width="12" height="19" rx="2" fill="url(#brass)" stroke="var(--ink)" stroke-width="1.8" />
+        <path d="M84 22h62l6 4v9l-6 4H84z" fill="#26201c" stroke="var(--ink)" stroke-width="2" />
+        <rect x="150" y="24" width="10" height="13" rx="2" fill="url(#brass)" stroke="var(--ink)" stroke-width="1.6" />
+        <path d="M160 25 190 30.5 160 36z" fill="url(#brass)" stroke="var(--ink)" stroke-width="1.8" stroke-linejoin="round" />
+        <path d="M166 30.5h18" stroke="var(--ink)" stroke-width="1" />
+        <path d="M14 26h52M92 25h48" stroke="#fff" stroke-opacity=".45" stroke-width="1.6" stroke-linecap="round" />
+      </g>
+    </svg>
+  </a>
+
+  <svg class="obj steam" viewBox="0 0 100 104" aria-hidden="true">
+    <g fill="none" stroke-linecap="round">
+      <path class="steam__w steam__w--1" d="M34 100C22 80 46 70 34 50S40 22 34 6" />
+      <path class="steam__w steam__w--2" d="M54 100C44 84 64 72 54 54S60 30 56 14" />
+      <path class="steam__w steam__w--3" d="M72 100C64 86 80 78 72 62S76 44 72 30" />
+    </g>
+  </svg>
+
+  <svg class="obj mug" viewBox="0 0 146 134" aria-hidden="true" data-steam>
+    <ellipse cx="66" cy="128" rx="60" ry="5" fill="#5a3a1c" opacity=".2" />
+    <path d="M112 44c34-4 34 58 0 56" fill="none" stroke="var(--ink)" stroke-width="12" stroke-linecap="round" />
+    <path d="M112 44c34-4 34 58 0 56" fill="none" stroke="#f7efe0" stroke-width="7" stroke-linecap="round" />
+    <path d="M10 24v88q0 16 20 16h62q20 0 20-16V24" fill="url(#mug)" stroke="var(--ink)" stroke-width="2.4" stroke-linejoin="round" />
+    <ellipse cx="61" cy="24" rx="51" ry="11" fill="#f9f3e7" stroke="var(--ink)" stroke-width="2.4" />
+    <ellipse cx="61" cy="26" rx="43" ry="7.5" fill="#4b2a15" />
+    <g font-family="Georgia, 'Times New Roman', serif" font-weight="700" font-size="14.5" fill="var(--ink)" text-anchor="middle" letter-spacing=".6">
+      <text x="60" y="62">MAKE •</text>
+      <text x="60" y="81">LEARN •</text>
+      <text x="60" y="100">REPEAT</text>
+    </g>
+  </svg>
+
+  <p class="obj curiosity" aria-hidden="true">
+    <span>Curiosity lives here.</span>
+    <svg viewBox="0 0 280 26"><path d="M8 18C70 10 160 8 272 4M180 22c30-6 60-8 90-9" fill="none" stroke="var(--ink-soft)" stroke-width="1.8" stroke-linecap="round" /></svg>
+  </p>
+</div>

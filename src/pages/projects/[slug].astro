@@ -1,0 +1,11 @@
+---
+import Shelf from '../../components/Shelf.astro';
+import { projects } from '../../data/site';
+
+export function getStaticPaths() {
+  return projects.map((p) => ({ params: { slug: p.slug }, props: { title: p.title, summary: p.summary } }));
+}
+const { slug } = Astro.params;
+const { title, summary } = Astro.props;
+---
+<Shelf active="projects" record={slug} title={`${title} — Project by Ayush Jain`} description={summary} />

@@ -1,0 +1,4 @@
+{
+  "_note": "Explicit release allowlist (D-35). Add a record id only after the owner approves it and its inventory visibility is public-approved or public-source-verified.",
+  "records": []
+}

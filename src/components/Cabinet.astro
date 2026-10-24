@@ -1,0 +1,37 @@
+---
+import Icon from './Icon.astro';
+import { DRAWERS } from '../data/site';
+
+interface Props {
+  active?: string | null;
+}
+const { active = null } = Astro.props;
+---
+<nav class="g-cabinet" id="drawers" aria-label="Shelf drawers">
+  <div class="cab-board" aria-hidden="true"></div>
+  <div class="cab-body">
+    <div class="cab-lights" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+    <ul class="cab-grid" role="list">
+      {DRAWERS.map((d) => (
+        <li>
+          <a
+            class="drawer"
+            href={`/${d.id}/`}
+            data-nav={d.id}
+            id={`drawer-${d.id}`}
+            aria-current={active === d.id ? 'page' : undefined}
+            aria-controls={`panel-${d.id}`}
+          >
+            <span class="drawer__face">
+              <Icon name={d.icon} class="drawer__icon" />
+              <span class="drawer__label">{d.label}</span>
+            </span>
+            <Icon name="arrow" class="drawer__arrow" />
+            <span class="drawer__handle" aria-hidden="true"></span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+  <div class="cab-plinth" aria-hidden="true"></div>
+</nav>

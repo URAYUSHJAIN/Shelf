@@ -1,0 +1,19 @@
+# Internal preparation; review before creating any public repository.
+/content/inventory/
+/docs/workspace-audit.md
+/docs/reference/
+/docs/internal/
+/docs/reports/phase-2-report.md
+/assets/
+# Future application outputs and local credentials.
+node_modules/
+dist/
+.astro/
+.env*
+!.env.example
+*.log
+__pycache__/
+
+# Project-local runtime and release-gated preparation media.
+/.tools/
+/public/media/certifications/

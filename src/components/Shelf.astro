@@ -1,0 +1,24 @@
+---
+import Base from '../layouts/Base.astro';
+import Scene from './Scene.astro';
+import Panels from './Panels.astro';
+import { site } from '../data/site';
+
+interface Props {
+  active?: string | null;
+  record?: string | null;
+  title?: string;
+  description?: string;
+  noindex?: boolean;
+}
+const { active = null, record = null, title = site.title, description = site.description, noindex = false } = Astro.props;
+---
+<Base title={title} description={description} noindex={noindex}>
+  <main class="shelf" data-active={active ?? ''} data-record={record ?? ''}>
+    <Scene active={active} />
+    <Panels active={active} record={record} />
+  </main>
+  <script>
+    import '../scripts/shelf-controller';
+  </script>
+</Base>

@@ -1,0 +1,3642 @@
+{
+ "identity": {
+  "copy": {
+   "wordmark": "THE SHELF.",
+   "byline": "A personal archive by Ayush Jain.",
+   "role": "Full-stack developer",
+   "statement": "Ayush Jain builds full-stack web applications and AI-assisted tools.",
+   "intro": "I’m Ayush Jain. I build web applications and AI-assisted tools, and study Computer Science at ABES Engineering College. Open a drawer to explore the work, the ideas behind it, and what I’ve learned along the way.",
+   "about": "I’m a Computer Science student who learns by building. My projects range from small browser tools to retrieval systems, Web3 interfaces, and data dashboards. I’m interested in how a system works beyond its first screen: how information moves, how a decision is explained, and what happens when something fails.",
+   "shelfHint": "Select a drawer to explore.",
+   "photoAlt": "Portrait of Ayush Jain.",
+   "contact": "Have a role, a project, or a technical question in mind? Email me with a little context and what you’d like to discuss.",
+   "publicEmail": "urayushjain@gmail.com"
+  },
+  "portrait": {
+   "src": "/review-media/profile/ayush-jain.webp",
+   "width": 480,
+   "height": 549,
+   "visibility": "needs-owner-review",
+   "id": "media-0742"
+  },
+  "groups": {
+   "all": "All",
+   "ai": "AI & Data",
+   "full-stack": "Full-stack",
+   "web3": "Web3",
+   "healthcare": "Healthcare",
+   "tools": "Tools",
+   "early-work": "Early work"
+  },
+  "drawerDescriptions": {
+   "projects": "Software projects, experiments, and early work.",
+   "patents": "Invention application records and their documented publication history.",
+   "experience": "Software-development roles and internships.",
+   "clubs-and-leadership": "Community events, mentoring, and student leadership.",
+   "education": "Education and study timelines.",
+   "toolbox": "Tools and technologies, linked to the work that uses them.",
+   "achievements": "Results, open-source activity, and course credentials."
+  },
+  "statusLabels": {
+   "prototype": "Prototype",
+   "course-work": "Coursework",
+   "experiment": "Experiment",
+   "application-published": "Application published",
+   "course-certificate": "Course certificate",
+   "training-badge": "Training badge",
+   "statement-of-achievement": "Statement of achievement",
+   "participation": "Participation",
+   "badge": "Badge"
+  },
+  "originalPortfolio": "https://www.urayushjain.tech"
+ },
+ "projects": [
+  {
+   "id": "proj-0004",
+   "slug": "arogya",
+   "visibility": "needs-owner-review",
+   "title": "Arogya",
+   "summary": "A healthcare RAG prototype that checks access, evidence, and citations before producing an answer.",
+   "kind": "hackathon",
+   "deploymentState": "prototype",
+   "group": "healthcare",
+   "technologies": [
+    "Python",
+    "FastAPI",
+    "PostgreSQL",
+    "React",
+    "Vite",
+    "BM25",
+    "Sentence Transformers",
+    "Docker"
+   ],
+   "problem": "In healthcare information retrieval, a confident answer can still be unsafe if its evidence is missing or inaccessible to the reader.",
+   "body": "Arogya retrieves from a synthetic hospital knowledge base. The pipeline applies role checks, combines lexical and semantic retrieval, considers conflicting or superseded documents, and refuses when evidence is insufficient. Its interface exposes citations and evaluation views. The repository uses synthetic records and is not intended for clinical use.",
+   "features": [
+    "Role-aware retrieval",
+    "Document lifecycle and conflict handling",
+    "Evidence sufficiency and refusal",
+    "Sentence-level citation checks"
+   ],
+   "architecture": "React interface → FastAPI pipeline → permission-filtered PostgreSQL evidence → hybrid retrieval and reranking → local generation and citation checks.",
+   "displayOrder": 1,
+   "featuredOrder": 1,
+   "repo": "https://github.com/URAYUSHJAIN/Arogya",
+   "images": [],
+   "videos": [
+    {
+     "src": "/review-media/review/projects/arogya/arogya.mp4",
+     "start": null,
+     "duration": 37.5,
+     "shared": false,
+     "approved": false
+    }
+   ],
+   "hasConflict": false
+  },
+  {
+   "id": "proj-0013",
+   "slug": "genshakti",
+   "visibility": "needs-owner-review",
+   "title": "GenShakti",
+   "summary": "A renewable-energy planning prototype combining maps, site-selection interfaces, and AI-generated guidance.",
+   "kind": "group-project",
+   "deploymentState": "prototype",
+   "group": "ai",
+   "technologies": [
+    "React",
+    "JavaScript",
+    "Vite",
+    "Leaflet",
+    "React Flow",
+    "Hugging Face",
+    "Tailwind CSS"
+   ],
+   "problem": "Comparing renewable-energy options requires geographic context and an understandable presentation of assumptions.",
+   "body": "GenShakti brings map-based exploration, energy-planning workflows, and generated recommendations into a React interface. Its source includes mapping and flow-visualization components and a Hugging Face integration. The prototype explores planning interactions; it does not establish measured energy savings or validated site rankings.",
+   "features": [
+    "Map-based site exploration",
+    "Energy-planning guidance",
+    "Flow and chart interfaces"
+   ],
+   "architecture": "React/Vite browser interface combines map/flow components with external model-service integration.",
+   "displayOrder": 2,
+   "featuredOrder": 2,
+   "repo": "https://github.com/URAYUSHJAIN/GenShakti",
+   "demo": "https://genshakti.vercel.app/",
+   "images": [
+    {
+     "media": "media-0734",
+     "alt": "GenShakti — interface capture",
+     "full": {
+      "src": "/review-media/review/derived/genshakti/genshakti.1280.webp",
+      "width": 1280,
+      "height": 647,
+      "originalWidth": 1280,
+      "originalHeight": 647
+     },
+     "thumb": {
+      "src": "/review-media/review/derived/genshakti/genshakti.480.webp",
+      "width": 480,
+      "height": 243,
+      "originalWidth": 1280,
+      "originalHeight": 647
+     },
+     "approved": false
+    }
+   ],
+   "videos": [
+    {
+     "src": "/review-media/review/projects/genshakti/genshakti.mp4",
+     "start": null,
+     "duration": 39.5,
+     "shared": false,
+     "approved": false
+    }
+   ],
+   "hasConflict": false
+  },
+  {
+   "id": "proj-0008",
+   "slug": "xeno-crm",
+   "visibility": "needs-owner-review",
+   "title": "XenoCRM Mini",
+   "summary": "An engineering-assignment CRM prototype for customer segments, campaign workflows, and AI-assisted planning.",
+   "kind": "work-assignment",
+   "deploymentState": "prototype",
+   "group": "full-stack",
+   "technologies": [
+    "React",
+    "TypeScript",
+    "Node.js",
+    "Express",
+    "Prisma",
+    "PostgreSQL",
+    "Groq",
+    "Tailwind CSS"
+   ],
+   "problem": "Marketing workflows need customer data, audience rules, campaign actions, and delivery feedback to fit together.",
+   "body": "The React frontend talks to an Express API backed by Prisma and PostgreSQL. Groq supports AI-assisted campaign interactions. A separate channel stub generates delivery callbacks, allowing campaign state transitions to be demonstrated without claiming real message delivery.",
+   "features": [
+    "Customer and segment management",
+    "Campaign creation",
+    "AI-assisted campaign interaction",
+    "Simulated delivery callbacks"
+   ],
+   "architecture": "React/TypeScript client → Express API → Prisma/PostgreSQL; Groq integration and a separate delivery stub with asynchronous callbacks.",
+   "displayOrder": 3,
+   "featuredOrder": 3,
+   "repo": "https://github.com/URAYUSHJAIN/xeno-crm-backend",
+   "demo": "https://xeno-crm-frontend-tan.vercel.app",
+   "images": [],
+   "videos": [
+    {
+     "src": "/review-media/review/projects/xeno-crm/xenocrm.mp4",
+     "start": null,
+     "duration": 31.0,
+     "shared": false,
+     "approved": false
+    }
+   ],
+   "hasConflict": false
+  },
+  {
+   "id": "proj-0030",
+   "slug": "vigil-ai",
+   "visibility": "needs-owner-review",
+   "title": "VigilAI",
+   "summary": "A retail-analytics challenge project connecting video events to a store-intelligence dashboard.",
+   "kind": "work-assignment",
+   "deploymentState": "prototype",
+   "group": "ai",
+   "technologies": [
+    "Python",
+    "OpenCV",
+    "YOLO",
+    "FastAPI",
+    "SQLite",
+    "Redis",
+    "JavaScript",
+    "Docker"
+   ],
+   "problem": "Store activity is difficult to interpret when detection events, zones, and business views remain disconnected.",
+   "body": "VigilAI includes a YOLO-based detection pipeline, visitor tracking, zone mapping, event ingestion, and a FastAPI analytics service. A browser dashboard presents funnels, dwell-time views, heatmaps, and anomalies. The project is presented as a challenge prototype; footage rights, identification risks, and metric validity require separate review.",
+   "features": [
+    "Video-event pipeline",
+    "Zone and visitor-event processing",
+    "Analytics API",
+    "Funnel and heatmap dashboard"
+   ],
+   "architecture": "Video detection/tracking and zone mapping → event ingestion → FastAPI/SQLite analytics, with Redis-supported event transport and a browser dashboard.",
+   "displayOrder": 4,
+   "featuredOrder": 4,
+   "repo": "https://github.com/URAYUSHJAIN/vigilai",
+   "demo": "https://vigilai-nu.vercel.app",
+   "images": [
+    {
+     "media": "media-1013",
+     "alt": "VigilAI — interface capture",
+     "full": {
+      "src": "/review-media/review/derived/vigil-ai/weboutput.1280.webp",
+      "width": 1280,
+      "height": 644,
+      "originalWidth": 1600,
+      "originalHeight": 805
+     },
+     "thumb": {
+      "src": "/review-media/review/derived/vigil-ai/weboutput.480.webp",
+      "width": 480,
+      "height": 242,
+      "originalWidth": 1600,
+      "originalHeight": 805
+     },
+     "approved": false
+    }
+   ],
+   "videos": [
+    {
+     "src": "/review-media/review/projects/vigil-ai/vigilai.mp4",
+     "start": null,
+     "duration": 37.5,
+     "shared": false,
+     "approved": false
+    }
+   ],
+   "hasConflict": false
+  },
+  {
+   "id": "proj-0010",
+   "slug": "devstudy",
+   "visibility": "needs-owner-review",
+   "title": "DevStudy",
+   "summary": "A developer-learning prototype with code editors, browser previews, and a diagramming workspace.",
+   "kind": "experiment",
+   "deploymentState": "prototype",
+   "group": "tools",
+   "technologies": [
+    "Next.js",
+    "React",
+    "TypeScript",
+    "Monaco Editor",
+    "Mermaid",
+    "Socket.IO",
+    "Tailwind CSS"
+   ],
+   "problem": "Learning software development often means moving between code exercises and architecture diagrams.",
+   "body": "DevStudy combines a Monaco-based editor, web previews, and a Mermaid diagram workspace. The repository describes local execution for web languages and remote execution through Piston for other languages, with a Socket.IO service for battle interactions. Availability of external execution and collaboration services has not been functionally tested.",
+   "features": [
+    "Code-editor workspace",
+    "HTML/CSS preview",
+    "Mermaid diagram editor",
+    "Remote execution integration"
+   ],
+   "architecture": "Next.js UI combines Monaco and Mermaid workspaces; Piston handles remote-language execution and a separate Socket.IO server supports battle flows.",
+   "displayOrder": 5,
+   "featuredOrder": 5,
+   "repo": "https://github.com/URAYUSHJAIN/Devstudy",
+   "demo": "https://devstudy-ten.vercel.app",
+   "images": [],
+   "videos": [
+    {
+     "src": "/review-media/review/projects/devstudy/edtech.mp4",
+     "start": null,
+     "duration": 36.5,
+     "shared": true,
+     "approved": false
+    }
+   ],
+   "hasConflict": false
+  },
+  {
+   "id": "proj-0001",
+   "slug": "aadhaar-pulse",
+   "visibility": "needs-owner-review",
+   "title": "AadhaarPulse",
+   "summary": "An analytics prototype for exploring district-level Aadhaar authentication patterns and service demand.",
+   "kind": "hackathon",
+   "deploymentState": "prototype",
+   "group": "ai",
+   "technologies": [
+    "Next.js",
+    "React",
+    "TypeScript",
+    "Python",
+    "Tailwind CSS",
+    "Recharts",
+    "Leaflet"
+   ],
+   "problem": "Large authentication datasets can hide regional differences in demand and service quality.",
+   "body": "The dashboard brings maps, district comparisons, demand indicators, and anomaly views into one interface. Python analysis supports the project; the web interface also contains static analytical data. It demonstrates an approach to governance analytics rather than an operational government monitoring service.",
+   "features": [
+    "District and state comparisons",
+    "Geographic and demand visualizations",
+    "Anomaly and priority views"
+   ],
+   "architecture": "Next.js interface over analytical data exports and static frontend data; Python analysis is separate from the browser application.",
+   "displayOrder": 6,
+   "featuredOrder": 6,
+   "repo": "https://github.com/URAYUSHJAIN/AadhaarPulse-",
+   "demo": "https://aadhaar-pulse.vercel.app/",
+   "images": [
+    {
+     "media": "media-0729",
+     "alt": "AadhaarPulse — interface capture",
+     "full": {
+      "src": "/review-media/review/derived/aadhaar-pulse/aadhaarpulse.1280.webp",
+      "width": 1280,
+      "height": 642,
+      "originalWidth": 1917,
+      "originalHeight": 962
+     },
+     "thumb": {
+      "src": "/review-media/review/derived/aadhaar-pulse/aadhaarpulse.480.webp",
+      "width": 480,
+      "height": 241,
+      "originalWidth": 1917,
+      "originalHeight": 962
+     },
+     "approved": false
+    },
+    {
+     "media": "media-0796",
+     "alt": "AadhaarPulse — project analysis chart",
+     "full": {
+      "src": "/review-media/review/derived/aadhaar-pulse/state_analysis.1280.webp",
+      "width": 1280,
+      "height": 956,
+      "originalWidth": 2384,
+      "originalHeight": 1781
+     },
+     "thumb": {
+      "src": "/review-media/review/derived/aadhaar-pulse/state_analysis.480.webp",
+      "width": 480,
+      "height": 359,
+      "originalWidth": 2384,
+      "originalHeight": 1781
+     },
+     "approved": false
+    },
+    {
+     "media": "media-0797",
+     "alt": "AadhaarPulse — project analysis chart",
+     "full": {
+      "src": "/review-media/review/derived/aadhaar-pulse/xgboost_feature_importance.1280.webp",
+      "width": 1280,
+      "height": 633,
+      "originalWidth": 1784,
+      "originalHeight": 882
+     },
+     "thumb": {
+      "src": "/review-media/review/derived/aadhaar-pulse/xgboost_feature_importance.480.webp",
+      "width": 480,
+      "height": 237,
+      "originalWidth": 1784,
+      "originalHeight": 882
+     },
+     "approved": false
+    }
+   ],
+   "videos": [
+    {
+     "src": "/review-media/review/projects/aadhaar-pulse/aadhaarpulse.mp4",
+     "start": null,
+     "duration": 36.5,
+     "shared": false,
+     "approved": false
+    }
+   ],
+   "hasConflict": false
+  },
+  {
+   "id": "proj-0003",
+   "slug": "ai-limit-checker",
+   "visibility": "needs-owner-review",
+   "title": "AI Limit Checker",
+   "summary": "A Chrome extension prototype for displaying token estimates and usage signals beside AI chats.",
+   "kind": "experiment",
+   "deploymentState": "prototype",
+   "group": "tools",
+   "technologies": [
+    "JavaScript",
+    "Chrome Extensions",
+    "DOM APIs"
+   ],
+   "problem": "Chat interfaces expose different levels of information about context windows and usage limits.",
+   "body": "Provider-specific adapters collect available page and response information for a floating usage panel. The project combines token estimation, DOM observation, and response interception. Estimates depend on the provider and available signals; they are not authoritative billing or quota measurements.",
+   "features": [
+    "Provider adapters",
+    "Floating usage panel",
+    "Token estimation"
+   ],
+   "architecture": "Chrome extension adapters → DOM/response signals → token-estimation core and floating interface.",
+   "displayOrder": 7,
+   "repo": "https://github.com/URAYUSHJAIN/Ai-limit-checker",
+   "images": [],
+   "videos": [
+    {
+     "src": "/review-media/review/projects/ai-limit-checker/ai-limit-checker.mp4",
+     "start": null,
+     "duration": 35.5,
+     "shared": false,
+     "approved": false
+    }
+   ],
+   "hasConflict": true
+  },
+  {
+   "id": "proj-0005",
+   "slug": "arogya-plus",
+   "visibility": "needs-owner-review",
+   "title": "ArogyaPlus",
+   "summary": "A healthcare interface prototype for uploading reports, reading AI explanations, and locating hospitals.",
+   "kind": "group-project",
+   "deploymentState": "prototype",
+   "group": "healthcare",
+   "technologies": [
+    "React",
+    "Vite",
+    "Tailwind CSS",
+    "Gemini",
+    "React Router",
+    "Leaflet"
+   ],
+   "problem": "Medical reports often contain terminology that is hard for a patient to interpret.",
+   "body": "The application connects a report-upload flow to Gemini and presents explanations alongside hospital-map and emergency-summary interfaces. It explores how to make health information easier to navigate. Model output is informational and has not been clinically validated.",
+   "features": [
+    "Report-upload and explanation interface",
+    "Hospital map",
+    "Emergency-summary interface"
+   ],
+   "architecture": "React/Vite interface → Gemini service integration; Leaflet/geolocation and browser storage support hospital-map and emergency-summary views.",
+   "displayOrder": 8,
+   "repo": "https://github.com/URAYUSHJAIN/Arogyaplus",
+   "demo": "https://arogyaplus-two.vercel.app",
+   "images": [],
+   "videos": [
+    {
+     "src": "/review-media/review/projects/arogya-plus/arogyaplus.mp4",
+     "start": null,
+     "duration": 36.5,
+     "shared": false,
+     "approved": false
+    }
+   ],
+   "hasConflict": false
+  },
+  {
+   "id": "proj-0007",
+   "slug": "calendar-dashboard",
+   "visibility": "needs-owner-review",
+   "title": "Calendar Dashboard",
+   "summary": "A calendar prototype with month views and persisted event creation, editing, and deletion.",
+   "kind": "experiment",
+   "deploymentState": "prototype",
+   "group": "full-stack",
+   "technologies": [
+    "HTML",
+    "JavaScript",
+    "Node.js",
+    "Express",
+    "PostgreSQL"
+   ],
+   "problem": "Calendar interactions need a consistent link between visual dates, event forms, and stored records.",
+   "body": "A modular JavaScript frontend drives the main and mini calendars. An Express API stores event records in PostgreSQL. The README describes SQLite, but the server imports pg and the schema uses PostgreSQL features; this record follows the code.",
+   "features": [
+    "Main and mini month calendars",
+    "Event create and edit dialogs",
+    "Event persistence API"
+   ],
+   "architecture": "Modular browser JavaScript → Express event API → PostgreSQL.",
+   "displayOrder": 9,
+   "repo": "https://github.com/URAYUSHJAIN/Calendar-Dashboard",
+   "images": [
+    {
+     "media": "media-0039",
+     "alt": "Calendar Dashboard — interface capture",
+     "full": {
+      "src": "/review-media/review/derived/calendar-dashboard/cal-modal.1280.webp",
+      "width": 1080,
+      "height": 1080,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "thumb": {
+      "src": "/review-media/review/derived/calendar-dashboard/cal-modal.480.webp",
+      "width": 480,
+      "height": 480,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "approved": false
+    },
+    {
+     "media": "media-0040",
+     "alt": "Calendar Dashboard — interface capture",
+     "full": {
+      "src": "/review-media/review/derived/calendar-dashboard/cal-month.1280.webp",
+      "width": 1080,
+      "height": 1080,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "thumb": {
+      "src": "/review-media/review/derived/calendar-dashboard/cal-month.480.webp",
+      "width": 480,
+      "height": 480,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "approved": false
+    },
+    {
+     "media": "media-0041",
+     "alt": "Calendar Dashboard — interface capture",
+     "full": {
+      "src": "/review-media/review/derived/calendar-dashboard/cal-saved.1280.webp",
+      "width": 1080,
+      "height": 1080,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "thumb": {
+      "src": "/review-media/review/derived/calendar-dashboard/cal-saved.480.webp",
+      "width": 480,
+      "height": 480,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "approved": false
+    }
+   ],
+   "videos": [
+    {
+     "src": "/review-media/review/projects/calendar-dashboard/pwa-productivity.mp4",
+     "start": null,
+     "duration": 32.1,
+     "shared": true,
+     "approved": false
+    }
+   ],
+   "hasConflict": true
+  },
+  {
+   "id": "proj-0011",
+   "slug": "employee-management-system",
+   "visibility": "needs-owner-review",
+   "title": "Employee Management System",
+   "summary": "A Spring Boot REST API exercise for creating, searching, updating, and deleting employee records.",
+   "kind": "experiment",
+   "deploymentState": "prototype",
+   "group": "full-stack",
+   "technologies": [
+    "Java",
+    "Spring Boot",
+    "Spring Data JPA",
+    "H2",
+    "Maven",
+    "JUnit"
+   ],
+   "problem": "Managing structured records is a practical way to learn validation and REST API design.",
+   "body": "The employee controller, service, and repository implement record operations through Spring Data JPA with an H2 database. The archive also contains separate student-management classes; these are not evidence of a larger deployed HR system.",
+   "features": [
+    "Employee record operations",
+    "Search endpoints",
+    "Input validation"
+   ],
+   "architecture": "Spring controller → service → Spring Data JPA repository → H2 database.",
+   "displayOrder": 10,
+   "repo": "https://github.com/URAYUSHJAIN/Employee-Management-System",
+   "images": [],
+   "videos": [
+    {
+     "src": "/review-media/review/projects/aurevo/foundations.mp4",
+     "start": null,
+     "duration": 31.5,
+     "shared": true,
+     "approved": false
+    }
+   ],
+   "hasConflict": false
+  },
+  {
+   "id": "proj-0031",
+   "slug": "inframe-studio",
+   "visibility": "needs-owner-review",
+   "title": "InFrame Studio",
+   "summary": "A film-production decision-support prototype for scene risks, location checks, and alternative plans.",
+   "kind": "experiment",
+   "deploymentState": "prototype",
+   "group": "ai",
+   "technologies": [
+    "React",
+    "Vite",
+    "Node.js",
+    "Express",
+    "Azure OpenAI"
+   ],
+   "problem": "Production disruptions can force trade-offs between budget, schedule, and creative intent.",
+   "body": "The project combines rule-based scoring engines with an Azure OpenAI service integration. Its interfaces present scene analysis and ranked alternative plans. The repository calls the product InFrame Studio, while the deployed page retains VordGuard branding; the record keeps both names as aliases.",
+   "features": [
+    "Scene-risk analysis",
+    "Alternative-plan ranking",
+    "Location feasibility scoring"
+   ],
+   "architecture": "React frontend → Express API → deterministic scoring/decision engines and Azure OpenAI service integration.",
+   "displayOrder": 11,
+   "repo": "https://github.com/URAYUSHJAIN/VordGuard",
+   "demo": "https://vord-guard.vercel.app/",
+   "images": [],
+   "videos": [
+    {
+     "src": "/review-media/review/projects/inframe-studio/vordguard.mp4",
+     "start": null,
+     "duration": 37.0,
+     "shared": false,
+     "approved": false
+    }
+   ],
+   "hasConflict": false
+  },
+  {
+   "id": "proj-0014",
+   "slug": "ipo-track",
+   "visibility": "needs-owner-review",
+   "title": "IPOTrack",
+   "summary": "An Indian IPO dashboard prototype with listing views, a calendar, charts, and investment calculations.",
+   "kind": "experiment",
+   "deploymentState": "prototype",
+   "group": "full-stack",
+   "technologies": [
+    "React",
+    "Vite",
+    "Node.js",
+    "Express",
+    "Puppeteer",
+    "Chart.js",
+    "Tailwind CSS"
+   ],
+   "problem": "IPO information is easier to compare when dates, price bands, and subscription figures share one interface.",
+   "body": "A React frontend presents IPO lists and visualizations. An Express backend includes scraping, caching, and scheduled refresh logic. The website record documents the software design, without presenting scraped figures as independently verified or promising current market data.",
+   "features": [
+    "IPO listing and calendar views",
+    "Subscription charts",
+    "Calculation interface",
+    "Cached data-fetching backend"
+   ],
+   "architecture": "React frontend → Express routes → in-memory cache and scheduled Puppeteer data collection.",
+   "displayOrder": 12,
+   "repo": "https://github.com/URAYUSHJAIN/IPOTrack",
+   "demo": "https://ipo-tracck.vercel.app/",
+   "images": [],
+   "videos": [
+    {
+     "src": "/review-media/review/projects/ipo-track/ipotrack.mp4",
+     "start": null,
+     "duration": 36.5,
+     "shared": false,
+     "approved": false
+    }
+   ],
+   "hasConflict": false
+  },
+  {
+   "id": "proj-0018",
+   "slug": "nyay-ai",
+   "visibility": "needs-owner-review",
+   "title": "NyayAI",
+   "summary": "An AI-assisted legal-document prototype with OCR, plain-language explanations, and speech interfaces.",
+   "kind": "experiment",
+   "deploymentState": "prototype",
+   "group": "ai",
+   "technologies": [
+    "React",
+    "TypeScript",
+    "AWS Lambda",
+    "Amazon Textract",
+    "Amazon Bedrock",
+    "Amazon Polly",
+    "Tailwind CSS"
+   ],
+   "problem": "Legal documents can be difficult to read, especially when technical language and accessibility barriers overlap.",
+   "body": "The repository defines a React frontend and AWS services for text extraction, language-model explanations, and text-to-speech. Its README explicitly identifies Kiro-assisted creation. This is a software experiment; legal correctness, accessibility conformance, and production readiness have not been independently verified.",
+   "features": [
+    "Document-upload flow",
+    "Textract integration",
+    "Bedrock simplification integration",
+    "Polly speech integration"
+   ],
+   "architecture": "React frontend with AWS Lambda/API Gateway services for Textract, Bedrock and Polly integrations.",
+   "displayOrder": 13,
+   "repo": "https://github.com/URAYUSHJAIN/NyayAI",
+   "images": [],
+   "videos": [
+    {
+     "src": "/review-media/review/projects/plant-disease-detector/client-side-ai-apps.mp4",
+     "start": null,
+     "duration": 37.5,
+     "shared": true,
+     "approved": false
+    }
+   ],
+   "hasConflict": false
+  },
+  {
+   "id": "proj-0019",
+   "slug": "placement-tracker",
+   "visibility": "needs-owner-review",
+   "title": "Placement Tracker",
+   "summary": "A local-first PWA for tracking placement applications and backing them up as JSON.",
+   "kind": "experiment",
+   "deploymentState": "prototype",
+   "group": "tools",
+   "technologies": [
+    "HTML",
+    "CSS",
+    "JavaScript",
+    "Local storage",
+    "Service Workers"
+   ],
+   "problem": "Application deadlines, statuses, and notes can become hard to manage across separate documents.",
+   "body": "The application stores entries in browser storage and includes import/export, deadline reminders, and an installable PWA shell. Local persistence is device-specific; it is not evidence of automatic synchronization between devices.",
+   "features": [
+    "Application entries and status tracking",
+    "JSON import and export",
+    "PWA installation",
+    "Reminder interfaces"
+   ],
+   "architecture": "Browser interface and service worker with localStorage persistence and JSON import/export.",
+   "displayOrder": 14,
+   "repo": "https://github.com/URAYUSHJAIN/placement-tracker",
+   "demo": "https://placement-tracker-phi-six.vercel.app",
+   "images": [
+    {
+     "media": "media-0047",
+     "alt": "Placement Tracker — interface capture",
+     "full": {
+      "src": "/review-media/review/derived/placement-tracker/tr-alert.1280.webp",
+      "width": 1080,
+      "height": 1080,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "thumb": {
+      "src": "/review-media/review/derived/placement-tracker/tr-alert.480.webp",
+      "width": 480,
+      "height": 480,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "approved": false
+    },
+    {
+     "media": "media-0048",
+     "alt": "Placement Tracker — interface capture",
+     "full": {
+      "src": "/review-media/review/derived/placement-tracker/tr-empty.1280.webp",
+      "width": 1080,
+      "height": 1080,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "thumb": {
+      "src": "/review-media/review/derived/placement-tracker/tr-empty.480.webp",
+      "width": 480,
+      "height": 480,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "approved": false
+    },
+    {
+     "media": "media-0049",
+     "alt": "Placement Tracker — interface capture",
+     "full": {
+      "src": "/review-media/review/derived/placement-tracker/tr-form.1280.webp",
+      "width": 1080,
+      "height": 1080,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "thumb": {
+      "src": "/review-media/review/derived/placement-tracker/tr-form.480.webp",
+      "width": 480,
+      "height": 480,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "approved": false
+    },
+    {
+     "media": "media-0050",
+     "alt": "Placement Tracker — interface capture",
+     "full": {
+      "src": "/review-media/review/derived/placement-tracker/tr-one.1280.webp",
+      "width": 1080,
+      "height": 1080,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "thumb": {
+      "src": "/review-media/review/derived/placement-tracker/tr-one.480.webp",
+      "width": 480,
+      "height": 480,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "approved": false
+    },
+    {
+     "media": "media-0051",
+     "alt": "Placement Tracker — interface capture",
+     "full": {
+      "src": "/review-media/review/derived/placement-tracker/tr-overdue.1280.webp",
+      "width": 1080,
+      "height": 1080,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "thumb": {
+      "src": "/review-media/review/derived/placement-tracker/tr-overdue.480.webp",
+      "width": 480,
+      "height": 480,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "approved": false
+    },
+    {
+     "media": "media-0052",
+     "alt": "Placement Tracker — interface capture",
+     "full": {
+      "src": "/review-media/review/derived/placement-tracker/tr-three.1280.webp",
+      "width": 1080,
+      "height": 1080,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "thumb": {
+      "src": "/review-media/review/derived/placement-tracker/tr-three.480.webp",
+      "width": 480,
+      "height": 480,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "approved": false
+    }
+   ],
+   "videos": [
+    {
+     "src": "/review-media/review/projects/calendar-dashboard/pwa-productivity.mp4",
+     "start": null,
+     "duration": 32.1,
+     "shared": true,
+     "approved": false
+    }
+   ],
+   "hasConflict": false
+  },
+  {
+   "id": "proj-0002",
+   "slug": "plant-disease-detector",
+   "visibility": "needs-owner-review",
+   "title": "Plant Disease Detector",
+   "summary": "A browser interface that sends plant photographs to Gemini for suggested disease explanations.",
+   "kind": "experiment",
+   "deploymentState": "prototype",
+   "group": "ai",
+   "technologies": [
+    "HTML",
+    "CSS",
+    "JavaScript",
+    "Gemini"
+   ],
+   "problem": "A plant photograph can be difficult to interpret without agricultural expertise.",
+   "body": "The interface accepts an image and presents a model-generated explanation with treatment and prevention suggestions. Its processing depends on an external model API. The project is an experiment in image-based assistance; the suggestions have not been validated as agricultural diagnoses.",
+   "features": [
+    "Image upload",
+    "Gemini image-analysis request",
+    "Explanations and suggested next steps"
+   ],
+   "architecture": "Static browser interface → Gemini image request → generated explanation display.",
+   "displayOrder": 15,
+   "repo": "https://github.com/URAYUSHJAIN/Agri-ai-assistant",
+   "images": [],
+   "videos": [
+    {
+     "src": "/review-media/review/projects/plant-disease-detector/client-side-ai-apps.mp4",
+     "start": null,
+     "duration": 37.5,
+     "shared": true,
+     "approved": false
+    }
+   ],
+   "hasConflict": false
+  },
+  {
+   "id": "proj-0020",
+   "slug": "query-pdf",
+   "visibility": "needs-owner-review",
+   "title": "QueryPDF",
+   "summary": "A browser-based PDF prototype with local text extraction, questions, summaries, and quizzes.",
+   "kind": "experiment",
+   "deploymentState": "prototype",
+   "group": "ai",
+   "technologies": [
+    "HTML",
+    "JavaScript",
+    "PDF.js",
+    "Transformers.js",
+    "Tailwind CSS"
+   ],
+   "problem": "Exploring a document often requires both reading its pages and asking focused questions about its text.",
+   "body": "QueryPDF combines PDF.js with a Transformers.js model and a document-viewing interface. The design keeps document processing in the browser after the required assets load. It should be described as a prototype; first-load downloads and browser resource requirements need testing on the target device.",
+   "features": [
+    "PDF viewer",
+    "Document questions",
+    "Summary and quiz interfaces",
+    "Browser-side model integration"
+   ],
+   "architecture": "Browser PDF.js extraction and viewer → client-side Transformers.js model → question, summary and quiz interfaces.",
+   "displayOrder": 16,
+   "repo": "https://github.com/URAYUSHJAIN/Querypdf",
+   "demo": "https://querypdf-pi.vercel.app",
+   "images": [],
+   "videos": [
+    {
+     "src": "/review-media/review/projects/plant-disease-detector/client-side-ai-apps.mp4",
+     "start": null,
+     "duration": 37.5,
+     "shared": true,
+     "approved": false
+    }
+   ],
+   "hasConflict": false
+  },
+  {
+   "id": "proj-0022",
+   "slug": "sentinel-agent",
+   "visibility": "needs-owner-review",
+   "title": "Sentinel Agent",
+   "summary": "A scripted smart-contract security demonstration with exploit tests, a patch flow, and streamed progress.",
+   "kind": "experiment",
+   "deploymentState": "prototype",
+   "group": "web3",
+   "technologies": [
+    "React",
+    "Node.js",
+    "Express",
+    "Solidity",
+    "Hardhat",
+    "Ethers.js",
+    "Tailwind CSS"
+   ],
+   "problem": "Explaining a contract vulnerability is more useful when the exploit and corrective change can be followed.",
+   "body": "The server streams a predefined audit sequence, runs Hardhat tests around a reentrancy example, and replaces the example contract with a checks-effects-interactions version. The reasoning messages and model behaviour are simulated. This demonstrates a workflow, without claiming a general autonomous auditor.",
+   "features": [
+    "Reentrancy example",
+    "Hardhat test integration",
+    "Scripted patch and re-test flow",
+    "Server-sent progress events"
+   ],
+   "architecture": "React dashboard consumes Express SSE events; the server runs a scripted contract/test/patch sequence through Hardhat.",
+   "displayOrder": 17,
+   "repo": "https://github.com/URAYUSHJAIN/Sentinel-Agent",
+   "demo": "https://sentinel-agent-lovat.vercel.app",
+   "images": [
+    {
+     "media": "media-0700",
+     "alt": "Sentinel Agent — interface capture",
+     "full": {
+      "src": "/review-media/review/derived/sentinel-agent/screenshort.1280.webp",
+      "width": 1280,
+      "height": 648,
+      "originalWidth": 1600,
+      "originalHeight": 810
+     },
+     "thumb": {
+      "src": "/review-media/review/derived/sentinel-agent/screenshort.480.webp",
+      "width": 480,
+      "height": 243,
+      "originalWidth": 1600,
+      "originalHeight": 810
+     },
+     "approved": false
+    }
+   ],
+   "videos": [
+    {
+     "src": "/review-media/review/projects/sentinel-agent/sentinel-agent.mp4",
+     "start": null,
+     "duration": 37.5,
+     "shared": false,
+     "approved": false
+    }
+   ],
+   "hasConflict": false
+  },
+  {
+   "id": "proj-0023",
+   "slug": "shayoga",
+   "visibility": "needs-owner-review",
+   "title": "Shayoga",
+   "summary": "A Web3 crowdfunding prototype with campaign browsing, wallet connection, and donation-contract flows.",
+   "kind": "experiment",
+   "deploymentState": "prototype",
+   "group": "web3",
+   "technologies": [
+    "React",
+    "Vite",
+    "Solidity",
+    "Hardhat",
+    "Ethers.js",
+    "Tailwind CSS"
+   ],
+   "problem": "A crowdfunding interface needs to make campaign details and transaction actions understandable.",
+   "body": "The project combines React campaign views with Solidity contracts and wallet integration through Ethers.js. It explores campaign creation, progress, and donations in a test-oriented blockchain workflow. The portfolio does not claim verified charitable use, audited contracts, or production fundraising.",
+   "features": [
+    "Campaign browsing",
+    "Campaign creation interface",
+    "Wallet connection",
+    "Donation-contract integration"
+   ],
+   "architecture": "React/Vite campaign interface → Ethers.js wallet integration → Solidity contract functions.",
+   "displayOrder": 18,
+   "repo": "https://github.com/URAYUSHJAIN/Shayoga",
+   "demo": "https://shayoga.netlify.app",
+   "images": [
+    {
+     "media": "media-0753",
+     "alt": "Shayoga — interface capture",
+     "full": {
+      "src": "/review-media/review/derived/shayoga/shayoga.1280.webp",
+      "width": 1280,
+      "height": 638,
+      "originalWidth": 1280,
+      "originalHeight": 638
+     },
+     "thumb": {
+      "src": "/review-media/review/derived/shayoga/shayoga.480.webp",
+      "width": 480,
+      "height": 239,
+      "originalWidth": 1280,
+      "originalHeight": 638
+     },
+     "approved": false
+    }
+   ],
+   "videos": [
+    {
+     "src": "/review-media/review/projects/shayoga/shayoga.mp4",
+     "start": null,
+     "duration": 33.5,
+     "shared": false,
+     "approved": false
+    }
+   ],
+   "hasConflict": false
+  },
+  {
+   "id": "proj-0024",
+   "slug": "skillforge",
+   "visibility": "needs-owner-review",
+   "title": "SkillForge LMS",
+   "summary": "A learning-management prototype with course content, enrollment, and separate learner and administrator interfaces.",
+   "kind": "experiment",
+   "deploymentState": "prototype",
+   "group": "full-stack",
+   "technologies": [
+    "React",
+    "Vite",
+    "Node.js",
+    "Express",
+    "PostgreSQL",
+    "Tailwind CSS"
+   ],
+   "problem": "Course delivery involves both the learner journey and the work of managing structured content.",
+   "body": "SkillForge separates learner and admin React applications from an Express API. PostgreSQL stores courses and enrollment-related data. The record covers the implemented application structure without claiming an operating education business or verified learner outcomes.",
+   "features": [
+    "Course and chapter management",
+    "Enrollment interfaces",
+    "Separate admin application",
+    "Authentication endpoints"
+   ],
+   "architecture": "Separate learner and administrator React applications → Express API → PostgreSQL.",
+   "displayOrder": 19,
+   "repo": "https://github.com/URAYUSHJAIN/skillforge",
+   "images": [],
+   "videos": [
+    {
+     "src": "/review-media/review/projects/devstudy/edtech.mp4",
+     "start": null,
+     "duration": 36.5,
+     "shared": true,
+     "approved": false
+    }
+   ],
+   "hasConflict": false
+  },
+  {
+   "id": "proj-0026",
+   "slug": "slotly",
+   "visibility": "needs-owner-review",
+   "title": "Slotly",
+   "summary": "An appointment-booking assignment with patient and doctor views, availability, and scheduling flows.",
+   "kind": "work-assignment",
+   "deploymentState": "prototype",
+   "group": "healthcare",
+   "technologies": [
+    "React",
+    "Vite",
+    "PostgreSQL",
+    "Tailwind CSS"
+   ],
+   "problem": "Booking interfaces need to connect a patient’s selected time with a doctor’s availability.",
+   "body": "Slotly uses a React frontend and Neon/PostgreSQL services for account and scheduling flows. The repository contains role-specific screens and booking components. It is an assessment project, without claiming employment at the assessment organization or a deployed clinical service.",
+   "features": [
+    "Patient and doctor interfaces",
+    "Availability management",
+    "Appointment-booking flow"
+   ],
+   "architecture": "React/Vite role-specific interfaces → Neon authentication/data services → PostgreSQL scheduling records.",
+   "displayOrder": 20,
+   "repo": "https://github.com/URAYUSHJAIN/Slotly",
+   "demo": "https://slotlly.vercel.app/",
+   "images": [],
+   "videos": [
+    {
+     "src": "/review-media/review/projects/slotly/slotly.mp4",
+     "start": null,
+     "duration": 31.0,
+     "shared": false,
+     "approved": false
+    }
+   ],
+   "hasConflict": false
+  },
+  {
+   "id": "proj-0028",
+   "slug": "taskflow",
+   "visibility": "needs-owner-review",
+   "title": "TaskFlow",
+   "summary": "A personal-productivity PWA bringing tasks, application tracking, and resource links into one browser workspace.",
+   "kind": "experiment",
+   "deploymentState": "prototype",
+   "group": "tools",
+   "technologies": [
+    "HTML",
+    "CSS",
+    "JavaScript",
+    "Service Workers",
+    "Local storage"
+   ],
+   "problem": "Tasks and job-application notes are easier to maintain when they share a consistent local workflow.",
+   "body": "TaskFlow stores user-entered information locally and provides task, application, and resource-link interfaces. Its PWA shell supports installation. The code also contains an external coding-profile proxy, so the portfolio avoids an unconditional claim that no network requests ever occur.",
+   "features": [
+    "Task tracking",
+    "Application status pipeline",
+    "Resource links",
+    "Local import/export and PWA shell"
+   ],
+   "architecture": "Browser application and service worker with local persistence; an external coding-profile proxy exists separately.",
+   "displayOrder": 21,
+   "repo": "https://github.com/URAYUSHJAIN/TaskFlow",
+   "demo": "https://task-flow-now.vercel.app/",
+   "images": [
+    {
+     "media": "media-0042",
+     "alt": "TaskFlow — interface capture",
+     "full": {
+      "src": "/review-media/review/derived/taskflow/tf-apply.1280.webp",
+      "width": 1080,
+      "height": 1080,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "thumb": {
+      "src": "/review-media/review/derived/taskflow/tf-apply.480.webp",
+      "width": 480,
+      "height": 480,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "approved": false
+    },
+    {
+     "media": "media-0043",
+     "alt": "TaskFlow — interface capture",
+     "full": {
+      "src": "/review-media/review/derived/taskflow/tf-done.1280.webp",
+      "width": 1080,
+      "height": 1080,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "thumb": {
+      "src": "/review-media/review/derived/taskflow/tf-done.480.webp",
+      "width": 480,
+      "height": 480,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "approved": false
+    },
+    {
+     "media": "media-0044",
+     "alt": "TaskFlow — interface capture",
+     "full": {
+      "src": "/review-media/review/derived/taskflow/tf-form.1280.webp",
+      "width": 1080,
+      "height": 1080,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "thumb": {
+      "src": "/review-media/review/derived/taskflow/tf-form.480.webp",
+      "width": 480,
+      "height": 480,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "approved": false
+    },
+    {
+     "media": "media-0045",
+     "alt": "TaskFlow — interface capture",
+     "full": {
+      "src": "/review-media/review/derived/taskflow/tf-saved.1280.webp",
+      "width": 1080,
+      "height": 1080,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "thumb": {
+      "src": "/review-media/review/derived/taskflow/tf-saved.480.webp",
+      "width": 480,
+      "height": 480,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "approved": false
+    },
+    {
+     "media": "media-0046",
+     "alt": "TaskFlow — interface capture",
+     "full": {
+      "src": "/review-media/review/derived/taskflow/tf-today.1280.webp",
+      "width": 1080,
+      "height": 1080,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "thumb": {
+      "src": "/review-media/review/derived/taskflow/tf-today.480.webp",
+      "width": 480,
+      "height": 480,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "approved": false
+    }
+   ],
+   "videos": [
+    {
+     "src": "/review-media/review/projects/calendar-dashboard/pwa-productivity.mp4",
+     "start": null,
+     "duration": 32.1,
+     "shared": true,
+     "approved": false
+    }
+   ],
+   "hasConflict": false
+  },
+  {
+   "id": "proj-0006",
+   "slug": "aurevo",
+   "visibility": "needs-owner-review",
+   "title": "Aurevo",
+   "summary": "A fashion storefront prototype with product browsing, wishlists, and a shopping bag.",
+   "kind": "experiment",
+   "deploymentState": "prototype",
+   "group": "early-work",
+   "technologies": [
+    "HTML",
+    "CSS",
+    "JavaScript",
+    "Local storage"
+   ],
+   "problem": "A storefront needs clear product browsing and consistent state between product, wishlist, and cart views.",
+   "body": "Aurevo explores these flows in a static HTML, CSS, and JavaScript site. Wishlist and shopping-bag state are maintained in the browser. It is an interface prototype; there is no verified payment, fulfilment, or commercial operation.",
+   "features": [
+    "Product collection views",
+    "Persistent wishlist",
+    "Shopping bag"
+   ],
+   "displayOrder": 22,
+   "repo": "https://github.com/URAYUSHJAIN/Aurevo",
+   "demo": "https://aurevo-topaz.vercel.app",
+   "images": [
+    {
+     "media": "media-0032",
+     "alt": "Aurevo — interface capture",
+     "full": {
+      "src": "/review-media/review/derived/aurevo/aurevo-carted.1280.webp",
+      "width": 1080,
+      "height": 1080,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "thumb": {
+      "src": "/review-media/review/derived/aurevo/aurevo-carted.480.webp",
+      "width": 480,
+      "height": 480,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "approved": false
+    },
+    {
+     "media": "media-0033",
+     "alt": "Aurevo — interface capture",
+     "full": {
+      "src": "/review-media/review/derived/aurevo/aurevo-filtered.1280.webp",
+      "width": 1080,
+      "height": 1080,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "thumb": {
+      "src": "/review-media/review/derived/aurevo/aurevo-filtered.480.webp",
+      "width": 480,
+      "height": 480,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "approved": false
+    },
+    {
+     "media": "media-0034",
+     "alt": "Aurevo — interface capture",
+     "full": {
+      "src": "/review-media/review/derived/aurevo/aurevo-hearted.1280.webp",
+      "width": 1080,
+      "height": 1080,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "thumb": {
+      "src": "/review-media/review/derived/aurevo/aurevo-hearted.480.webp",
+      "width": 480,
+      "height": 480,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "approved": false
+    },
+    {
+     "media": "media-0035",
+     "alt": "Aurevo — interface capture",
+     "full": {
+      "src": "/review-media/review/derived/aurevo/aurevo-home.1280.webp",
+      "width": 1080,
+      "height": 1080,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "thumb": {
+      "src": "/review-media/review/derived/aurevo/aurevo-home.480.webp",
+      "width": 480,
+      "height": 480,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "approved": false
+    },
+    {
+     "media": "media-0036",
+     "alt": "Aurevo — interface capture",
+     "full": {
+      "src": "/review-media/review/derived/aurevo/aurevo-products.1280.webp",
+      "width": 1080,
+      "height": 1080,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "thumb": {
+      "src": "/review-media/review/derived/aurevo/aurevo-products.480.webp",
+      "width": 480,
+      "height": 480,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "approved": false
+    }
+   ],
+   "videos": [
+    {
+     "src": "/review-media/review/projects/aurevo/foundations.mp4",
+     "start": null,
+     "duration": 31.5,
+     "shared": true,
+     "approved": false
+    }
+   ],
+   "hasConflict": false
+  },
+  {
+   "id": "proj-0009",
+   "slug": "cyberkey",
+   "visibility": "needs-owner-review",
+   "title": "CyberKey",
+   "summary": "An early JavaScript exercise that generates password strings and copies them to the clipboard.",
+   "kind": "experiment",
+   "deploymentState": "prototype",
+   "group": "early-work",
+   "technologies": [
+    "HTML",
+    "CSS",
+    "JavaScript"
+   ],
+   "problem": "A small generator is a useful exercise in character selection, string assembly, and clipboard interaction.",
+   "body": "The page assembles a string from letters, numbers, and symbols and provides a copy action. The source uses Math.random. It demonstrates browser scripting, without making cryptographic security claims.",
+   "features": [
+    "Character-string generation",
+    "Copy action"
+   ],
+   "displayOrder": 23,
+   "repo": "https://github.com/URAYUSHJAIN/cyberkey",
+   "demo": "https://cyberkey.netlify.app",
+   "images": [
+    {
+     "media": "media-0006",
+     "alt": "CyberKey — interface capture",
+     "full": {
+      "src": "/review-media/review/derived/cyberkey/cyberkey-a.1280.webp",
+      "width": 1080,
+      "height": 1080,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "thumb": {
+      "src": "/review-media/review/derived/cyberkey/cyberkey-a.480.webp",
+      "width": 480,
+      "height": 480,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "approved": false
+    }
+   ],
+   "videos": [
+    {
+     "src": "/review-media/review/projects/cyberkey/year-one.mp4",
+     "start": 14.15,
+     "duration": 34.1,
+     "shared": true,
+     "approved": false
+    }
+   ],
+   "hasConflict": false
+  },
+  {
+   "id": "proj-0012",
+   "slug": "fusion-2048",
+   "visibility": "needs-owner-review",
+   "title": "Fusion2048",
+   "summary": "A browser puzzle game in which matching numbered tiles merge toward 2048.",
+   "kind": "experiment",
+   "deploymentState": "prototype",
+   "group": "early-work",
+   "technologies": [
+    "HTML",
+    "CSS",
+    "JavaScript"
+   ],
+   "problem": "A small puzzle game brings together state transitions, keyboard input, and visual feedback.",
+   "body": "Fusion2048 implements tile movement, merging, and score updates in JavaScript. HTML and CSS provide the board and tile presentation. It is an early project in interactive browser programming.",
+   "features": [
+    "Tile movement and merging",
+    "Score tracking",
+    "Keyboard input"
+   ],
+   "displayOrder": 24,
+   "repo": "https://github.com/URAYUSHJAIN/Fusion",
+   "demo": "https://fusion2048.netlify.app/",
+   "images": [
+    {
+     "media": "media-0008",
+     "alt": "Fusion2048 — interface capture",
+     "full": {
+      "src": "/review-media/review/derived/fusion-2048/fusion-a.1280.webp",
+      "width": 1080,
+      "height": 1080,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "thumb": {
+      "src": "/review-media/review/derived/fusion-2048/fusion-a.480.webp",
+      "width": 480,
+      "height": 480,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "approved": false
+    },
+    {
+     "media": "media-0009",
+     "alt": "Fusion2048 — interface capture",
+     "full": {
+      "src": "/review-media/review/derived/fusion-2048/fusion-b.1280.webp",
+      "width": 1080,
+      "height": 1080,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "thumb": {
+      "src": "/review-media/review/derived/fusion-2048/fusion-b.480.webp",
+      "width": 480,
+      "height": 480,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "approved": false
+    },
+    {
+     "media": "media-0010",
+     "alt": "Fusion2048 — interface capture",
+     "full": {
+      "src": "/review-media/review/derived/fusion-2048/fusion-c.1280.webp",
+      "width": 1080,
+      "height": 1080,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "thumb": {
+      "src": "/review-media/review/derived/fusion-2048/fusion-c.480.webp",
+      "width": 480,
+      "height": 480,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "approved": false
+    },
+    {
+     "media": "media-0747",
+     "alt": "Fusion2048 — interface capture",
+     "full": {
+      "src": "/review-media/review/derived/fusion-2048/fusion.1280.webp",
+      "width": 1280,
+      "height": 644,
+      "originalWidth": 1280,
+      "originalHeight": 644
+     },
+     "thumb": {
+      "src": "/review-media/review/derived/fusion-2048/fusion.480.webp",
+      "width": 480,
+      "height": 242,
+      "originalWidth": 1280,
+      "originalHeight": 644
+     },
+     "approved": false
+    }
+   ],
+   "videos": [
+    {
+     "src": "/review-media/review/projects/cyberkey/year-one.mp4",
+     "start": 26.77,
+     "duration": 34.1,
+     "shared": true,
+     "approved": false
+    }
+   ],
+   "hasConflict": false
+  },
+  {
+   "id": "proj-0015",
+   "slug": "listomo",
+   "visibility": "needs-owner-review",
+   "title": "Listomo",
+   "summary": "A small JavaScript task-list application for adding tasks and marking them complete.",
+   "kind": "experiment",
+   "deploymentState": "prototype",
+   "group": "early-work",
+   "technologies": [
+    "HTML",
+    "CSS",
+    "JavaScript"
+   ],
+   "problem": "A task list is a compact exercise in form handling and visible application state.",
+   "body": "Listomo presents a focused interface for adding and completing tasks. It belongs with the early browser projects rather than the primary case studies.",
+   "features": [
+    "Add tasks",
+    "Toggle completion"
+   ],
+   "displayOrder": 25,
+   "repo": "https://github.com/URAYUSHJAIN/Listomo",
+   "images": [
+    {
+     "media": "media-0011",
+     "alt": "Listomo — interface capture",
+     "full": {
+      "src": "/review-media/review/derived/listomo/listomo-a.1280.webp",
+      "width": 1080,
+      "height": 1080,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "thumb": {
+      "src": "/review-media/review/derived/listomo/listomo-a.480.webp",
+      "width": 480,
+      "height": 480,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "approved": false
+    },
+    {
+     "media": "media-0012",
+     "alt": "Listomo — interface capture",
+     "full": {
+      "src": "/review-media/review/derived/listomo/listomo-b.1280.webp",
+      "width": 1080,
+      "height": 1080,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "thumb": {
+      "src": "/review-media/review/derived/listomo/listomo-b.480.webp",
+      "width": 480,
+      "height": 480,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "approved": false
+    },
+    {
+     "media": "media-0013",
+     "alt": "Listomo — interface capture",
+     "full": {
+      "src": "/review-media/review/derived/listomo/listomo-c.1280.webp",
+      "width": 1080,
+      "height": 1080,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "thumb": {
+      "src": "/review-media/review/derived/listomo/listomo-c.480.webp",
+      "width": 480,
+      "height": 480,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "approved": false
+    }
+   ],
+   "videos": [
+    {
+     "src": "/review-media/review/projects/cyberkey/year-one.mp4",
+     "start": 7.84,
+     "duration": 34.1,
+     "shared": true,
+     "approved": false
+    }
+   ],
+   "hasConflict": true
+  },
+  {
+   "id": "proj-0016",
+   "slug": "media-query-practice",
+   "visibility": "needs-owner-review",
+   "title": "Media Query Practice",
+   "summary": "A CSS exercise exploring how a page changes at different viewport widths.",
+   "kind": "course-work",
+   "deploymentState": "prototype",
+   "group": "early-work",
+   "technologies": [
+    "HTML",
+    "CSS"
+   ],
+   "problem": "Responsive layout needs explicit rules for different amounts of available space.",
+   "body": "The exercise uses HTML and CSS media queries to change the page presentation as the viewport narrows. It is retained as early coursework, with no standalone indexable case-study page.",
+   "features": [
+    "Viewport-dependent CSS layout"
+   ],
+   "displayOrder": 26,
+   "repo": "https://github.com/URAYUSHJAIN/meadiaquery",
+   "images": [
+    {
+     "media": "media-0014",
+     "alt": "Media Query Practice — interface capture",
+     "full": {
+      "src": "/review-media/review/derived/media-query-practice/mq-narrow.1280.webp",
+      "width": 540,
+      "height": 1080,
+      "originalWidth": 540,
+      "originalHeight": 1080
+     },
+     "thumb": {
+      "src": "/review-media/review/derived/media-query-practice/mq-narrow.480.webp",
+      "width": 240,
+      "height": 480,
+      "originalWidth": 540,
+      "originalHeight": 1080
+     },
+     "approved": false
+    },
+    {
+     "media": "media-0015",
+     "alt": "Media Query Practice — interface capture",
+     "full": {
+      "src": "/review-media/review/derived/media-query-practice/mq-wide.1280.webp",
+      "width": 1080,
+      "height": 1080,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "thumb": {
+      "src": "/review-media/review/derived/media-query-practice/mq-wide.480.webp",
+      "width": 480,
+      "height": 480,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "approved": false
+    }
+   ],
+   "videos": [
+    {
+     "src": "/review-media/review/projects/cyberkey/year-one.mp4",
+     "start": 23.62,
+     "duration": 34.1,
+     "shared": true,
+     "approved": false
+    }
+   ],
+   "hasConflict": false
+  },
+  {
+   "id": "proj-0025",
+   "slug": "skylens",
+   "visibility": "needs-owner-review",
+   "title": "SkyLens",
+   "summary": "A weather-page exercise that looks up a city and displays current-condition fields.",
+   "kind": "experiment",
+   "deploymentState": "prototype",
+   "group": "early-work",
+   "technologies": [
+    "HTML",
+    "CSS",
+    "JavaScript"
+   ],
+   "problem": "A simple weather interface needs clear search and result feedback.",
+   "body": "SkyLens uses a browser API request and weather icons to present temperature, humidity, and wind fields. Radar, air-quality monitoring, and forecast accuracy are not supported by the inspected implementation and are omitted.",
+   "features": [
+    "City search",
+    "Current-condition display"
+   ],
+   "displayOrder": 27,
+   "repo": "https://github.com/URAYUSHJAIN/skylens",
+   "demo": "https://skylens.netlify.app",
+   "images": [
+    {
+     "media": "media-0017",
+     "alt": "SkyLens — interface capture",
+     "full": {
+      "src": "/review-media/review/derived/skylens/skylens-a.1280.webp",
+      "width": 1080,
+      "height": 1080,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "thumb": {
+      "src": "/review-media/review/derived/skylens/skylens-a.480.webp",
+      "width": 480,
+      "height": 480,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "approved": false
+    },
+    {
+     "media": "media-0018",
+     "alt": "SkyLens — interface capture",
+     "full": {
+      "src": "/review-media/review/derived/skylens/skylens-b.1280.webp",
+      "width": 1080,
+      "height": 1080,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "thumb": {
+      "src": "/review-media/review/derived/skylens/skylens-b.480.webp",
+      "width": 480,
+      "height": 480,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "approved": false
+    }
+   ],
+   "videos": [
+    {
+     "src": "/review-media/review/projects/cyberkey/year-one.mp4",
+     "start": 11.0,
+     "duration": 34.1,
+     "shared": true,
+     "approved": false
+    }
+   ],
+   "hasConflict": false
+  },
+  {
+   "id": "proj-0021",
+   "slug": "sdg-dashboard",
+   "visibility": "needs-owner-review",
+   "title": "Sustainable Development Dashboard",
+   "summary": "A static dashboard exercise presenting Sustainable Development Goal indicators with visual score rings.",
+   "kind": "experiment",
+   "deploymentState": "prototype",
+   "group": "early-work",
+   "technologies": [
+    "HTML",
+    "CSS",
+    "JavaScript"
+   ],
+   "problem": "A dashboard needs a clear hierarchy for presenting scores and comparisons.",
+   "body": "The project uses HTML, CSS, and JavaScript to render indicator and chart views. The inspected implementation uses static values. The earlier README’s real-time global-data claims are omitted.",
+   "features": [
+    "Indicator presentation",
+    "Score-ring visualization"
+   ],
+   "displayOrder": 28,
+   "repo": "https://github.com/URAYUSHJAIN/SDE-dashboard",
+   "demo": "https://sdg-dashboard.netlify.app/",
+   "images": [
+    {
+     "media": "media-0016",
+     "alt": "Sustainable Development Dashboard — interface capture",
+     "full": {
+      "src": "/review-media/review/derived/sdg-dashboard/sde-still.1280.webp",
+      "width": 1080,
+      "height": 1080,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "thumb": {
+      "src": "/review-media/review/derived/sdg-dashboard/sde-still.480.webp",
+      "width": 480,
+      "height": 480,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "approved": false
+    }
+   ],
+   "videos": [
+    {
+     "src": "/review-media/review/projects/cyberkey/year-one.mp4",
+     "start": 4.68,
+     "duration": 34.1,
+     "shared": true,
+     "approved": false
+    }
+   ],
+   "hasConflict": false
+  },
+  {
+   "id": "proj-0027",
+   "slug": "tacwin",
+   "visibility": "needs-owner-review",
+   "title": "Tacwin",
+   "summary": "A React tic-tac-toe game with turn handling, win feedback, and a reset action.",
+   "kind": "experiment",
+   "deploymentState": "prototype",
+   "group": "early-work",
+   "technologies": [
+    "React",
+    "JavaScript",
+    "CSS"
+   ],
+   "problem": "A small board game provides practice with component state and outcome detection.",
+   "body": "Tacwin renders the board and alternating moves in React. It presents game results and lets players reset the board. The project is an early frontend exercise; no AI opponent is claimed.",
+   "features": [
+    "Local tic-tac-toe play",
+    "Win feedback",
+    "Reset action"
+   ],
+   "displayOrder": 29,
+   "repo": "https://github.com/URAYUSHJAIN/Tacwin",
+   "demo": "https://tacwin.vercel.app",
+   "images": [
+    {
+     "media": "media-0019",
+     "alt": "Tacwin — interface capture",
+     "full": {
+      "src": "/review-media/review/derived/tacwin/tacwin-a.1280.webp",
+      "width": 1080,
+      "height": 1080,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "thumb": {
+      "src": "/review-media/review/derived/tacwin/tacwin-a.480.webp",
+      "width": 480,
+      "height": 480,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "approved": false
+    },
+    {
+     "media": "media-0020",
+     "alt": "Tacwin — interface capture",
+     "full": {
+      "src": "/review-media/review/derived/tacwin/tacwin-m1.1280.webp",
+      "width": 1080,
+      "height": 1080,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "thumb": {
+      "src": "/review-media/review/derived/tacwin/tacwin-m1.480.webp",
+      "width": 480,
+      "height": 480,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "approved": false
+    },
+    {
+     "media": "media-0021",
+     "alt": "Tacwin — interface capture",
+     "full": {
+      "src": "/review-media/review/derived/tacwin/tacwin-m2.1280.webp",
+      "width": 1080,
+      "height": 1080,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "thumb": {
+      "src": "/review-media/review/derived/tacwin/tacwin-m2.480.webp",
+      "width": 480,
+      "height": 480,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "approved": false
+    },
+    {
+     "media": "media-0022",
+     "alt": "Tacwin — interface capture",
+     "full": {
+      "src": "/review-media/review/derived/tacwin/tacwin-m3.1280.webp",
+      "width": 1080,
+      "height": 1080,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "thumb": {
+      "src": "/review-media/review/derived/tacwin/tacwin-m3.480.webp",
+      "width": 480,
+      "height": 480,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "approved": false
+    },
+    {
+     "media": "media-0023",
+     "alt": "Tacwin — interface capture",
+     "full": {
+      "src": "/review-media/review/derived/tacwin/tacwin-m4.1280.webp",
+      "width": 1080,
+      "height": 1080,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "thumb": {
+      "src": "/review-media/review/derived/tacwin/tacwin-m4.480.webp",
+      "width": 480,
+      "height": 480,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "approved": false
+    },
+    {
+     "media": "media-0024",
+     "alt": "Tacwin — interface capture",
+     "full": {
+      "src": "/review-media/review/derived/tacwin/tacwin-m5.1280.webp",
+      "width": 1080,
+      "height": 1080,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "thumb": {
+      "src": "/review-media/review/derived/tacwin/tacwin-m5.480.webp",
+      "width": 480,
+      "height": 480,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "approved": false
+    },
+    {
+     "media": "media-0025",
+     "alt": "Tacwin — interface capture",
+     "full": {
+      "src": "/review-media/review/derived/tacwin/tacwin-win.1280.webp",
+      "width": 1080,
+      "height": 1080,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "thumb": {
+      "src": "/review-media/review/derived/tacwin/tacwin-win.480.webp",
+      "width": 480,
+      "height": 480,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "approved": false
+    }
+   ],
+   "videos": [
+    {
+     "src": "/review-media/review/projects/cyberkey/year-one.mp4",
+     "start": 17.31,
+     "duration": 34.1,
+     "shared": true,
+     "approved": false
+    }
+   ],
+   "hasConflict": false
+  },
+  {
+   "id": "proj-0029",
+   "slug": "usabilityhub-exercise",
+   "visibility": "needs-owner-review",
+   "title": "UsabilityHub Class Exercise",
+   "summary": "An HTML and CSS class assignment recreating a marketing-page layout for practice.",
+   "kind": "course-work",
+   "deploymentState": "prototype",
+   "group": "early-work",
+   "technologies": [
+    "HTML",
+    "CSS"
+   ],
+   "problem": "Recreating an existing layout can help students learn spacing, page structure, and CSS styling.",
+   "body": "This exercise recreates the structure of a UsabilityHub page as college coursework. The design and third-party branding are credited to their respective owners. It is not presented as an original product design or a production application.",
+   "features": [
+    "Static page layout",
+    "HTML and CSS practice"
+   ],
+   "displayOrder": 30,
+   "repo": "https://github.com/URAYUSHJAIN/Usabilityhub",
+   "demo": "https://urayushjain.github.io/Usabilityhub/",
+   "images": [
+    {
+     "media": "media-0026",
+     "alt": "UsabilityHub Class Exercise — interface capture",
+     "full": {
+      "src": "/review-media/review/derived/usabilityhub-exercise/usability-a.1280.webp",
+      "width": 1080,
+      "height": 1080,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "thumb": {
+      "src": "/review-media/review/derived/usabilityhub-exercise/usability-a.480.webp",
+      "width": 480,
+      "height": 480,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "approved": false
+    },
+    {
+     "media": "media-0027",
+     "alt": "UsabilityHub Class Exercise — interface capture",
+     "full": {
+      "src": "/review-media/review/derived/usabilityhub-exercise/usability-b.1280.webp",
+      "width": 1080,
+      "height": 1080,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "thumb": {
+      "src": "/review-media/review/derived/usabilityhub-exercise/usability-b.480.webp",
+      "width": 480,
+      "height": 480,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "approved": false
+    }
+   ],
+   "videos": [
+    {
+     "src": "/review-media/review/projects/cyberkey/year-one.mp4",
+     "start": 20.46,
+     "duration": 34.1,
+     "shared": true,
+     "approved": false
+    }
+   ],
+   "hasConflict": false
+  },
+  {
+   "id": "proj-0017",
+   "slug": "zenati",
+   "visibility": "needs-owner-review",
+   "title": "Zenati",
+   "summary": "An early mental-wellness website prototype with resource pages and chatbot integration.",
+   "kind": "experiment",
+   "deploymentState": "prototype",
+   "group": "early-work",
+   "technologies": [
+    "HTML",
+    "JavaScript",
+    "Tailwind CSS"
+   ],
+   "problem": "Wellness information can be difficult to navigate when resources and support options are scattered.",
+   "body": "Zenati explores a resource-led interface and a chatbot integration. Its forms and self-assessment interfaces are prototypes. There is no verified clinical service, diagnostic capability, staffed callback programme, or donation operation.",
+   "features": [
+    "Wellness resource interface",
+    "Chatbot integration",
+    "Support-form interface"
+   ],
+   "displayOrder": 31,
+   "repo": "https://github.com/URAYUSHJAIN/mental-health",
+   "images": [
+    {
+     "media": "media-0028",
+     "alt": "Zenati — interface capture",
+     "full": {
+      "src": "/review-media/review/derived/zenati/zenati-a.1280.webp",
+      "width": 1080,
+      "height": 1080,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "thumb": {
+      "src": "/review-media/review/derived/zenati/zenati-a.480.webp",
+      "width": 480,
+      "height": 480,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "approved": false
+    },
+    {
+     "media": "media-0029",
+     "alt": "Zenati — interface capture",
+     "full": {
+      "src": "/review-media/review/derived/zenati/zenati-b.1280.webp",
+      "width": 1080,
+      "height": 1080,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "thumb": {
+      "src": "/review-media/review/derived/zenati/zenati-b.480.webp",
+      "width": 480,
+      "height": 480,
+      "originalWidth": 1080,
+      "originalHeight": 1080
+     },
+     "approved": false
+    }
+   ],
+   "videos": [
+    {
+     "src": "/review-media/review/projects/cyberkey/year-one.mp4",
+     "start": 1.5,
+     "duration": 34.1,
+     "shared": true,
+     "approved": false
+    }
+   ],
+   "hasConflict": true
+  },
+  {
+   "id": "proj-0033",
+   "slug": "aventra",
+   "visibility": "needs-owner-review",
+   "title": "Aventra",
+   "summary": "A financial-intelligence project that explores unusual market behaviour and explains the context around a flagged change.",
+   "kind": "group-project",
+   "deploymentState": "prototype",
+   "group": "ai",
+   "technologies": [
+    "Python",
+    "React",
+    "SQL"
+   ],
+   "body": "The public repository contains a Flask-style backend, market/news service modules, an ML pipeline, and a React frontend. The reviewed intelligence service dispatches analysis jobs. The interface explains market changes; price-prediction accuracy and investment performance are not claimed.",
+   "displayOrder": 33,
+   "repo": "https://github.com/URAYUSHJAIN/Aventra",
+   "demo": "https://aventra-lime.vercel.app/",
+   "images": [],
+   "videos": [],
+   "hasConflict": false
+  },
+  {
+   "id": "proj-0034",
+   "slug": "ecofund",
+   "visibility": "needs-owner-review",
+   "title": "Ecofund",
+   "summary": "A Web3 donation-interface prototype using React and Ethers.js.",
+   "kind": "experiment",
+   "deploymentState": "prototype",
+   "group": "web3",
+   "technologies": [
+    "React",
+    "JavaScript",
+    "Ethers.js",
+    "Hardhat"
+   ],
+   "body": "The inspected client loads a donation ABI and wallet-connected components. The root documentation and checked-in contract are a Hardhat sample, so the deployed contract, end-to-end donation flow, and environmental outcomes are not verified.",
+   "displayOrder": 34,
+   "repo": "https://github.com/URAYUSHJAIN/Ecofund",
+   "demo": "https://eco-fund.netlify.app",
+   "images": [],
+   "videos": [],
+   "hasConflict": false
+  },
+  {
+   "id": "proj-0035",
+   "slug": "finance-categorizer",
+   "visibility": "needs-owner-review",
+   "title": "Finance Categorizer Agent",
+   "summary": "A browser-based transaction-categorization prototype using explicit rules.",
+   "kind": "experiment",
+   "deploymentState": "prototype",
+   "group": "tools",
+   "technologies": [
+    "Next.js",
+    "React",
+    "JavaScript"
+   ],
+   "body": "The repository separates transaction parsing, category rules, file reading, and evaluation. The inspected categorization core applies rule-table matching; despite the agent name, a language-model integration is not required. Accuracy and Lighthouse badges are source claims and are omitted.",
+   "displayOrder": 35,
+   "repo": "https://github.com/URAYUSHJAIN/finance-agent",
+   "demo": "https://finance-agent-amber.vercel.app",
+   "images": [],
+   "videos": [],
+   "hasConflict": false
+  },
+  {
+   "id": "proj-0041",
+   "slug": "original-portfolio",
+   "visibility": "needs-owner-review",
+   "title": "Original Portfolio",
+   "summary": "The earlier Next.js portfolio presenting projects, writing, and professional background.",
+   "kind": "original",
+   "deploymentState": "prototype",
+   "group": "full-stack",
+   "technologies": [
+    "Next.js",
+    "React",
+    "TypeScript"
+   ],
+   "body": "The application uses Next.js, React, and a centralized content file. The Shelf links to this site through the laptop. Its source content is being corrected for the new site; the earlier portfolio is preserved as an original project, without copying its layout.",
+   "displayOrder": 36,
+   "repo": "https://github.com/URAYUSHJAIN/portfolio",
+   "demo": "https://urayushjain.netlify.app/",
+   "images": [],
+   "videos": [],
+   "hasConflict": false
+  },
+  {
+   "id": "proj-0042",
+   "slug": "promptly",
+   "visibility": "needs-owner-review",
+   "title": "Promptly",
+   "summary": "A prompt-management interface prototype with version, experiment, and team-workspace screens.",
+   "kind": "experiment",
+   "deploymentState": "prototype",
+   "group": "tools",
+   "technologies": [
+    "React",
+    "JavaScript",
+    "Vite"
+   ],
+   "body": "The public repository contains a React client with Clerk authentication and dashboard pages. The reviewed prompt and experiment screens use component state, without evidence of a server persistence layer in the returned tree. Version-control, scoring, and multi-tenant service claims in the README are treated as product intentions rather than verified backend capabilities.",
+   "displayOrder": 37,
+   "repo": "https://github.com/URAYUSHJAIN/Promptly",
+   "demo": "https://promptly-hazel.vercel.app/",
+   "images": [],
+   "videos": [],
+   "hasConflict": true
+  },
+  {
+   "id": "proj-0036",
+   "slug": "amazon-layout-exercise",
+   "visibility": "needs-owner-review",
+   "title": "Amazon Layout Class Exercise",
+   "summary": "An HTML and CSS coursework exercise recreating an e-commerce homepage layout.",
+   "kind": "course-work",
+   "deploymentState": "prototype",
+   "group": "early-work",
+   "technologies": [
+    "HTML",
+    "CSS"
+   ],
+   "body": "The repository contains a static page, stylesheet, and product-image assets. It is retained as coursework, with third-party design attribution and no payment or retail-business claim. Source product images are not copied.",
+   "displayOrder": 38,
+   "repo": "https://github.com/URAYUSHJAIN/FSD-class-amazonclone",
+   "demo": "https://amazonclone-csb.netlify.app/",
+   "images": [],
+   "videos": [],
+   "hasConflict": false
+  },
+  {
+   "id": "proj-0043",
+   "slug": "resqhub",
+   "visibility": "needs-owner-review",
+   "title": "ResQHub",
+   "summary": "A static disaster-preparedness site organizing explanatory pages and resource links.",
+   "kind": "experiment",
+   "deploymentState": "prototype",
+   "group": "early-work",
+   "technologies": [
+    "HTML",
+    "JavaScript"
+   ],
+   "body": "The repository contains pages for disaster types, preparedness, a library, and a map view. It is an information-site exercise, without claiming emergency-response operations. Third-party handbooks remain external source material and are not copied.",
+   "displayOrder": 44,
+   "repo": "https://github.com/URAYUSHJAIN/ResQHub",
+   "demo": "https://urayushjain.github.io/ResQHub/",
+   "images": [],
+   "videos": [],
+   "hasConflict": false
+  },
+  {
+   "id": "proj-0046",
+   "slug": "web-development-lab",
+   "visibility": "needs-owner-review",
+   "title": "Web Development Lab — Semester 3",
+   "summary": "A collection of introductory web-development lab exercises.",
+   "kind": "course-work",
+   "deploymentState": "prototype",
+   "group": "early-work",
+   "technologies": [
+    "HTML",
+    "CSS",
+    "JavaScript"
+   ],
+   "body": "The public README describes HTML, CSS, and JavaScript coursework. Its frame page responds, but individual exercises were not executed. Keep it in the early-work archive with no standalone indexable page.",
+   "displayOrder": 46,
+   "repo": "https://github.com/URAYUSHJAIN/weblab-sem3",
+   "demo": "https://urayushjain.github.io/weblab-sem3/frame.html",
+   "images": [],
+   "videos": [],
+   "hasConflict": false
+  }
+ ],
+ "patents": [
+  {
+   "id": "pat-0001",
+   "slug": "genshakti-energy-saver",
+   "visibility": "needs-owner-review",
+   "summary": "An application describing AI-assisted monitoring and optimization of electricity consumption.",
+   "body": "The published abstract proposes collecting electricity-usage data, analyzing consumption patterns, and presenting optimization guidance. The record describes the proposed system; it does not establish measured energy savings or a granted right.",
+   "officialSearchUrl": "https://iprsearch.ipindia.gov.in/PublicSearch/",
+   "office": "Indian Patent Office",
+   "applicants": [
+    "ABES Engineering College"
+   ],
+   "title": "GenShakti: AI-Driven Smart Energy Saver",
+   "status": "application-published",
+   "grantClaim": false,
+   "officialTitle": "GENSHAKTI: AI-DRIVEN SMART ENERGY SAVER",
+   "applicationNumber": "202511025277",
+   "filingDate": "2025-03-20",
+   "publicationDate": "2025-04-04",
+   "journalIssue": "14/2025",
+   "statusCopy": "Application publication recorded on 2025-04-04; official snapshot captured 2025-04-10. Current legal status has not been verified.",
+   "role": "Named inventor"
+  },
+  {
+   "id": "pat-0002",
+   "slug": "genshakti-zone-selection",
+   "visibility": "needs-owner-review",
+   "summary": "An application describing geospatial analysis for identifying renewable-energy installation zones.",
+   "body": "The proposed system combines geographic data collection, machine-learning processing, and a mapping interface to compare potential renewable-energy sites. These are application claims, without independently validated site-selection performance.",
+   "officialSearchUrl": "https://iprsearch.ipindia.gov.in/PublicSearch/",
+   "office": "Indian Patent Office",
+   "applicants": [
+    "ABES Engineering College"
+   ],
+   "title": "GenShakti: AI-Driven Smart Zone Selection for Renewable Energy",
+   "status": "application-published",
+   "grantClaim": false,
+   "officialTitle": "GENSHAKTI: AI-DRIVEN SMART ZONE SELECTION FOR RENEWABLE ENERGY",
+   "applicationNumber": "202511025280",
+   "filingDate": "2025-03-20",
+   "publicationDate": "2025-04-04",
+   "journalIssue": "14/2025",
+   "statusCopy": "Application publication recorded on 2025-04-04; official snapshot captured 2025-04-10. Current legal status has not been verified.",
+   "role": "Named inventor"
+  },
+  {
+   "id": "pat-0003",
+   "slug": "decentralized-document-control",
+   "visibility": "needs-owner-review",
+   "summary": "An application describing document storage and controlled sharing using blockchain and IPFS.",
+   "body": "The abstract names the proposed platform DocMitra and describes smart-contract access rules, selective disclosure, and key recovery. The portfolio presents the research proposal, without claiming a deployed document-management product.",
+   "officialSearchUrl": "https://iprsearch.ipindia.gov.in/PublicSearch/",
+   "office": "Indian Patent Office",
+   "applicants": [
+    "ABES Engineering College"
+   ],
+   "title": "Decentralized Document Control System",
+   "status": "application-published",
+   "grantClaim": false,
+   "officialTitle": "DECENTRALIZED DOCUMENT CONTROL SYSTEM",
+   "applicationNumber": "202511052005",
+   "filingDate": "2025-05-29",
+   "publicationDate": "2025-06-13",
+   "journalIssue": "24/2025",
+   "statusCopy": "Application publication recorded on 2025-06-13; official snapshot captured 2025-07-15. Current legal status has not been verified.",
+   "role": "Named inventor"
+  },
+  {
+   "id": "pat-0004",
+   "slug": "pharmaceutical-supply-chain",
+   "visibility": "needs-owner-review",
+   "summary": "An application proposing blockchain-based drug-inventory tracking and expiry-management workflows.",
+   "body": "The abstract describes tracking inventory, managing expiry through smart contracts, and supporting redistribution of near-expiry medicines. It also uses the name ArogyaPlus; this does not establish a relationship to the separate medical-report application or repository.",
+   "officialSearchUrl": "https://iprsearch.ipindia.gov.in/PublicSearch/",
+   "office": "Indian Patent Office",
+   "applicants": [
+    "ABES Engineering College"
+   ],
+   "title": "Blockchain-Driven Pharmaceutical Supply Chain Optimizer",
+   "status": "application-published",
+   "grantClaim": false,
+   "officialTitle": "BLOCKCHAIN-DRIVEN PHARMACEUTICAL SUPPLY CHAIN OPTIMIZER",
+   "applicationNumber": "202511052013",
+   "filingDate": "2025-05-29",
+   "publicationDate": "2025-06-13",
+   "journalIssue": "24/2025",
+   "statusCopy": "Application publication recorded on 2025-06-13; official snapshot captured 2025-07-15. Current legal status has not been verified.",
+   "role": "Named inventor"
+  },
+  {
+   "id": "pat-0005",
+   "slug": "arogyaplus-medical-insights",
+   "visibility": "needs-owner-review",
+   "summary": "An application proposing AI-assisted interpretation and explanation of medical reports.",
+   "body": "The abstract describes extracting report information with OCR, computer vision, and language processing, then presenting health-information explanations. This is an application-level proposal, without clinical validation or a claim of regulatory approval.",
+   "officialSearchUrl": "https://iprsearch.ipindia.gov.in/PublicSearch/",
+   "office": "Indian Patent Office",
+   "applicants": [
+    "ABES Engineering College"
+   ],
+   "title": "ArogyaPlus: Smart Medical Insights Navigator",
+   "status": "application-published",
+   "grantClaim": false,
+   "officialTitle": "AROGYAPLUS: SMART MEDICAL INSIGHTS NAVIGATOR",
+   "applicationNumber": "202511053923",
+   "filingDate": "2025-06-04",
+   "publicationDate": "2025-06-20",
+   "journalIssue": "25/2025",
+   "statusCopy": "Application publication recorded on 2025-06-20; official snapshot captured 2025-07-15. Current legal status has not been verified.",
+   "role": "Named inventor"
+  },
+  {
+   "id": "pat-0006",
+   "slug": "promptly",
+   "visibility": "needs-owner-review",
+   "summary": "A source-documented application concerning version management for AI prompts.",
+   "body": "Local records identify Promptly as prompt-versioning work. The exact registered title, publication date, and current legal status require an official record. The associated public-profile announcement and the newer interface repository do not establish grant status.",
+   "officialSearchUrl": "https://iprsearch.ipindia.gov.in/PublicSearch/",
+   "title": "Promptly: Prompt Versioning SaaS",
+   "status": "unverified",
+   "grantClaim": false
+  },
+  {
+   "id": "pat-0007",
+   "slug": "digilocker-admission",
+   "visibility": "needs-owner-review",
+   "summary": "A source-documented application concerning document verification during admissions.",
+   "body": "The title concerns a DigiLocker-based admission and verification workflow. Two local sources disagree on the application number. A public-profile announcement supports the number ending 2743, but an official record is still needed before the disputed identifier is published.",
+   "officialSearchUrl": "https://iprsearch.ipindia.gov.in/PublicSearch/",
+   "title": "AI-Powered DigiLocker-Based Documentless Admission & Verification System",
+   "status": "unverified",
+   "grantClaim": false
+  },
+  {
+   "id": "pat-0008",
+   "slug": "attendance-verification",
+   "visibility": "needs-owner-review",
+   "summary": "A source-documented application concerning proof-based attendance verification.",
+   "body": "The available title describes an attendance-verification system. The owner’s summary and public profile associate it with a 2026 publication, but no official publication record was accessible during this review. No deployed implementation or grant is claimed.",
+   "officialSearchUrl": "https://iprsearch.ipindia.gov.in/PublicSearch/",
+   "title": "Proof-Based Automated Attendance Verification System",
+   "status": "unverified",
+   "grantClaim": false
+  }
+ ],
+ "experience": [
+  {
+   "id": "exp-0001",
+   "slug": "districtd",
+   "visibility": "needs-owner-review",
+   "organization": "DistrictD",
+   "role": "Software Developer Trainee",
+   "type": "trainee-programme",
+   "programme": "Trainee programme",
+   "summary": "Software-development trainee work focused on application maintenance and debugging.",
+   "body": "Contributed to software maintenance, defect investigation, and validation of fixes. Employer systems, client identities, and internal implementation details are withheld.",
+   "datesWithheld": true,
+   "section": "work"
+  },
+  {
+   "id": "exp-0002",
+   "slug": "joyfullminds",
+   "visibility": "needs-owner-review",
+   "organization": "Joyfullminds",
+   "role": "Software Development Intern",
+   "type": "internship",
+   "summary": "Software-development internship involving feature work, debugging, and team delivery.",
+   "body": "Contributed to feature implementation and debugging with a software-development team. End date, organization spelling, and work mode remain under review; no unsupported outcomes are stated.",
+   "datesWithheld": true,
+   "section": "work"
+  },
+  {
+   "id": "exp-0003",
+   "slug": "singari-global",
+   "visibility": "needs-owner-review",
+   "organization": "Singari Global Holding Pvt. Ltd.",
+   "role": "Software Engineer Intern",
+   "type": "internship",
+   "summary": "A completed one-month software-engineering internship, supported by an experience letter.",
+   "body": "The experience letter records a one-month internship as Software Engineer Intern. The earlier portfolio describes React and Tailwind interface work and debugging; these task details remain source-documented, without measured performance claims.",
+   "datesWithheld": true,
+   "section": "work"
+  },
+  {
+   "id": "exp-0004",
+   "slug": "gdg-abesec",
+   "visibility": "needs-owner-review",
+   "organization": "GDG ABESEC",
+   "role": "Co-organizer",
+   "type": "leadership",
+   "summary": "Community work supporting technical events, sponsorship coordination, and student engagement.",
+   "body": "Helped organize technical events and coordinate community activities. Dates, exact chapter label, and end status remain under review. Membership totals and team-size figures are omitted because sources disagree.",
+   "datesWithheld": true,
+   "section": "leadership"
+  },
+  {
+   "id": "exp-0005",
+   "slug": "hackster-mentor",
+   "visibility": "needs-owner-review",
+   "organization": "Hackster 2025",
+   "role": "Mentor",
+   "type": "mentor",
+   "summary": "Mentored participants at Hackster 2025 at HMRITM, New Delhi.",
+   "body": "The achievements sheet records a mentor role on 20 September 2025. This is community mentoring rather than employment or a competition placement.",
+   "startDate": "2025-09",
+   "endDate": "2025-09",
+   "section": "leadership"
+  },
+  {
+   "id": "exp-0006",
+   "slug": "hackwave-organizer",
+   "visibility": "needs-owner-review",
+   "organization": "Hackwave 2.0",
+   "role": "Organizer",
+   "type": "organizer",
+   "summary": "Helped organize Hackwave 2.0, a GDG On Campus ABESEC event.",
+   "body": "The achievements sheet records event-organizing work on 3 May 2025. Personal responsibilities and attendance figures are not independently documented.",
+   "startDate": "2025-05",
+   "endDate": "2025-05",
+   "section": "leadership"
+  },
+  {
+   "id": "exp-0007",
+   "slug": "exora-organizer",
+   "visibility": "needs-owner-review",
+   "organization": "Exora",
+   "role": "Organizer / Lead",
+   "type": "organizer",
+   "summary": "Helped lead Exora, a Coding Club project showcase.",
+   "body": "The achievements sheet records organizing and leadership work for the showcase on 21 March 2026. No unsupported scale or outcome is attached to the role.",
+   "startDate": "2026-03",
+   "endDate": "2026-03",
+   "section": "leadership"
+  },
+  {
+   "id": "exp-0008",
+   "slug": "hackwithindia",
+   "visibility": "needs-owner-review",
+   "organization": "HackwithIndia",
+   "role": "Sponsorship Coordinator",
+   "type": "volunteer",
+   "summary": "Volunteer sponsorship-coordination work with HackwithIndia.",
+   "body": "The linked public profile lists a volunteer sponsorship-coordination role from February to July 2025. No sponsorship amount or employer relationship is inferred.",
+   "startDate": "2025-02",
+   "endDate": "2025-07",
+   "section": "leadership"
+  },
+  {
+   "id": "exp-0009",
+   "slug": "bitguild",
+   "visibility": "needs-owner-review",
+   "organization": "Coding Club (BitGuild)",
+   "role": "Community Lead",
+   "type": "leadership",
+   "summary": "Student-community leadership associated with the Coding Club at ABES Engineering College.",
+   "body": "A search-indexed public-profile post describes completing a lead role across the GDG and Coding Club communities. Exact title, responsibilities, and tenure require owner confirmation.",
+   "datesWithheld": true,
+   "section": "leadership"
+  }
+ ],
+ "education": [
+  {
+   "id": "edu-0001",
+   "slug": "abes-engineering-college",
+   "visibility": "needs-owner-review",
+   "institution": "ABES Engineering College",
+   "program": "Bachelor of Technology",
+   "discipline": "Computer Science",
+   "startYear": 2023,
+   "endYear": 2027,
+   "endYearKind": "expected",
+   "institutionUrl": "https://abes.ac.in/",
+   "summary": "B.Tech in Computer Science, ABES Engineering College. Study timeline: 2023–2027, with 2027 the expected completion year."
+  },
+  {
+   "id": "edu-0002",
+   "slug": "sjs-public-school",
+   "visibility": "needs-owner-review",
+   "institution": "SJS Public School",
+   "program": "Class XII",
+   "discipline": "Physics, Chemistry and Mathematics",
+   "endYear": 2022,
+   "summary": "Senior-secondary studies in Physics, Chemistry and Mathematics at SJS Public School. The source education timeline ends in 2022."
+  }
+ ],
+ "achievements": [
+  {
+   "id": "ach-0001",
+   "slug": "mind-mela-2026",
+   "visibility": "needs-owner-review",
+   "title": "Mind Mela 2026 — First Place",
+   "kind": "hackathon-result",
+   "event": "Mind Mela 2026",
+   "issuer": "ABES Engineering College",
+   "date": "2026-03-27",
+   "result": "winner",
+   "teamContext": "team of 4 (owner sheet)",
+   "summary": "First place at Mind Mela 2026 as part of a four-person team, recorded in the owner’s achievements sheet. Independent organizer verification remains pending."
+  },
+  {
+   "id": "ach-0002",
+   "slug": "google-mcp-issue",
+   "visibility": "needs-owner-review",
+   "title": "Open-source issue report — google/mcp",
+   "kind": "other",
+   "date": "2025-12-25",
+   "teamContext": "individual issue author",
+   "credentialUrl": "https://github.com/google/mcp/issues/15",
+   "summary": "Reported a setup error-handling problem in google/mcp. The public issue concerns failed cloud commands producing incomplete configuration. This is an issue report, not evidence of a merged code contribution."
+  },
+  {
+   "id": "ach-0003",
+   "slug": "create-vrt-dapp",
+   "visibility": "needs-owner-review",
+   "title": "npm package — create-vrt-dapp",
+   "kind": "other",
+   "issuer": "npm registry",
+   "teamContext": "registry maintainer",
+   "credentialUrl": "https://www.npmjs.com/package/create-vrt-dapp",
+   "summary": "Listed as maintainer of create-vrt-dapp in the public npm registry. Package functionality, adoption, and maintenance activity have not been independently evaluated."
+  }
+ ],
+ "credentials": [
+  {
+   "id": "cred-0001",
+   "slug": "claude-code-in-action",
+   "visibility": "needs-owner-review",
+   "title": "Claude Code in Action",
+   "issuer": "Anthropic",
+   "platform": "Skilljar",
+   "kind": "course-certificate",
+   "issueDate": "2026-04-07",
+   "verifyUrl": "https://verify.skilljar.com/c/uxhd9ratxbr3",
+   "summary": "Completed the Claude Code in Action course."
+  },
+  {
+   "id": "cred-0002",
+   "slug": "google-prompting-essentials",
+   "visibility": "needs-owner-review",
+   "title": "Google Prompting Essentials",
+   "issuer": "Google",
+   "platform": "Coursera",
+   "kind": "course-certificate",
+   "issueDate": "2025-04-01",
+   "verifyUrl": "https://coursera.org/verify/FRJVK9E37OBS",
+   "summary": "Completed Google’s course on practical prompting."
+  },
+  {
+   "id": "cred-0003",
+   "slug": "prompt-engineering-chatgpt",
+   "visibility": "needs-owner-review",
+   "title": "Prompt Engineering for ChatGPT",
+   "issuer": "Vanderbilt University",
+   "platform": "Coursera",
+   "kind": "course-certificate",
+   "issueDate": "2024-01-12",
+   "verifyUrl": "https://coursera.org/verify/VQZ6YM6KZAFK",
+   "summary": "Completed the Vanderbilt University course on prompt engineering."
+  },
+  {
+   "id": "cred-0004",
+   "slug": "professional-voice",
+   "visibility": "needs-owner-review",
+   "title": "Finding Your Professional Voice: Confidence & Impact",
+   "issuer": "University of London and Royal Central School of Speech and Drama",
+   "platform": "Coursera",
+   "kind": "course-certificate",
+   "issueDate": "2023-06-24",
+   "verifyUrl": "https://coursera.org/verify/S2D5VGBNKLHE",
+   "summary": "Completed a course on professional communication and confidence."
+  },
+  {
+   "id": "cred-0005",
+   "slug": "pre-mba-statistics",
+   "visibility": "needs-owner-review",
+   "title": "Pre-MBA Statistics",
+   "issuer": "IIM Ahmedabad",
+   "platform": "Coursera",
+   "kind": "course-certificate",
+   "issueDate": "2023-08-17",
+   "verifyUrl": "https://coursera.org/verify/QB2GCAUDUPHK",
+   "summary": "Completed an introductory statistics course."
+  },
+  {
+   "id": "cred-0006",
+   "slug": "aws-foundations",
+   "visibility": "needs-owner-review",
+   "title": "AWS Academy Graduate — Cloud Foundations — Training Badge",
+   "issuer": "AWS Academy",
+   "platform": "Credly",
+   "kind": "training-badge",
+   "issueDate": "2025-09-30",
+   "hours": 20,
+   "verifyUrl": "https://www.credly.com/badges/33da683e-9f96-417b-8db8-ddd5fc2ed644",
+   "summary": "Completed AWS Academy Cloud Foundations training.",
+   "badge": "/media/certifications/aws-foundations/badge.png"
+  },
+  {
+   "id": "cred-0007",
+   "slug": "aws-architecting",
+   "visibility": "needs-owner-review",
+   "title": "AWS Academy Graduate — Cloud Architecting — Training Badge",
+   "issuer": "AWS Academy",
+   "platform": "Credly",
+   "kind": "training-badge",
+   "issueDate": "2026-04-01",
+   "hours": 60,
+   "verifyUrl": "https://www.credly.com/badges/24dbacff-4f90-43f3-83dd-163e8256b7e8",
+   "summary": "Completed AWS Academy Cloud Architecting training.",
+   "badge": "/media/certifications/aws-architecting/badge.png"
+  },
+  {
+   "id": "cred-0008",
+   "slug": "cisco-cybersecurity",
+   "visibility": "needs-owner-review",
+   "title": "Introduction to Cybersecurity",
+   "issuer": "Cisco Networking Academy",
+   "platform": "Cisco Networking Academy",
+   "kind": "course-certificate",
+   "issueDate": "2026-03-24",
+   "summary": "Completed introductory cybersecurity coursework.",
+   "badge": "/media/certifications/cisco-cybersecurity/badge.png"
+  },
+  {
+   "id": "cred-0009",
+   "slug": "python-essentials-1",
+   "visibility": "needs-owner-review",
+   "title": "Python Essentials 1",
+   "issuer": "Cisco Networking Academy and OpenEDG Python Institute",
+   "platform": "Cisco Networking Academy",
+   "kind": "statement-of-achievement",
+   "issueDate": "2026-03-24",
+   "summary": "Received a statement of achievement for Python Essentials 1.",
+   "badge": "/media/certifications/python-essentials-1/badge.png"
+  },
+  {
+   "id": "cred-0010",
+   "slug": "python-essentials-2",
+   "visibility": "needs-owner-review",
+   "title": "Python Essentials 2",
+   "issuer": "Cisco Networking Academy and OpenEDG Python Institute",
+   "platform": "Cisco Networking Academy",
+   "kind": "statement-of-achievement",
+   "issueDate": "2026-03-24",
+   "summary": "Received a statement of achievement for Python Essentials 2.",
+   "badge": "/media/certifications/python-essentials-2/badge.png"
+  },
+  {
+   "id": "cred-0011",
+   "slug": "canva-classroom",
+   "visibility": "needs-owner-review",
+   "title": "AI in the classroom",
+   "issuer": "Canva Design School",
+   "platform": "Canva",
+   "kind": "course-certificate",
+   "issueDate": "2025-03-03",
+   "hours": 1,
+   "summary": "Completed the AI in the classroom course."
+  },
+  {
+   "id": "cred-0012",
+   "slug": "apertre-3",
+   "visibility": "needs-owner-review",
+   "title": "APERTRE 3.0",
+   "issuer": "Resourcio Community",
+   "kind": "participation",
+   "summary": "Participated in APERTRE 3.0 as a mentee."
+  },
+  {
+   "id": "cred-0013",
+   "slug": "hacktoberfest-2025",
+   "visibility": "needs-owner-review",
+   "title": "Hacktoberfest 2025: Supercontributor",
+   "issuer": "Hacktoberfest",
+   "platform": "Holopin",
+   "kind": "badge",
+   "issueDate": "2025-10-10",
+   "verifyUrl": "https://www.holopin.io/hacktoberfest2025/userbadge/cmgkj3kdf002ol5045f2p5zz7",
+   "summary": "Received the Hacktoberfest 2025 Supercontributor badge."
+  },
+  {
+   "id": "cred-0014",
+   "slug": "career-essentials-genai",
+   "visibility": "needs-owner-review",
+   "title": "Career Essentials in Generative AI by Microsoft and LinkedIn",
+   "issuer": "Microsoft and LinkedIn",
+   "platform": "LinkedIn Learning",
+   "kind": "course-certificate",
+   "issueDate": "2024-05-17",
+   "hours": 4.5,
+   "verifyUrl": "https://www.linkedin.com/learning/certificates/455f960aa30c5a926e2e1db562f4d145539ddfe716c99005b7447fa12e282063",
+   "summary": "Completed the Career Essentials in Generative AI learning path."
+  },
+  {
+   "id": "cred-0015",
+   "slug": "blockchain-basics",
+   "visibility": "needs-owner-review",
+   "title": "Blockchain Basics",
+   "issuer": "Cyfrin Updraft",
+   "platform": "Cyfrin Updraft",
+   "kind": "badge",
+   "summary": "Blockchain Basics coursework listed in the source portfolio."
+  }
+ ],
+ "skills": [
+  {
+   "id": "skill-0001",
+   "slug": "amazon-bedrock",
+   "visibility": "needs-owner-review",
+   "name": "Amazon Bedrock",
+   "category": "tools",
+   "evidence": [
+    "proj-0018"
+   ]
+  },
+  {
+   "id": "skill-0002",
+   "slug": "amazon-polly",
+   "visibility": "needs-owner-review",
+   "name": "Amazon Polly",
+   "category": "tools",
+   "evidence": [
+    "proj-0018"
+   ]
+  },
+  {
+   "id": "skill-0003",
+   "slug": "amazon-textract",
+   "visibility": "needs-owner-review",
+   "name": "Amazon Textract",
+   "category": "tools",
+   "evidence": [
+    "proj-0018"
+   ]
+  },
+  {
+   "id": "skill-0004",
+   "slug": "aws-lambda",
+   "visibility": "needs-owner-review",
+   "name": "AWS Lambda",
+   "category": "tools",
+   "evidence": [
+    "proj-0018"
+   ]
+  },
+  {
+   "id": "skill-0005",
+   "slug": "azure-openai",
+   "visibility": "needs-owner-review",
+   "name": "Azure OpenAI",
+   "category": "tools",
+   "evidence": [
+    "proj-0031"
+   ]
+  },
+  {
+   "id": "skill-0006",
+   "slug": "bm25",
+   "visibility": "needs-owner-review",
+   "name": "BM25",
+   "category": "tools",
+   "evidence": [
+    "proj-0004"
+   ]
+  },
+  {
+   "id": "skill-0007",
+   "slug": "chart-js",
+   "visibility": "needs-owner-review",
+   "name": "Chart.js",
+   "category": "tools",
+   "evidence": [
+    "proj-0014"
+   ]
+  },
+  {
+   "id": "skill-0008",
+   "slug": "chrome-extensions",
+   "visibility": "needs-owner-review",
+   "name": "Chrome Extensions",
+   "category": "tools",
+   "evidence": [
+    "proj-0003"
+   ]
+  },
+  {
+   "id": "skill-0009",
+   "slug": "css",
+   "visibility": "needs-owner-review",
+   "name": "CSS",
+   "category": "language",
+   "evidence": [
+    "proj-0002",
+    "proj-0006",
+    "proj-0009",
+    "proj-0012",
+    "proj-0015",
+    "proj-0016",
+    "proj-0019",
+    "proj-0021",
+    "proj-0025",
+    "proj-0027",
+    "proj-0028",
+    "proj-0029",
+    "proj-0036",
+    "proj-0046"
+   ]
+  },
+  {
+   "id": "skill-0010",
+   "slug": "docker",
+   "visibility": "needs-owner-review",
+   "name": "Docker",
+   "category": "tools",
+   "evidence": [
+    "proj-0004",
+    "proj-0030"
+   ]
+  },
+  {
+   "id": "skill-0011",
+   "slug": "dom-apis",
+   "visibility": "needs-owner-review",
+   "name": "DOM APIs",
+   "category": "tools",
+   "evidence": [
+    "proj-0003"
+   ]
+  },
+  {
+   "id": "skill-0012",
+   "slug": "ethers-js",
+   "visibility": "needs-owner-review",
+   "name": "Ethers.js",
+   "category": "tools",
+   "evidence": [
+    "proj-0022",
+    "proj-0023",
+    "proj-0034"
+   ]
+  },
+  {
+   "id": "skill-0013",
+   "slug": "express",
+   "visibility": "needs-owner-review",
+   "name": "Express",
+   "category": "tools",
+   "evidence": [
+    "proj-0007",
+    "proj-0008",
+    "proj-0014",
+    "proj-0022",
+    "proj-0024",
+    "proj-0031"
+   ]
+  },
+  {
+   "id": "skill-0014",
+   "slug": "fastapi",
+   "visibility": "needs-owner-review",
+   "name": "FastAPI",
+   "category": "tools",
+   "evidence": [
+    "proj-0004",
+    "proj-0030"
+   ]
+  },
+  {
+   "id": "skill-0015",
+   "slug": "gemini",
+   "visibility": "needs-owner-review",
+   "name": "Gemini",
+   "category": "tools",
+   "evidence": [
+    "proj-0002",
+    "proj-0005"
+   ]
+  },
+  {
+   "id": "skill-0016",
+   "slug": "groq",
+   "visibility": "needs-owner-review",
+   "name": "Groq",
+   "category": "tools",
+   "evidence": [
+    "proj-0008"
+   ]
+  },
+  {
+   "id": "skill-0017",
+   "slug": "h2",
+   "visibility": "needs-owner-review",
+   "name": "H2",
+   "category": "tools",
+   "evidence": [
+    "proj-0011"
+   ]
+  },
+  {
+   "id": "skill-0018",
+   "slug": "hardhat",
+   "visibility": "needs-owner-review",
+   "name": "Hardhat",
+   "category": "tools",
+   "evidence": [
+    "proj-0022",
+    "proj-0023",
+    "proj-0034"
+   ]
+  },
+  {
+   "id": "skill-0019",
+   "slug": "html",
+   "visibility": "needs-owner-review",
+   "name": "HTML",
+   "category": "language",
+   "evidence": [
+    "proj-0002",
+    "proj-0006",
+    "proj-0007",
+    "proj-0009",
+    "proj-0012",
+    "proj-0015",
+    "proj-0016",
+    "proj-0017",
+    "proj-0019",
+    "proj-0020",
+    "proj-0021",
+    "proj-0025",
+    "proj-0028",
+    "proj-0029",
+    "proj-0036",
+    "proj-0043",
+    "proj-0046"
+   ]
+  },
+  {
+   "id": "skill-0020",
+   "slug": "hugging-face",
+   "visibility": "needs-owner-review",
+   "name": "Hugging Face",
+   "category": "tools",
+   "evidence": [
+    "proj-0013"
+   ]
+  },
+  {
+   "id": "skill-0021",
+   "slug": "java",
+   "visibility": "needs-owner-review",
+   "name": "Java",
+   "category": "language",
+   "evidence": [
+    "proj-0011"
+   ]
+  },
+  {
+   "id": "skill-0022",
+   "slug": "javascript",
+   "visibility": "needs-owner-review",
+   "name": "JavaScript",
+   "category": "language",
+   "evidence": [
+    "proj-0002",
+    "proj-0003",
+    "proj-0006",
+    "proj-0007",
+    "proj-0009",
+    "proj-0012",
+    "proj-0013",
+    "proj-0015",
+    "proj-0017",
+    "proj-0019",
+    "proj-0020",
+    "proj-0021",
+    "proj-0025",
+    "proj-0027",
+    "proj-0028",
+    "proj-0030",
+    "proj-0034",
+    "proj-0035",
+    "proj-0042",
+    "proj-0043",
+    "proj-0046"
+   ]
+  },
+  {
+   "id": "skill-0023",
+   "slug": "junit",
+   "visibility": "needs-owner-review",
+   "name": "JUnit",
+   "category": "tools",
+   "evidence": [
+    "proj-0011"
+   ]
+  },
+  {
+   "id": "skill-0024",
+   "slug": "leaflet",
+   "visibility": "needs-owner-review",
+   "name": "Leaflet",
+   "category": "tools",
+   "evidence": [
+    "proj-0001",
+    "proj-0005",
+    "proj-0013"
+   ]
+  },
+  {
+   "id": "skill-0025",
+   "slug": "local-storage",
+   "visibility": "needs-owner-review",
+   "name": "Local storage",
+   "category": "tools",
+   "evidence": [
+    "proj-0006",
+    "proj-0019",
+    "proj-0028"
+   ]
+  },
+  {
+   "id": "skill-0026",
+   "slug": "maven",
+   "visibility": "needs-owner-review",
+   "name": "Maven",
+   "category": "tools",
+   "evidence": [
+    "proj-0011"
+   ]
+  },
+  {
+   "id": "skill-0027",
+   "slug": "mermaid",
+   "visibility": "needs-owner-review",
+   "name": "Mermaid",
+   "category": "tools",
+   "evidence": [
+    "proj-0010"
+   ]
+  },
+  {
+   "id": "skill-0028",
+   "slug": "monaco-editor",
+   "visibility": "needs-owner-review",
+   "name": "Monaco Editor",
+   "category": "tools",
+   "evidence": [
+    "proj-0010"
+   ]
+  },
+  {
+   "id": "skill-0029",
+   "slug": "next-js",
+   "visibility": "needs-owner-review",
+   "name": "Next.js",
+   "category": "tools",
+   "evidence": [
+    "proj-0001",
+    "proj-0010",
+    "proj-0035",
+    "proj-0041"
+   ]
+  },
+  {
+   "id": "skill-0030",
+   "slug": "node-js",
+   "visibility": "needs-owner-review",
+   "name": "Node.js",
+   "category": "tools",
+   "evidence": [
+    "proj-0007",
+    "proj-0008",
+    "proj-0014",
+    "proj-0022",
+    "proj-0024",
+    "proj-0031"
+   ]
+  },
+  {
+   "id": "skill-0031",
+   "slug": "opencv",
+   "visibility": "needs-owner-review",
+   "name": "OpenCV",
+   "category": "tools",
+   "evidence": [
+    "proj-0030"
+   ]
+  },
+  {
+   "id": "skill-0032",
+   "slug": "pdf-js",
+   "visibility": "needs-owner-review",
+   "name": "PDF.js",
+   "category": "tools",
+   "evidence": [
+    "proj-0020"
+   ]
+  },
+  {
+   "id": "skill-0033",
+   "slug": "postgresql",
+   "visibility": "needs-owner-review",
+   "name": "PostgreSQL",
+   "category": "tools",
+   "evidence": [
+    "proj-0004",
+    "proj-0007",
+    "proj-0008",
+    "proj-0024",
+    "proj-0026"
+   ]
+  },
+  {
+   "id": "skill-0034",
+   "slug": "prisma",
+   "visibility": "needs-owner-review",
+   "name": "Prisma",
+   "category": "tools",
+   "evidence": [
+    "proj-0008"
+   ]
+  },
+  {
+   "id": "skill-0035",
+   "slug": "puppeteer",
+   "visibility": "needs-owner-review",
+   "name": "Puppeteer",
+   "category": "tools",
+   "evidence": [
+    "proj-0014"
+   ]
+  },
+  {
+   "id": "skill-0036",
+   "slug": "python",
+   "visibility": "needs-owner-review",
+   "name": "Python",
+   "category": "language",
+   "evidence": [
+    "proj-0001",
+    "proj-0004",
+    "proj-0030",
+    "proj-0033"
+   ]
+  },
+  {
+   "id": "skill-0037",
+   "slug": "react",
+   "visibility": "needs-owner-review",
+   "name": "React",
+   "category": "tools",
+   "evidence": [
+    "proj-0001",
+    "proj-0004",
+    "proj-0005",
+    "proj-0008",
+    "proj-0010",
+    "proj-0013",
+    "proj-0014",
+    "proj-0018",
+    "proj-0022",
+    "proj-0023",
+    "proj-0024",
+    "proj-0026",
+    "proj-0027",
+    "proj-0031",
+    "proj-0033",
+    "proj-0034",
+    "proj-0035",
+    "proj-0041",
+    "proj-0042"
+   ]
+  },
+  {
+   "id": "skill-0038",
+   "slug": "react-flow",
+   "visibility": "needs-owner-review",
+   "name": "React Flow",
+   "category": "tools",
+   "evidence": [
+    "proj-0013"
+   ]
+  },
+  {
+   "id": "skill-0039",
+   "slug": "react-router",
+   "visibility": "needs-owner-review",
+   "name": "React Router",
+   "category": "tools",
+   "evidence": [
+    "proj-0005"
+   ]
+  },
+  {
+   "id": "skill-0040",
+   "slug": "recharts",
+   "visibility": "needs-owner-review",
+   "name": "Recharts",
+   "category": "tools",
+   "evidence": [
+    "proj-0001"
+   ]
+  },
+  {
+   "id": "skill-0041",
+   "slug": "redis",
+   "visibility": "needs-owner-review",
+   "name": "Redis",
+   "category": "tools",
+   "evidence": [
+    "proj-0030"
+   ]
+  },
+  {
+   "id": "skill-0042",
+   "slug": "sentence-transformers",
+   "visibility": "needs-owner-review",
+   "name": "Sentence Transformers",
+   "category": "tools",
+   "evidence": [
+    "proj-0004"
+   ]
+  },
+  {
+   "id": "skill-0043",
+   "slug": "service-workers",
+   "visibility": "needs-owner-review",
+   "name": "Service Workers",
+   "category": "tools",
+   "evidence": [
+    "proj-0019",
+    "proj-0028"
+   ]
+  },
+  {
+   "id": "skill-0044",
+   "slug": "socket-io",
+   "visibility": "needs-owner-review",
+   "name": "Socket.IO",
+   "category": "tools",
+   "evidence": [
+    "proj-0010"
+   ]
+  },
+  {
+   "id": "skill-0045",
+   "slug": "solidity",
+   "visibility": "needs-owner-review",
+   "name": "Solidity",
+   "category": "language",
+   "evidence": [
+    "proj-0022",
+    "proj-0023"
+   ]
+  },
+  {
+   "id": "skill-0046",
+   "slug": "spring-boot",
+   "visibility": "needs-owner-review",
+   "name": "Spring Boot",
+   "category": "tools",
+   "evidence": [
+    "proj-0011"
+   ]
+  },
+  {
+   "id": "skill-0047",
+   "slug": "spring-data-jpa",
+   "visibility": "needs-owner-review",
+   "name": "Spring Data JPA",
+   "category": "tools",
+   "evidence": [
+    "proj-0011"
+   ]
+  },
+  {
+   "id": "skill-0048",
+   "slug": "sql",
+   "visibility": "needs-owner-review",
+   "name": "SQL",
+   "category": "language",
+   "evidence": [
+    "proj-0033"
+   ]
+  },
+  {
+   "id": "skill-0049",
+   "slug": "sqlite",
+   "visibility": "needs-owner-review",
+   "name": "SQLite",
+   "category": "tools",
+   "evidence": [
+    "proj-0030"
+   ]
+  },
+  {
+   "id": "skill-0050",
+   "slug": "tailwind-css",
+   "visibility": "needs-owner-review",
+   "name": "Tailwind CSS",
+   "category": "tools",
+   "evidence": [
+    "proj-0001",
+    "proj-0005",
+    "proj-0008",
+    "proj-0010",
+    "proj-0013",
+    "proj-0014",
+    "proj-0017",
+    "proj-0018",
+    "proj-0020",
+    "proj-0022",
+    "proj-0023",
+    "proj-0024",
+    "proj-0026"
+   ]
+  },
+  {
+   "id": "skill-0051",
+   "slug": "transformers-js",
+   "visibility": "needs-owner-review",
+   "name": "Transformers.js",
+   "category": "tools",
+   "evidence": [
+    "proj-0020"
+   ]
+  },
+  {
+   "id": "skill-0052",
+   "slug": "typescript",
+   "visibility": "needs-owner-review",
+   "name": "TypeScript",
+   "category": "language",
+   "evidence": [
+    "proj-0001",
+    "proj-0008",
+    "proj-0010",
+    "proj-0018",
+    "proj-0041"
+   ]
+  },
+  {
+   "id": "skill-0053",
+   "slug": "vite",
+   "visibility": "needs-owner-review",
+   "name": "Vite",
+   "category": "tools",
+   "evidence": [
+    "proj-0004",
+    "proj-0005",
+    "proj-0013",
+    "proj-0014",
+    "proj-0023",
+    "proj-0024",
+    "proj-0026",
+    "proj-0031",
+    "proj-0042"
+   ]
+  },
+  {
+   "id": "skill-0054",
+   "slug": "yolo",
+   "visibility": "needs-owner-review",
+   "name": "YOLO",
+   "category": "tools",
+   "evidence": [
+    "proj-0030"
+   ]
+  }
+ ],
+ "articles": [
+  {
+   "id": "art-0001",
+   "slug": "student-patent-guide",
+   "visibility": "needs-owner-review",
+   "title": "How Anyone Can Protect Their Big Idea: A Student Guide to Filing Patents",
+   "type": "article",
+   "category": "articles",
+   "platform": "medium",
+   "canonicalUrl": "https://medium.com/@urayushjain/how-anyone-can-protect-their-big-idea-a-student-guide-to-filing-patents-d9f6e6448571",
+   "publishedAt": "2025-08-06",
+   "summary": "A student-oriented account of preparing and filing an invention application, based on the author’s experience."
+  },
+  {
+   "id": "art-0002",
+   "slug": "presentation-blueprint",
+   "visibility": "needs-owner-review",
+   "title": "Your Idea Won’t Speak for Itself; Your Presentation Will. Build It Right.",
+   "type": "article",
+   "category": "articles",
+   "platform": "medium",
+   "canonicalUrl": "https://medium.com/@urayushjain/your-idea-wont-speak-for-itself-your-presentation-will-build-it-right-9a4d79c6b1b6",
+   "publishedAt": "2025-11-23",
+   "summary": "A practical outline for explaining a technical project through a clear hackathon presentation."
+  },
+  {
+   "id": "art-0003",
+   "slug": "hacktoberfest-student-guide",
+   "visibility": "needs-owner-review",
+   "title": "From Zero to Contributor: A Student’s Guide to Conquering Hacktoberfest",
+   "type": "article",
+   "category": "articles",
+   "platform": "medium",
+   "canonicalUrl": "https://medium.com/@urayushjain/from-zero-to-contributor-a-students-guide-to-conquering-hacktoberfest-c566a5d8fbe4",
+   "publishedAt": "2025-10-17",
+   "summary": "An introduction to finding open-source work, preparing a contribution, and responding to feedback."
+  },
+  {
+   "id": "art-0004",
+   "slug": "buildlog-series",
+   "visibility": "needs-owner-review",
+   "title": "BuildLog — Project Walkthroughs",
+   "type": "build-log",
+   "category": "builds",
+   "platform": "self",
+   "summary": "Short walkthroughs documenting interfaces, implementation choices, and lessons from a collection of software projects."
+  }
+ ],
+ "social": [
+  {
+   "id": "soc-0001",
+   "slug": "github",
+   "visibility": "needs-owner-review",
+   "platform": "github",
+   "url": "https://github.com/URAYUSHJAIN",
+   "handle": "URAYUSHJAIN"
+  },
+  {
+   "id": "soc-0002",
+   "slug": "linkedin",
+   "visibility": "needs-owner-review",
+   "platform": "linkedin",
+   "url": "https://www.linkedin.com/in/urayushjain/",
+   "handle": "urayushjain"
+  },
+  {
+   "id": "soc-0003",
+   "slug": "x",
+   "visibility": "needs-owner-review",
+   "platform": "x",
+   "url": "https://x.com/urayushjain",
+   "handle": "urayushjain"
+  }
+ ]
+}
