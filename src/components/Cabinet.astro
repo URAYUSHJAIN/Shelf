@@ -13,7 +13,8 @@ const { active = null } = Astro.props;
     <div class="cab-lights" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
     <ul class="cab-grid" role="list">
       {DRAWERS.map((d) => (
-        <li>
+        <li class="drawer-slot" data-drawer-slot={d.id}>
+          <span class="drawer-cavity" aria-hidden="true"><span></span></span>
           <a
             class="drawer"
             href={`/${d.id}/`}

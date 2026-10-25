@@ -38,16 +38,25 @@ export function gate(records, allow, env) {
 }
 
 function selftest(records) {
-  const someProject = records.projects[0];
+  // Fixtures: the real records with a project and the portrait reset to unreviewed.
+  const unreviewed = (r) => ({ ...r, visibility: 'needs-owner-review' });
+  const someProject = unreviewed(records.projects[0]);
+  const fixture = {
+    ...records,
+    projects: [someProject, ...records.projects.slice(1)],
+    identity: { ...records.identity, portrait: unreviewed(records.identity.portrait) },
+  };
+  const unresolvedPatent = records.patents.find((p) => p.status !== 'application-published');
   const cases = [
-    ['review mode env', { records: [] }, { SHELF_PREVIEW: '1' }],
-    ['unapproved record', { records: [someProject.id] }, {}],
-    ['unknown id', { records: ['proj-9999'] }, {}],
-    ['unreviewed portrait', { records: [records.identity.portrait.id] }, {}],
+    ['review mode env', fixture, { records: [] }, { SHELF_PREVIEW: '1' }],
+    ['unapproved record', fixture, { records: [someProject.id] }, {}],
+    ['unknown id', fixture, { records: ['proj-9999'] }, {}],
+    ['unreviewed portrait', fixture, { records: [fixture.identity.portrait.id] }, {}],
+    ...(unresolvedPatent ? [['unresolved patent', records, { records: [unresolvedPatent.id] }, {}]] : []),
   ];
   let ok = true;
-  for (const [name, allow, env] of cases) {
-    const errs = gate(records, allow, env);
+  for (const [name, recs, allow, env] of cases) {
+    const errs = gate(recs, allow, env);
     console.log(`${errs.length ? 'PASS' : 'FAIL'} rejects ${name}${errs.length ? ` — ${errs[0]}` : ''}`);
     if (!errs.length) ok = false;
   }

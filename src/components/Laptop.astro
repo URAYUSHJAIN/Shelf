@@ -1,0 +1,255 @@
+---
+// The desk laptop (BR-19): a CSS 3D object whose lid turns on a fixed rear
+// hinge. The screen is real HTML (links work without JS); the keyboard is
+// enhanced into working keys by src/scripts/laptop.ts.
+import Icon from './Icon.astro';
+import { DRAWERS, SURFACE_TITLES, copy, groups, patents, projects, site } from '../data/site';
+
+interface Props {
+  open?: boolean;
+}
+const { open = false } = Astro.props;
+
+const EXT = { target: '_blank', rel: 'noopener noreferrer' };
+const role = patents.length ? 'Developer & named inventor' : copy.role;
+const nav = [
+  { id: 'projects', label: 'Projects' },
+  { id: 'patents', label: 'Patents' },
+  { id: 'experience', label: 'Experience' },
+  { id: 'about', label: 'About' },
+];
+
+// Search targets: every drawer, the desk book, the pen and each project record.
+const options = [
+  ...DRAWERS.map((d) => ({ title: d.label, kind: 'Drawer', href: `/${d.id}/`, nav: d.id, record: null as string | null, search: d.label })),
+  { title: SURFACE_TITLES.writing, kind: 'Desk book', href: '/writing/', nav: 'writing', record: null, search: 'writing articles blogs notes ideas' },
+  { title: SURFACE_TITLES.contact, kind: 'Pen', href: '/contact/', nav: 'contact', record: null, search: 'contact email message write' },
+  ...projects.map((p) => ({
+    title: p.title,
+    kind: `Project · ${groups[p.group] ?? p.group}`,
+    href: `/projects/${p.slug}/`,
+    nav: 'projects',
+    record: p.slug,
+    search: `${(p.technologies ?? []).join(' ')} ${groups[p.group] ?? ''}`,
+  })),
+];
+
+// Keyboard: a 58-column grid (quarter-key units). `ch`/`sh` insert text;
+// `act` names a function key handled in laptop.ts; `code` maps physical keys.
+type Key = { ch?: string; sh?: string; act?: string; code?: string; u: number; legend?: string; label?: string; cls?: string; icon?: string };
+const chars = (list: string, shifted: string, codes: string[]): Key[] =>
+  [...list].map((ch, i) => ({ ch, sh: shifted[i], code: codes[i], u: 1 }));
+const letterCodes = (s: string) => [...s].map((c) => `Key${c.toUpperCase()}`);
+
+const rows: (Key | Key[])[][] = [
+  [
+    { act: 'esc', code: 'Escape', u: 1.75, legend: 'esc', label: 'Escape' },
+    { act: 'bright-down', u: 1.75, icon: 'sun-s', label: 'Screen brightness down' },
+    { act: 'bright-up', u: 1.75, icon: 'sun-l', label: 'Screen brightness up' },
+    { act: 'backlight-down', u: 1.75, icon: 'kb-s', label: 'Keyboard backlight down' },
+    { act: 'backlight-up', u: 1.75, icon: 'kb-l', label: 'Keyboard backlight up' },
+    { act: 'search', u: 1.75, icon: 'search', label: 'Focus the search field' },
+    { act: 'home', u: 1.75, icon: 'home', label: 'Clear the screen' },
+    { act: 'power', u: 2.25, icon: 'power', label: 'Close the laptop', cls: 'key--power' },
+  ],
+  [
+    ...chars('`1234567890-=', '~!@#$%^&*()_+', ['Backquote', ...[...'1234567890'].map((d) => `Digit${d}`), 'Minus', 'Equal']),
+    { act: 'backspace', code: 'Backspace', u: 1.5, legend: 'delete', label: 'Delete', cls: 'key--end' },
+  ],
+  [
+    { act: 'tab', u: 1.5, legend: 'tab', label: 'Tab: next result', cls: 'key--start' },
+    ...chars('qwertyuiop', 'QWERTYUIOP', letterCodes('qwertyuiop')),
+    ...chars('[]\\', '{}|', ['BracketLeft', 'BracketRight', 'Backslash']),
+  ],
+  [
+    { act: 'caps', code: 'CapsLock', u: 1.75, legend: 'caps lock', label: 'Caps lock', cls: 'key--start key--caps' },
+    ...chars('asdfghjkl', 'ASDFGHJKL', letterCodes('asdfghjkl')),
+    ...chars(";'", ':"', ['Semicolon', 'Quote']),
+    { act: 'enter', code: 'Enter NumpadEnter', u: 1.75, legend: 'return', label: 'Return', cls: 'key--end' },
+  ],
+  [
+    { act: 'shift', code: 'ShiftLeft', u: 2.25, legend: 'shift', label: 'Shift', cls: 'key--start' },
+    ...chars('zxcvbnm', 'ZXCVBNM', letterCodes('zxcvbnm')),
+    ...chars(',./', '<>?', ['Comma', 'Period', 'Slash']),
+    { act: 'shift', code: 'ShiftRight', u: 2.25, legend: 'shift', label: 'Shift', cls: 'key--end' },
+  ],
+  [
+    { act: 'fn', u: 1, legend: 'fn', label: 'Function' },
+    { act: 'ctrl', code: 'ControlLeft ControlRight', u: 1, legend: 'control', label: 'Control' },
+    { act: 'alt', code: 'AltLeft', u: 1, legend: 'option', label: 'Option' },
+    { act: 'meta', code: 'MetaLeft', u: 1.25, legend: 'command', label: 'Command' },
+    { act: 'space', code: 'Space', u: 5, legend: '', label: 'Space' },
+    { act: 'meta', code: 'MetaRight', u: 1.25, legend: 'command', label: 'Command' },
+    { act: 'alt', code: 'AltRight', u: 1, legend: 'option', label: 'Option' },
+    { act: 'left', code: 'ArrowLeft', u: 1, legend: '◀', label: 'Left arrow', cls: 'key--half' },
+    [
+      { act: 'up', code: 'ArrowUp', u: 1, legend: '▲', label: 'Up arrow: previous result' },
+      { act: 'down', code: 'ArrowDown', u: 1, legend: '▼', label: 'Down arrow: next result' },
+    ],
+    { act: 'right', code: 'ArrowRight', u: 1, legend: '▶', label: 'Right arrow', cls: 'key--half' },
+  ],
+];
+
+const ICONS: Record<string, string> = {
+  'sun-s': '<circle cx="12" cy="12" r="3.2"/><path d="M12 5v1.6M12 17.4V19M5 12h1.6M17.4 12H19M7.1 7.1l1.1 1.1M15.8 15.8l1.1 1.1M7.1 16.9l1.1-1.1M15.8 8.2l1.1-1.1"/>',
+  'sun-l': '<circle cx="12" cy="12" r="4"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/>',
+  'kb-s': '<rect x="4" y="13" width="16" height="6" rx="1.5"/><path d="M12 7v3M8.5 9l1 1.5M15.5 9l-1 1.5"/>',
+  'kb-l': '<rect x="4" y="13" width="16" height="6" rx="1.5"/><path d="M12 4v5M7 6l1.8 2.6M17 6l-1.8 2.6M4 9.5l2.2 1.4M20 9.5l-2.2 1.4"/>',
+  search: '<circle cx="10.5" cy="10.5" r="5.5"/><path d="m15 15 5 5"/>',
+  home: '<path d="M4 11.5 12 5l8 6.5"/><path d="M6.5 10v9h11v-9"/>',
+  power: '<path d="M12 4v8"/><path d="M7.2 7.4a7 7 0 1 0 9.6 0"/>',
+};
+const keyLegend = (k: Key) => {
+  if (k.icon) return `<svg viewBox="0 0 24 24" aria-hidden="true">${ICONS[k.icon]}</svg>`;
+  if (k.legend !== undefined) return `<b>${k.legend}</b>`;
+  if (k.ch && /[a-z]/.test(k.ch)) return `<b>${k.ch.toUpperCase()}</b>`;
+  return `<small>${k.sh === '&' ? '&amp;' : k.sh === '<' ? '&lt;' : k.sh === '>' ? '&gt;' : k.sh === '"' ? '&quot;' : k.sh}</small><b>${k.ch}</b>`;
+};
+const attrs = (k: Key, row: number) => ({
+  class: ['key', k.cls].filter(Boolean).join(' '),
+  style: `--span:${k.u * 4}`,
+  'data-row': row,
+  'data-ch': k.ch,
+  'data-sh': k.sh,
+  'data-act': k.act,
+  'data-code': k.code,
+  'data-label': k.label ?? (k.ch && /[a-z]/.test(k.ch) ? k.ch.toUpperCase() : k.ch),
+});
+---
+<div class:list={['obj laptop', { 'is-open': open }]} data-laptop data-screen="portfolio" data-lid={open ? 'open' : 'closed'} aria-labelledby={open ? 'laptop-title' : undefined}>
+  <a class="laptop__trigger" href="/laptop/" data-nav="laptop" aria-label="Open laptop: portfolio home, search and original portfolio" aria-current={open ? 'true' : undefined}></a>
+
+  <div class="lt-frame">
+    <div class="lt">
+      <div class="lt-shadow" aria-hidden="true"></div>
+      <div class="lt-base">
+        <div class="lt-side lt-side--l" aria-hidden="true"><i></i><i></i><i class="lt-port--mag"></i></div>
+        <div class="lt-side lt-side--r" aria-hidden="true"><i class="lt-port--jack"></i><i></i></div>
+        <div class="lt-front" aria-hidden="true"></div>
+        <div class="lt-hinge" aria-hidden="true"></div>
+        <div class="lt-deck">
+          <span class="lt-grille lt-grille--l" aria-hidden="true"></span>
+          <span class="lt-grille lt-grille--r" aria-hidden="true"></span>
+          <div class="lt-keys" data-keys aria-hidden="true">
+            {rows.map((row, r) =>
+              row.map((k) =>
+                Array.isArray(k) ? (
+                  <span class="key-stack" style={`--span:${k[0].u * 4}`}>
+                    {k.map((s) => <span {...attrs(s, r)} set:html={keyLegend(s)} />)}
+                  </span>
+                ) : (
+                  <span {...attrs(k, r)} set:html={keyLegend(k)} />
+                ),
+              ),
+            )}
+          </div>
+          <div class="lt-trackpad" data-trackpad aria-hidden="true"></div>
+          <span class="lt-spill" aria-hidden="true"></span>
+        </div>
+      </div>
+
+      <div class="lt-lid">
+        <div class="lt-outer" aria-hidden="true">
+          <svg class="lt-logo" viewBox="0 0 40 40"><path d="M20 2c1.6 10 7.4 16.4 18 18-10.6 1.6-16.4 8-18 18-1.6-10-7.4-16.4-18-18C12.6 18.4 18.4 12 20 2z" /></svg>
+        </div>
+        <div class="lt-edge lt-edge--top" aria-hidden="true"></div>
+        <div class="lt-edge lt-edge--l" aria-hidden="true"></div>
+        <div class="lt-edge lt-edge--r" aria-hidden="true"></div>
+        <div class="lt-inner">
+          <div class="lt-bezel">
+            <span class="lt-cam" aria-hidden="true"><i></i></span>
+            <div class="lt-display">
+              <div class="lt-portfolio-screen" inert={!open}>
+                <div class="lt-portfolio-canvas">
+                  <iframe
+                    class="lt-portfolio-frame"
+                    src={open ? site.originalPortfolio : undefined}
+                    data-src={site.originalPortfolio}
+                    title="Ayush Jain's live portfolio"
+                    tabindex="0"
+                    referrerpolicy="no-referrer"
+                    sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-downloads"
+                  ></iframe>
+                </div>
+                <div class="lt-portfolio-tools">
+                  <h2 id="laptop-title" tabindex="-1">Portfolio</h2>
+                  <button class="needs-js" type="button" data-screen-search>Search shelf</button>
+                <a
+                  class="lt-portfolio-fallback"
+                  href={site.originalPortfolio}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  data-portfolio-fallback
+                >
+                  Open in tab <Icon name="external" size={12} />
+                </a>
+                  <a href="/" data-nav="home" aria-label="Close the laptop">Close</a>
+                </div>
+              </div>
+              <div class="lt-ui" data-laptop-ui inert>
+                <header class="lt-bar">
+                  <button type="button" data-screen-portfolio>Portfolio</button>
+                  <nav class="lt-nav" aria-label="Laptop screen">
+                    {nav.map((n) => <a href={`/${n.id}/`} data-nav={n.id}>{n.label}</a>)}
+                  </nav>
+                  <a class="lt-close" href="/" data-nav="home" aria-label="Close the laptop"><Icon name="close" size={14} /><span aria-hidden="true">Close</span></a>
+                </header>
+                <div class="lt-main">
+                  <section class="lt-hero" aria-labelledby="lt-search-title">
+                    <h2 class="lt-title" id="lt-search-title" tabindex="-1">Hi, I’m Ayush Jain</h2>
+                    <p class="lt-role">{role}</p>
+                    <p class="lt-text">{copy.statement}</p>
+                    <div class="lt-actions">
+                      <a class="lt-btn lt-btn--solid" href="/projects/" data-nav="projects">View projects</a>
+                      {site.resumeUrl && <a class="lt-btn" href={site.resumeUrl} {...EXT}>Résumé (PDF)<span class="sr-only"> (opens in a new tab)</span></a>}
+                      <a class="lt-btn" href={site.originalPortfolio} {...EXT}>Original portfolio <Icon name="external" size={12} /><span class="sr-only"> (opens in a new tab)</span></a>
+                      <a class="lt-btn" href={`mailto:${site.email}`}>Email</a>
+                    </div>
+                  </section>
+                  <form class="lt-console" action="/projects/" method="get" role="search" data-laptop-search>
+                    <label class="lt-label" for="lt-q">Search the shelf</label>
+                    <div class="lt-field">
+                      <span class="lt-prompt" aria-hidden="true">›</span>
+                      <input
+                        id="lt-q"
+                        name="q"
+                        type="text"
+                        autocomplete="off"
+                        autocapitalize="off"
+                        spellcheck="false"
+                        enterkeyhint="go"
+                        placeholder="Type a project, tool or drawer"
+                        role="combobox"
+                        aria-autocomplete="list"
+                        aria-expanded="false"
+                        aria-controls="lt-results"
+                        aria-describedby="lt-hint"
+                        data-laptop-input
+                      />
+                    </div>
+                    <ul class="lt-results" id="lt-results" role="listbox" aria-label="Matches" hidden data-laptop-results>
+                      {options.map((o, i) => (
+                        <li id={`lt-opt-${i}`} role="option" aria-selected="false" hidden data-href={o.href} data-nav={o.nav} data-record={o.record} data-title={o.title.toLowerCase()} data-search={o.search.toLowerCase()}>
+                          <span class="lt-opt__title">{o.title}</span>
+                          <span class="lt-opt__kind">{o.kind}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <p class="lt-empty" hidden data-laptop-empty>No drawer or project matches that.</p>
+                    <p class="lt-hint" id="lt-hint" data-laptop-hint>Type on your keyboard or the laptop’s. Up and down choose a match, return opens it, esc clears.</p>
+                  </form>
+                </div>
+                <p class="lt-hud" aria-hidden="true" data-laptop-hud></p>
+                <p class="sr-only" role="status" aria-live="polite" data-laptop-status></p>
+              </div>
+              <span class="lt-dim" aria-hidden="true"></span>
+              <span class="lt-glass" aria-hidden="true"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <a class="laptop__close" href="/" data-nav="home">Close laptop</a>
+</div>

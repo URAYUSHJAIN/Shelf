@@ -1,43 +1,42 @@
 ---
-import Icon from './Icon.astro';
-import { leafPath, ribPath, vine } from './art';
-import { social, site, featured } from '../data/site';
+import Laptop from './Laptop.astro';
+import { slimLeaf, vine, type Vine } from './art';
+import { site, featured } from '../data/site';
 
 interface Props {
   active?: string | null;
 }
 const { active = null } = Astro.props;
 
-const SOCIAL_ICON: Record<string, string> = { github: 'github', linkedin: 'linkedin', x: 'x' };
-const SOCIAL_NAME: Record<string, string> = { github: 'GitHub', linkedin: 'LinkedIn', x: 'X' };
-const links = [
-  ...social.map((s) => ({ href: s.url, icon: SOCIAL_ICON[s.platform] ?? 'external', label: `${SOCIAL_NAME[s.platform] ?? s.platform} (opens in a new tab)`, external: true })),
-  { href: `mailto:${site.email}`, icon: 'mail', label: `Email Ayush Jain at ${site.email}`, external: false },
+// CodePen wvQYGay's three arching stems and slim petals, adapted to this
+// physical desk and the existing finite, reduced-motion-safe sway.
+const deskSprigs = [
+  vine([96, 118], [57, 64], [39, 33], 5, 22, 44, 0.22),
+  vine([101, 119], [93, 53], [106, 8], 7, 24, 42, 0.2),
+  vine([104, 119], [147, 48], [177, 44], 6, 22, 46, 0.2),
+  vine([96, 120], [57, 86], [6, 106], 5, 19, 45, 0.25),
+  vine([108, 120], [130, 80], [148, 94], 5, 20, 46, 0.2),
 ];
-
-// Small desk plant (plant-local coordinates).
-const deskVines = [
-  vine([92, 118], [66, 74], [30, 52], 4, 34, 58, 0.15),
-  vine([98, 116], [100, 50], [128, 8], 4, 34, 50, 0.15),
-  vine([104, 118], [150, 80], [178, 70], 3, 32, 58, 0.1),
-];
+const sprigMarkup = (sprig: Vine, index: number) => {
+  const stem = `<path d="${sprig.d}" fill="none" stroke="#32472a" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="${sprig.d}" fill="none" stroke="#819558" stroke-opacity=".6" stroke-width=".65" stroke-linecap="round" transform="translate(-.6 -.5)"/>`;
+  return stem + sprig.leaves.map((leaf, i) => {
+    const shape = slimLeaf(leaf.s);
+    const fill = (index + i) % 2 ? 'url(#leafA)' : 'url(#leafB)';
+    const width = (0.87 + 0.12 * Math.sin(index * 2 + i * 1.7)).toFixed(2);
+    return `<path d="M${leaf.px} ${leaf.py}L${leaf.x} ${leaf.y}" stroke="#5c743f" stroke-width="1.2" stroke-linecap="round"/>
+      <g transform="translate(${leaf.x} ${leaf.y}) rotate(${leaf.a}) scale(${width} 1)" filter="url(#leafShadow)">
+        <path d="${shape}" fill="${fill}" stroke="#324b2e" stroke-width=".65"/>
+        <path d="M0 -2Q1 ${(-leaf.s * .52).toFixed(1)} 0 ${(-leaf.s * .84).toFixed(1)}" fill="none" stroke="#c5cf95" stroke-opacity=".45" stroke-width=".65"/>
+      </g>`;
+  }).join('');
+};
 
 // Sticky note: owner-supplied current items (D-12) or verified featured projects.
 const noteItems = site.currentlyBuilding
   ? site.currentlyBuilding.map((t) => ({ label: t, href: null as string | null, slug: null as string | null }))
   : featured.slice(0, 3).map((p) => ({ label: p.title, href: `/projects/${p.slug}/`, slug: p.slug }));
 const noteTitle = site.currentlyBuilding ? 'Currently Building:' : 'Pinned builds:';
-
-// Rubik's cube faces: a fixed scramble so turning reveals different colours.
-const C = { r: '#d63a2a', o: '#f08a24', y: '#f4d02a', g: '#3e9f4a', b: '#2f6fd0', w: '#f5f1e6' };
-const faces: Record<string, string> = {
-  front: 'rroyrrorr',
-  right: 'bbwbwbbyb',
-  top: 'yygyyoygy',
-  back: 'ggwgbgogg',
-  left: 'oorowrooy',
-  bottom: 'wwrwwbwgw',
-};
 ---
 <div class="g-note" hidden={noteItems.length === 0}>
   <div class="note">
@@ -59,104 +58,35 @@ const faces: Record<string, string> = {
 </div>
 
 <div class="g-desk">
-  <svg class="obj desk-books" viewBox="0 0 204 62" aria-hidden="true">
-    <path d="M6 34h188l6 6v16l-4 4H8l-4-4V40z" fill="#a8744a" stroke="var(--ink)" stroke-width="2.2" stroke-linejoin="round" />
-    <path d="M10 38h182v9H10z" fill="#f2e3c7" stroke="var(--ink)" stroke-width="1.5" />
-    <path d="M24 8h150l5 5v15l-4 4H26l-4-4V13z" fill="#6f4426" stroke="var(--ink)" stroke-width="2.2" stroke-linejoin="round" />
-    <path d="M27 12h146v8H27z" fill="#efdfc1" stroke="var(--ink)" stroke-width="1.5" />
-  </svg>
-
   <svg class="obj desk-plant" viewBox="0 0 186 176" aria-hidden="true" data-sway>
     <g class="sway sway--a">
-      {deskVines.map((v) => (
-        <g>
-          <path d={v.d} fill="none" stroke="#4d6b2a" stroke-width="2" />
-          {v.leaves.map((l, i) => (
-            <g transform={`translate(${l.x} ${l.y}) rotate(${l.a})`}>
-              <path d={leafPath(l.s)} fill={i % 2 ? 'url(#leafA)' : 'url(#leafB)'} stroke="#2c4716" stroke-width="1.7" />
-              <path d={ribPath(l.s)} stroke="#3e6b20" stroke-width="1.1" fill="none" />
-            </g>
-          ))}
-        </g>
-      ))}
-      <g transform="translate(96 114) rotate(-8)"><path d={leafPath(40)} fill="url(#leafB)" stroke="#2c4716" stroke-width="1.7" /><path d={ribPath(40)} stroke="#3e6b20" stroke-width="1.1" fill="none" /></g>
+      {deskSprigs.slice(0, 2).map((sprig, i) => <g><Fragment set:html={sprigMarkup(sprig, i)} /></g>)}
     </g>
-    <path d="M68 124h64l-6 44q-1 6-7 6H81q-6 0-7-6z" fill="url(#pot)" stroke="var(--ink)" stroke-width="2.4" stroke-linejoin="round" />
-    <rect x="63" y="112" width="74" height="15" rx="4" fill="#fbf6ec" stroke="var(--ink)" stroke-width="2.4" />
+    <g class="sway sway--b">
+      {deskSprigs.slice(2).map((sprig, i) => <g><Fragment set:html={sprigMarkup(sprig, i + 2)} /></g>)}
+    </g>
+    <ellipse cx="100" cy="176" rx="46" ry="5" fill="#3a1d08" opacity=".4" />
+    <ellipse cx="100" cy="172" rx="29" ry="5" fill="#6c5a42" />
+    <path d="M68 124h64l-6 44q-1 6-7 6H81q-6 0-7-6z" fill="url(#pot)" stroke="#7c6a51" stroke-width="1.2" stroke-linejoin="round" />
+    <path d="M68 124h64l-6 44q-1 6-7 6H81q-6 0-7-6z" fill="url(#ceramicSpeckle)" />
+    <path d="M76 130l4 36" stroke="#fff" stroke-opacity=".5" stroke-width="3" stroke-linecap="round" />
+    <path d="M63 116v8c0 8 74 8 74 0v-8" fill="url(#pot)" stroke="#8c795d" stroke-width="1.1" />
+    <ellipse cx="100" cy="116" rx="37" ry="7" fill="url(#pot)" stroke="#e9dfcb" stroke-width="1.2" />
+    <ellipse cx="100" cy="116" rx="33" ry="4" fill="#3a2210" />
+    <ellipse cx="94" cy="115" rx="18" ry="2" fill="#5c3a1c" opacity=".8" />
   </svg>
 
-  <ul class="socials" role="list" aria-label="Profiles and email">
-    {links.map((l) => (
-      <li>
-        <a class="social" href={l.href} aria-label={l.label} target={l.external ? '_blank' : undefined} rel={l.external ? 'noopener noreferrer me' : undefined}>
-          <Icon name={l.icon} size={26} />
-        </a>
-      </li>
-    ))}
-  </ul>
-
-  <a class="obj open-book" href="/writing/" data-nav="writing" aria-label="Open book: writing, notes and albums" aria-current={active === 'writing' ? 'true' : undefined}>
-    <svg viewBox="0 0 405 160" aria-hidden="true">
-      <ellipse cx="205" cy="148" rx="196" ry="12" fill="#6b4320" opacity=".18" />
-      <path d="M10 44 200 26 394 16 402 132 206 152 4 154Z" fill="#8f5d34" stroke="var(--ink)" stroke-width="2.4" stroke-linejoin="round" />
-      <path d="M200 32C150 16 74 22 24 40L16 142C72 128 150 128 203 148Z" fill="#fbf3e2" stroke="var(--ink)" stroke-width="2.2" stroke-linejoin="round" />
-      <path d="M200 32C252 12 334 8 388 20L396 124C340 114 260 120 203 148Z" fill="#fdf6e8" stroke="var(--ink)" stroke-width="2.2" stroke-linejoin="round" />
-      <path d="M20 46 13 146M24 44 17 144" stroke="#c9b08c" stroke-width="1.2" />
-      <path d="M392 24 400 126M388 22 396 124" stroke="#c9b08c" stroke-width="1.2" />
-      <path d="M200 32C201 70 202 110 203 148" stroke="#b49a76" stroke-width="1.6" fill="none" />
-      <g stroke="var(--ink)" stroke-width="1.7" fill="none" stroke-linecap="round">
-        <path d="M70 58a13 13 0 1 1 18 12v8h-12v-8a13 13 0 0 1-6-12z" />
-        <path d="M76 84h12M58 46l-6-5M79 36v-7M100 46l6-5M52 62h-7M104 62h8" />
-        <path d="M120 54h58M120 66h50M120 78h56M42 100h120M42 112h96" stroke="#8c7558" />
-        <path d="M232 60h56M232 72h44M232 84h52M232 104h40" stroke="#8c7558" />
-        <path d="M302 104V58M302 104h66" />
-        <path d="M312 104V90h9v14M328 104V80h9v24M344 104V70h9v34M360 104V62h8v42" />
-        <path d="M262 118h20M272 110v16" />
-      </g>
-      <path d="M198 146l3 14 5-6 5 6-1-15z" fill="#d9822b" stroke="var(--ink)" stroke-width="1.6" stroke-linejoin="round" />
-    </svg>
-  </a>
-
-  <div class="obj cube-wrap" data-control="cube" aria-label="Rubik’s cube: turn it">
-    <div class="cube" data-cube>
-      {Object.entries(faces).map(([face, s]) => (
-        <div class:list={['cube__face', `cube__face--${face}`]}>
-          {[...s].map((c) => <span style={`background:${C[c as keyof typeof C]}`}></span>)}
-        </div>
-      ))}
-    </div>
-  </div>
-
-  <a class:list={['obj laptop', { 'is-open': active === 'laptop' }]} href="/laptop/" data-nav="laptop" aria-label={site.resumeUrl ? 'Laptop: original portfolio and résumé' : 'Laptop: original portfolio and contact'} aria-current={active === 'laptop' ? 'true' : undefined}>
-    <span class="laptop__screen" aria-hidden="true">
-      <span class="laptop__display">
-        <b>THE SHELF.</b>
-        <span>Original portfolio</span>
-        <span>{site.resumeUrl ? 'Résumé' : 'Contact'}</span>
-      </span>
+  <!-- Closed leather notebook with an elastic band; it opens My Writings. -->
+  <a class="obj notebook" href="/writing/" data-nav="writing" aria-label="Notebook: open My Writings" aria-current={active === 'writing' ? 'true' : undefined}>
+    <span class="notebook__body" aria-hidden="true">
+      <span class="notebook__band"></span>
+      <span class="notebook__ribbon"></span>
     </span>
-    <svg class="laptop__deck" viewBox="0 0 468 120" aria-hidden="true">
-      <ellipse cx="234" cy="112" rx="232" ry="9" fill="#5a3a1c" opacity=".22" />
-      <path d="M6 98h456l-4 12q-2 5-10 5H20q-8 0-10-5z" fill="#8f9298" stroke="var(--ink)" stroke-width="2.2" stroke-linejoin="round" />
-      <path d="M44 10h380q8 0 10 6l28 80q2 8-6 8H12q-8 0-6-8l28-80q2-6 10-6z" fill="url(#alu)" stroke="var(--ink)" stroke-width="2.4" stroke-linejoin="round" />
-      <path d="M204 104h60l-3 4h-54z" fill="#6c6f75" />
-      <g fill="#2c2d31">
-        {Array.from({ length: 4 }, (_, row) =>
-          Array.from({ length: 13 }, (_, k) => (
-            <rect x={78 + k * 24 - row * 4 + (row === 0 ? 0 : 0)} y={20 + row * 13} width="19" height="9" rx="2" transform={`translate(${row * 3} 0)`} />
-          )),
-        )}
-        <rect x="150" y="72" width="170" height="8" rx="2" />
-      </g>
-      <rect x="190" y="84" width="88" height="14" rx="3" fill="#c3c5ca" stroke="#8f9298" />
-    </svg>
-    <svg class="laptop__lid" viewBox="0 0 468 120" aria-hidden="true">
-      <path d="M46 8h376q8 0 10 6l27 78q2 8-6 8H15q-8 0-6-8l27-78q2-6 10-6z" fill="url(#alu)" stroke="var(--ink)" stroke-width="2.4" stroke-linejoin="round" />
-      <path d="M60 18 120 18 66 92 24 92z" fill="#fff" opacity=".22" />
-      <ellipse cx="234" cy="54" rx="12" ry="9" fill="none" stroke="#9fa2a8" stroke-width="2" />
-    </svg>
   </a>
 
+  <Laptop open={active === 'laptop'} />
+
+  <!-- The contact pen rests on the notebook. -->
   <a class="obj pen" href="/contact/" data-nav="contact" aria-label="Pen: write a message to Ayush" aria-current={active === 'contact' ? 'true' : undefined}>
     <svg viewBox="0 0 196 70" aria-hidden="true">
       <ellipse cx="100" cy="60" rx="84" ry="5" fill="#5a3a1c" opacity=".2" transform="rotate(14 100 60)" />
@@ -181,22 +111,101 @@ const faces: Record<string, string> = {
     </g>
   </svg>
 
+  <!-- Original desk object, inspired by the reference's form; no model or thumbnail is reused. -->
+  <svg class="obj speaker" viewBox="0 0 260 184" aria-hidden="true">
+    <defs>
+      <linearGradient id="speakerLeather" x1="0" y1="0" x2="1" y2=".85">
+        <stop stop-color="#45413b" /><stop offset=".13" stop-color="#272927" />
+        <stop offset=".64" stop-color="#1b1d1c" /><stop offset="1" stop-color="#0e1010" />
+      </linearGradient>
+      <linearGradient id="speakerSide" x1="0" y1="0" x2="1" y2=".4">
+        <stop stop-color="#292a28" /><stop offset=".25" stop-color="#333230" />
+        <stop offset=".68" stop-color="#202120" /><stop offset="1" stop-color="#121413" />
+      </linearGradient>
+      <linearGradient id="speakerGrille" x1="0" y1="0" x2="0" y2="1">
+        <stop stop-color="#464a47" /><stop offset=".52" stop-color="#323734" /><stop offset="1" stop-color="#202522" />
+      </linearGradient>
+      <linearGradient id="speakerTrim" x1="0" y1="0" x2="0" y2="1">
+        <stop stop-color="#a28b6b" /><stop offset=".18" stop-color="#6d5b45" />
+        <stop offset=".76" stop-color="#5d4a39" /><stop offset="1" stop-color="#332b24" />
+      </linearGradient>
+      <radialGradient id="speakerFaceShade" cx=".4" cy=".3" r=".85">
+        <stop stop-color="#d6d3c0" stop-opacity=".13" /><stop offset=".7" stop-color="#111715" stop-opacity="0" /><stop offset="1" stop-color="#050807" stop-opacity=".48" />
+      </radialGradient>
+      <pattern id="speakerWeave" width="7" height="6" patternUnits="userSpaceOnUse">
+        <path d="M0 1.5h4M3.5 4.5H7" stroke="#aaa99b" stroke-opacity=".57" stroke-width="1.2" stroke-linecap="round" />
+        <path d="M0 2.5h4M3.5 5.5H7" stroke="#0e1412" stroke-opacity=".82" stroke-width=".7" />
+        <path d="M1 0v1M5 3v1" stroke="#66706a" stroke-opacity=".48" stroke-width=".6" />
+      </pattern>
+      <pattern id="speakerGrain" width="17" height="14" patternUnits="userSpaceOnUse">
+        <circle cx="3" cy="4" r=".45" fill="#b9b1a0" opacity=".17" />
+        <circle cx="11" cy="9" r=".4" fill="#8b8376" opacity=".13" />
+        <path d="M5 11h2M13 2h1" stroke="#c6bca9" stroke-opacity=".1" stroke-width=".5" />
+      </pattern>
+      <clipPath id="speakerGrilleClip"><path d="M36 36Q87 32 206 39L210 144Q130 135 39 132Z" /></clipPath>
+      <filter id="speakerContact" x="-25%" y="-100%" width="150%" height="300%"><feGaussianBlur stdDeviation="5" /></filter>
+    </defs>
+    <!-- The low contact shadow and two feet locate the cabinet on the desk. -->
+    <ellipse cx="129" cy="173" rx="113" ry="8" fill="#201710" opacity=".39" filter="url(#speakerContact)" />
+    <ellipse cx="132" cy="170" rx="92" ry="3.5" fill="#352418" opacity=".23" />
+    <path d="M45 156h16v10q-8 4-15 0zM207 163h18v9q-9 4-16 0z" fill="#101211" />
+    <path d="M48 164h11M210 170h14" stroke="#6b665d" stroke-width="1" opacity=".65" />
+    <!-- Rounded upholstered shell, with its right side receding from the grille. -->
+    <path d="M207 17Q242 17 248 30Q253 41 253 58L250 145Q249 166 220 169L205 150Z" fill="url(#speakerSide)" stroke="#171918" stroke-width="1.5" />
+    <path d="M212 19Q241 21 245 38L244 145Q243 157 231 163" fill="none" stroke="#928e80" stroke-width="1.2" opacity=".23" />
+    <path d="M29 18Q44 10 203 16Q221 17 226 32L228 149Q227 167 214 168Q126 154 35 153Q25 152 23 140L21 40Q20 23 29 18Z" fill="url(#speakerLeather)" stroke="#0d100f" stroke-width="1.7" />
+    <path d="M29 18Q44 10 203 16Q221 17 226 32L228 149Q227 167 214 168Q126 154 35 153Q25 152 23 140L21 40Q20 23 29 18Z" fill="url(#speakerGrain)" />
+    <path d="M31 22Q89 17 204 21" fill="none" stroke="#a8a293" stroke-width="1.3" opacity=".38" />
+    <path d="M27 36Q26 23 33 21M25 46l2 85Q27 145 35 148" fill="none" stroke="#b0a99c" stroke-width="1" opacity=".23" />
+    <!-- Fine woven speaker fabric sits inside the thick soft surround. -->
+    <path d="M33 31Q90 25 211 34L215 149Q122 137 36 136Z" fill="#101412" stroke="#77756e" stroke-width="1" />
+    <g clip-path="url(#speakerGrilleClip)">
+      <path d="M33 33h180v115H33z" fill="url(#speakerGrille)" />
+      <path d="M33 33h180v115H33z" fill="url(#speakerWeave)" />
+      <path d="M33 33h180v115H33z" fill="url(#speakerFaceShade)" />
+      <path d="M37 45Q42 90 39 128" fill="none" stroke="#f2edd6" stroke-width="1.4" opacity=".12" />
+    </g>
+    <path d="M36 134Q130 139 212 147L211 159Q120 146 37 146Z" fill="url(#speakerTrim)" stroke="#1b1b18" stroke-width="1" />
+    <path d="M39 136Q122 141 208 148" fill="none" stroke="#d4bc91" opacity=".43" stroke-width=".8" />
+    <path d="M40 143Q135 150 209 157" fill="none" stroke="#332a22" opacity=".54" stroke-width=".8" />
+    <path d="M31 23Q28 26 28 36L30 138Q30 146 37 149M211 31Q222 32 222 43L223 148Q223 157 216 161" fill="none" stroke="#67665f" opacity=".34" stroke-width="2.3" />
+    <!-- Four shallow metal controls are visible on top; they are decorative. -->
+    {[80, 106, 132, 164].map((x, i) => (
+      <g>
+        <ellipse cx={x} cy={i === 3 ? 12 : 11} rx={i === 3 ? 4 : 8} ry="2.5" fill="#171818" />
+        <path d={i === 3 ? `M${x-3} 10v-4q3-2 6 0v4` : `M${x-7} 10V6q7-3 14 0v4`} fill="url(#brass)" stroke="#302d27" stroke-width=".7" />
+        <path d={`M${x-5} 6h10`} stroke="#f2dfb8" stroke-width=".7" opacity=".7" />
+      </g>
+    ))}
+    <path d="M244 117l1 19" stroke="#65635a" stroke-width=".8" opacity=".55" />
+    <rect x="242" y="125" width="3" height="9" rx="1.5" fill="#0e100f" />
+  </svg>
+
   <svg class="obj mug" viewBox="0 0 146 134" aria-hidden="true" data-steam>
-    <ellipse cx="66" cy="128" rx="60" ry="5" fill="#5a3a1c" opacity=".2" />
-    <path d="M112 44c34-4 34 58 0 56" fill="none" stroke="var(--ink)" stroke-width="12" stroke-linecap="round" />
-    <path d="M112 44c34-4 34 58 0 56" fill="none" stroke="#f7efe0" stroke-width="7" stroke-linecap="round" />
-    <path d="M10 24v88q0 16 20 16h62q20 0 20-16V24" fill="url(#mug)" stroke="var(--ink)" stroke-width="2.4" stroke-linejoin="round" />
-    <ellipse cx="61" cy="24" rx="51" ry="11" fill="#f9f3e7" stroke="var(--ink)" stroke-width="2.4" />
-    <ellipse cx="61" cy="26" rx="43" ry="7.5" fill="#4b2a15" />
+    <defs>
+      <radialGradient id="coffeeSurface" cx=".4" cy=".22" r=".8"><stop stop-color="#886145" /><stop offset=".4" stop-color="#503623" /><stop offset="1" stop-color="#261c14" /></radialGradient>
+      <linearGradient id="mugHandle" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff4df" /><stop offset=".4" stop-color="#e3d6bc" /><stop offset=".72" stop-color="#a49073" /><stop offset="1" stop-color="#e9dbc1" /></linearGradient>
+    </defs>
+    <ellipse cx="64" cy="124" rx="72" ry="14" fill="url(#cork)" stroke="#6b4422" stroke-width="2" />
+    <ellipse cx="64" cy="122" rx="64" ry="10" fill="none" stroke="#a87a44" stroke-width="1" stroke-dasharray="2 3" />
+    <ellipse cx="66" cy="124" rx="56" ry="6" fill="#3a1d08" opacity=".3" />
+    <path d="M109 43c35-5 36 60 0 57" fill="none" stroke="#73614b" stroke-width="12" stroke-linecap="round" />
+    <path d="M109 43c35-5 36 60 0 57" fill="none" stroke="url(#mugHandle)" stroke-width="9" stroke-linecap="round" />
+    <path d="M116 45c18 1 22 29 11 43" fill="none" stroke="#fff9eb" stroke-width="1.5" stroke-linecap="round" opacity=".7" />
+    <path d="M10 24l3 85q0 18 20 19h56q20-1 20-19l3-85" fill="url(#mug)" stroke="#89765d" stroke-width="1.4" stroke-linejoin="round" />
+    <path d="M10 24l3 85q0 18 20 19h56q20-1 20-19l3-85" fill="url(#ceramicSpeckle)" />
+    <path d="M19 39l2 67q1 9 7 11" fill="none" stroke="#fffaf0" stroke-width="3" stroke-linecap="round" opacity=".46" />
+    <path d="M26 121q35 10 70-1" fill="none" stroke="#95836b" stroke-width="1.3" opacity=".6" />
+    <ellipse cx="61" cy="24" rx="51" ry="11" fill="url(#mugHandle)" stroke="#97846b" stroke-width="1.2" />
+    <ellipse cx="61" cy="24.5" rx="45" ry="8" fill="#847056" />
+    <ellipse cx="61" cy="26" rx="43" ry="6.3" fill="url(#coffeeSurface)" />
+    <path d="M21 25Q58 13 101 25" fill="none" stroke="#c3a579" stroke-width=".8" opacity=".7" />
+    <path d="M30 24q13-3 22-2" fill="none" stroke="#e6ce9c" stroke-width="1.3" stroke-linecap="round" opacity=".46" />
+    <path d="M12 25q49 20 98 0" fill="none" stroke="#fff9eb" stroke-width="2" />
     <g font-family="Georgia, 'Times New Roman', serif" font-weight="700" font-size="14.5" fill="var(--ink)" text-anchor="middle" letter-spacing=".6">
       <text x="60" y="62">MAKE •</text>
       <text x="60" y="81">LEARN •</text>
       <text x="60" y="100">REPEAT</text>
     </g>
   </svg>
-
-  <p class="obj curiosity" aria-hidden="true">
-    <span>Curiosity lives here.</span>
-    <svg viewBox="0 0 280 26"><path d="M8 18C70 10 160 8 272 4M180 22c30-6 60-8 90-9" fill="none" stroke="var(--ink-soft)" stroke-width="1.8" stroke-linecap="round" /></svg>
-  </p>
 </div>

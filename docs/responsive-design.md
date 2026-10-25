@@ -62,6 +62,7 @@ The **mode** column is the expected result. Test IDs refer to §8.
 ## 4. Desktop and laptop (D, D+)
 
 - Cabinet centred with balanced canvas margins. The identity column is ≤ 26% of the scene width.
+- In the D-42 desktop composition, the cabinet crown is at y 250 scene units and its plinth meets the desk at y 634. The left portrait only appears when its existing media gate permits it. The cork board follows the pinned links gate. Tablet and mobile keep their existing flow layout.
 - The tray (opened drawer) is at least 640 px wide at 1280 px, at most the cabinet width + 10%, and at most `100svh − 96px` tall, with its own scroll area.
 - Records open as sheets over the tray, at most 960 px wide, with a 68ch text column.
 - At 1280 × 720 (height-bound), the identity column moves its focus chips into two rows rather than pushing the cabinet down. All 8 drawer labels and the hint fit in the first viewport.
@@ -76,6 +77,8 @@ The **mode** column is the expected result. Test IDs refer to §8.
 
 ## 6. Mobile (M) and short landscape (L)
 
+**D-37 update:** §6.1 supersedes generic drawer sheets in the mode table and earlier tablet/mobile drawer rules. Other object surfaces keep their existing presentation.
+
 - The drawer list is the primary navigation. Each item: line icon, label, chevron, drawer-front styling. Minimum height 56 px; full width minus 16 px gutters.
 - Drawer → full-height **sheet** sliding up (modal semantics, scroll lock, [micro-interactions.md](micro-interactions.md) §4.3). Record → replaces the sheet content, with "Back to <Drawer>".
 - Folders: one column, or two compact columns at ≥ 400 px if titles fit without truncation.
@@ -85,6 +88,12 @@ The **mode** column is the expected result. Test IDs refer to §8.
 - Cube and plants are optional in M. The pen may be omitted visually only when the same contact composer is reachable from a visible “Write a message” link.
 - Use `100dvh` for sheet heights and keep the close/back button in a sticky header, so the on-screen keyboard never hides it.
 - Respect `env(safe-area-inset-*)`.
+
+### 6.1 Physical drawer adaptation (D-37)
+
+Desktop places the tray's rear edge immediately below its original slot, constraining its width and depth to the viewport. The cabinet stays stationary and operable around the extended drawer; contents scroll inside its paper-lined floor. The original front and handle form the tray's lower edge. On shorter desktop windows the rear position is clamped to preserve a usable content area.
+
+Tablet, mobile and short landscape reuse the same wooden assembly with reduced perspective, viewport gutters and an internally scrolling content area. They retain modal semantics and an inert background. The visual viewport controls available height when the keyboard opens. The heading, back control and front remain outside the scroll area. Project folders use three columns on desktop/tablet, two below 600 px, and one below 360 px. Filter chips scroll horizontally and remain keyboard accessible. The header search control reveals the input. Resizing preserves the current URL, query and focus and settles geometry immediately. Without JavaScript the original route-based content surfaces remain available.
 
 ---
 

@@ -40,6 +40,7 @@ Each object is classified on five axes, as required by [design.md](design.md) §
 | Pen                         | —          | ✓           | ✓ (contact)                           | —                           | Shadows                       | ANIM                            |
 | Plants (hanging; on books)  | ✓          | Hover only  | —                                     | ✓ (damped leaf springs)     | ✓ (shadows)                   | SIM (small)                     |
 | Coffee mug                  | ✓          | Hover only  | —                                     | — (static, heavy)           | Shadows                       | FX (steam)                      |
+| Desk speaker (D-40)         | ✓          | —           | —                                     | — (static)                  | Contact shadow                | —                               |
 | Stacked books under plant   | ✓          | —           | —                                     | —                           | Shadows                       | —                               |
 | Identity frame              | —          | ✓           | ✓ (About)                             | —                           | Shadows                       | ANIM                            |
 | Pinned note and social pins | —          | ✓           | ✓                                     | —                           | Shadows                       | ANIM                            |
@@ -94,7 +95,7 @@ Reference settle times. Critically damped (ζ = 1) settles within 1% at `t ≈ 6
 
 | Source                    | Position                                                                                                                        | Character                                                   | States                                       |
 | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- | -------------------------------------------- |
-| **Desk lamp (key light)** | The lamp head, upper right of the cabinet ([design.md](design.md) §2). Scene coordinates are taken from the final illustration. | Warm, directional cone down-left onto the crown and desk    | On / Off                                     |
+| **Desk lamp (key light)** | The lamp head, upper right of the cabinet ([design.md](design.md) §2). Scene coordinates are taken from the final illustration. | Warm, directional cone down-left onto the crown and desk    | Permanently on (D-27)                                     |
 | **Ambient (room)**        | Diffuse, from the upper left (a notional window)                                                                                | Neutral-warm, soft                                          | Always on                                    |
 | **Laptop screen**         | Laptop screen plane                                                                                                             | Faint cool-neutral spill on the desk in front of the laptop | Proportional to screen brightness `b` (§4.3) |
 
@@ -102,16 +103,17 @@ Reference settle times. Critically damped (ζ = 1) settles within 1% at `t ≈ 6
 
 Full dynamic lighting (per-pixel lights and real-time shadow maps) is **rejected**. It needs WebGL for the whole scene, conflicts with the hand-drawn style, and costs battery. Instead:
 
-1. **Pre-authored lighting layers per state.** The illustrator delivers, for each object: (a) the base drawing with ambient shading; (b) a _lamp-light_ overlay (highlights plus warm pool); (c) a _lamp-shadow_ layer (cast shadows for the lamp position); (d) an _ambient contact-shadow_ layer (soft, under each object).
-2. **Lamp on** = (a) + (b) + (c) + (d). **Lamp off** = (a) + (d), plus the illustration layer's ambient level lowered ~8% (only the illustration, never the UI).
-3. Switching **cross-fades opacity** of layers (b) and (c): compositor-only, no `filter` animation.
+1. **Static authored lighting (D-27, D-38).** Each object combines ambient material shading, directional highlights, cast shadows and a contact shadow. The lamp has one permanently lit state.
+   D-42 deepens the desk wood and adds a faint, blurred window-and-leaf shadow on the desktop wall; it does not add a light state or animation.
+2. The reflector and bulb are recessed within a thick shade rim. Articulated arms connect through visible joints to a weighted foot; highlights follow the metal's curvature. Soft cone falloff stays local to the shade and crown.
+3. No switching, stored state, animated filters or pointer-following light. The wall pool is below the cabinet and identity in stacking order; the globe's spherical overlay and metal stand remain separate from its existing rotation controller.
 4. **Shadow direction rule** (for authoring and checking): an object's cast-shadow offset vector is `normalize(P_object − P_lamp) × h × k`, where `h` is the object's height above its contact surface and `k ≈ 0.35`. Penumbra width grows with distance from the contact point. Contact shadows stay sharp at the contact line. All cast shadows in a state must agree with this rule (T-PHY-08).
 5. **Moving objects** (plant leaves, pen, cube, globe, laptop lid): their cast shadows are blurred duplicates of the moving part's silhouette, with the same transform plus the light offset. Shadow and object therefore always agree, cheaply.
-6. **Globe shading** is computed in its shader (Lambert term with a fixed scene light vector and a soft terminator). Its intensity follows the lamp state.
+6. **Globe shading** has a fixed light direction, rounded terminator and subtle specular highlight. Its intensity does not depend on a lamp state. The existing sphere projection and spin controls are retained in D-38.
 
 ### 3.3 Readability guarantee
 
-UI layers (drawer labels, chips, buttons, trays, records, text) sit **above** all lighting layers and are never tinted or dimmed by them. Contrast is verified in both lamp states (T-A11Y-03 is run twice).
+UI layers (drawer labels, chips, buttons, trays, records, text) sit **above** environmental lighting and are never tinted or dimmed by it. Contrast is checked with the permanent lighting (T-A11Y-03); there is no second lamp state.
 
 ---
 
@@ -147,14 +149,10 @@ UI layers (drawer labels, chips, buttons, trays, records, text) sit **above** al
 
 ### 4.2 Lamp and environmental lighting (ANIM + FX)
 
-- Control: the lamp head and its switch form one `<button aria-pressed>` named "Desk lamp", state "on" or "off".
-- Default: **on** (matches the concept board's warm glow, D-27). The state persists for the session (`sessionStorage`, with try/catch).
-- On: bulb glow opacity 0 → 1 over 180 ms ease-out; the lamp-light and lamp-shadow layers cross-fade in over 240 ms. No flicker or warm-up flash (avoids flashing content).
-- Off: the reverse over 160 ms.
-- Effects of lamp off: the warm pool and lamp shadows disappear; ambient contact shadows remain; globe shading dims to ambient; the laptop screen spill becomes more visible (it is additive and constant).
+- **Decided (D-27, 2026-10-25): no switch.** The lamp is decorative (`aria-hidden`, never a hit target) and always lit: a warm bulb glow, a soft cone under the shade and a static warm pool on the scene. The "lamp on" lighting below is the only state; the "lamp off" rules are retired.
 - The lamp is **not** a theme switch: there is no dark mode, and UI colours never change (§3.3).
-- Reduced motion: state changes instantly.
-- Failure: if lighting layers fail to load, the scene shows the base illustration and the lamp button still toggles its own glow.
+- D-38 construction: parallel articulated arms, pivot screws, a weighted foot and cable, brushed metal shading, a thick shade rim, an elliptical reflector and a recessed warm emitter. No separate flat bulb disk outside the shade. The cone is softly blurred within the lamp SVG; the wall pool does not wash over drawer labels or the portrait.
+- Failure: if lighting layers fail to load, the scene shows the base illustration with the bulb glow.
 
 ### 4.3 Laptop (KIN + SIM hinge; functional)
 
@@ -175,13 +173,14 @@ UI layers (drawer labels, chips, buttons, trays, records, text) sit **above** al
   3. **View résumé (PDF) ↗** (new tab) and **Download résumé (PDF)** (`download` attribute, with the file size shown)
   4. **Open original portfolio ↗** (new tab; external-link indicator)
   5. **Back to shelf** (closes)
-- **Original portfolio is never embedded.** Embedding is unreliable: hosting headers or a CSP can forbid framing (not verifiable offline; the old site's config sets no anti-framing header, but the host may). A cross-origin iframe also cannot be focus-managed or styled, would require loosening `frame-src`, and duplicates content for crawlers. Optional: a static, owner-approved screenshot of the original home page as a preview tile.
+- **D-39 supersedes the preceding panel-content layout:** the original portfolio is embedded on opening, filling the existing screen. A `ResizeObserver` measures untransformed layout dimensions, sets a numeric scale against a 1024px-or-wider viewport, and derives iframe height from the available screen height. Native iframe scrolling, links and typing stay within the remote browsing context. Without JavaScript, the direct `/laptop/` route renders the iframe at the available screen size.
+- A parent-owned footer retains Close and Open in tab even if the remote site fails or later blocks framing. Shelf search remains available in its own screen view. The illustrated trackpad focuses the remote frame; it does not simulate cross-origin scrolling. Letter keys operate Shelf search; Home returns to the portfolio. No changes to the physical laptop geometry or hinge.
 - Fallbacks: no approved résumé → the résumé items are absent and only the original portfolio link plus a contact link remain. The preview image fails → show the text links only. The PDF is missing at build → **the build fails** (T-MED-01).
 
 **Access and focus**
 
 - `<button aria-expanded aria-controls="laptop-panel">` named "Open laptop: résumé and original portfolio".
-- On open, focus moves to the panel heading. Escape closes the panel (and the lid). Focus returns to the laptop button.
+- On open, focus moves to the Portfolio heading. Closed and inactive screen views are inert. Escape closes from the parent document; events inside the remote iframe cannot be captured by the parent. The visible parent Close action is always available. Focus returns to the laptop trigger.
 - Mobile ([responsive-design.md](responsive-design.md) §5): the lid animation is shortened to ≤ 200 ms or skipped, and the panel opens as a full-screen sheet.
 - Reduced motion: no lid animation and no expansion. The panel fades in over 120 ms. The lid is drawn open while the panel is open.
 
@@ -222,6 +221,8 @@ The later written request supersedes the original rolling-pen toy. The pen stays
 - Steam effect (FX) on pointer hover, as in [micro-interactions.md](micro-interactions.md) §8.5. Contact shadow fixed.
 
 ### 4.9 Shelf, drawers, folders, files
+
+**D-37 implementation override (2026-10-25):** the drawer uses one layered HTML/CSS assembly animated through browser-native Web Animations. The earlier front-only displacement and optional handle-drag simulation below are superseded by [micro-interactions.md](micro-interactions.md) §5.1. Floor, walls, front and handle share the same assembly transform; only the outer clip reveals the portion emerging from the fixed cabinet slot. No free-running animation loop, physics package or 3D engine is introduced.
 
 **Drawers (1-DOF track; KIN + SIM; ANIM fallback)**
 
@@ -301,8 +302,8 @@ This keeps [design.md](design.md) §15 ("no 3D engine, no physics library"). The
 | T-PHY-05 | Laptop hinge                        | Auto-unit + Auto-e2e                                      | φ ∈ [0°, 120°]. Rests at 105° when open. Screen b = 0 for φ < 60°. Focus moves into the panel and returns to the laptop button.                                                                    |
 | T-PHY-06 | Cube state consistency              | Auto-unit                                                 | After the sequence plus its inverse, the 54-facelet model equals solved. Every rendered frame corresponds to a valid state.                                                                        |
 | T-PHY-07 | Pen contact                         | Auto-e2e + Manual                                         | Click/tap/Enter opens one composer; Escape/Back closes and restores focus. Invalid input retains text. Mail-app/copy actions never claim delivery. Same function without motion; no fake endpoint. |
-| T-PHY-08 | Shadow consistency                  | Manual                                                    | In each lamp state, every cast shadow follows the §3.2 direction rule. Moving-object shadows track their objects.                                                                                  |
-| T-PHY-09 | Lamp on/off                         | Auto-e2e + Manual                                         | `aria-pressed` toggles. UI text contrast passes in both states. No flash. The state persists within the session.                                                                                   |
+| T-PHY-08 | Shadow consistency                  | Manual                                                    | With permanent lighting, every cast shadow follows the §3.2 direction rule. Moving-object shadows track their objects.                                                                                  |
+| T-PHY-09 | Permanent lamp                         | Auto-e2e + Manual                                         | Lamp is decorative and always lit. No switch, focus stop, pointer tracking or stored lamp state. UI contrast passes; bulb stays inside its reflector.                                                                                   |
 | T-PHY-10 | Idle loop                           | Auto-e2e                                                  | With instrumentation counting rAF callbacks, 0 callbacks occur during 2 s after all bodies sleep.                                                                                                  |
 | T-PHY-11 | Repeated interactions               | Auto-e2e                                                  | 200 random interactions across all objects: no exception, no NaN, every body ends at rest, and no layout shift outside the tray.                                                                   |
 | T-PHY-12 | Interrupted animations              | Auto-e2e                                                  | Starting any interaction mid-motion of another, or navigating Back mid-motion, leaves all logical states consistent with the URL ([micro-interactions.md](micro-interactions.md) §3.3).            |

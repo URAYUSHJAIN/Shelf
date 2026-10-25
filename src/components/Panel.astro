@@ -1,6 +1,6 @@
 ---
 import Icon from './Icon.astro';
-import { REVIEW_MODE } from '../data/site';
+import { DRAWERS, REVIEW_MODE } from '../data/site';
 
 interface Props {
   id: string;
@@ -11,16 +11,26 @@ interface Props {
   wide?: boolean;
   small?: boolean;
   review?: boolean;
+  search?: boolean;
 }
-const { id, title, icon, open, meta, wide = false, small = false, review = true } = Astro.props;
+const { id, title, icon, open, meta, wide = false, small = false, review = true, search = false } = Astro.props;
+const drawer = DRAWERS.some((d) => d.id === id);
 ---
 <section
   class:list={['panel', { 'panel--wide': wide, 'panel--small': small }]}
   id={`panel-${id}`}
   data-surface={id}
+  data-drawer-surface={drawer ? id : undefined}
   aria-labelledby={`panel-${id}-title`}
   hidden={!open}
 >
+  <div class:list={['panel__assembly', { 'drawer-assembly': drawer }]}>
+  {drawer && <>
+    <div class="drawer-bottom" aria-hidden="true"></div>
+    <div class="drawer-wall drawer-wall--back" aria-hidden="true"></div>
+    <div class="drawer-wall drawer-wall--left" aria-hidden="true"></div>
+    <div class="drawer-wall drawer-wall--right" aria-hidden="true"></div>
+  </>}
   <div class="panel__sheet">
     <header class="panel__head">
       <span class="panel__tab" aria-hidden="true"><Icon name={icon} size={26} /></span>
@@ -29,8 +39,9 @@ const { id, title, icon, open, meta, wide = false, small = false, review = true 
         {meta && <p class="panel__meta">{meta}</p>}
       </div>
       <a class="panel__close" href="/" data-nav="home" aria-label={`Close ${title}`}>
-        <Icon name="close" size={22} />
+        <Icon name={drawer ? 'back' : 'close'} size={22} />
       </a>
+      {search && <button class="panel__search needs-js" type="button" data-focus-search aria-label="Search projects"><Icon name="search" size={22} /></button>}
     </header>
     {REVIEW_MODE && review && (
       <p class="panel__review" data-review-mode>
@@ -40,5 +51,7 @@ const { id, title, icon, open, meta, wide = false, small = false, review = true 
     <div class="panel__body">
       <slot />
     </div>
+  </div>
+  {drawer && <div class="drawer-front-mount"></div>}
   </div>
 </section>

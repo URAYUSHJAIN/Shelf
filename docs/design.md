@@ -157,9 +157,9 @@ The geometry follows the home panel of the concept board (§0.1). The zones belo
 
 ### 3.1 Overall style
 
-A hand-drawn, editorial shelf illustration with physical depth, as on the concept board (BR-02):
+A warm, handcrafted shelf with physically believable materials and construction, following the concept board (BR-02) and the owner's realism direction (D-38):
 
-- confident ink outlines with a slight hand-drawn quality, plus a soft warm wash for shading (no hard gradients)
+- fine material-coloured edges, bevels and directional highlights; avoid thick outlines around physical objects
 - restrained perspective (a near-frontal elevation, with the view slightly above the drawer bank)
 - clearly separated shelf levels and drawer faces
 - visible, consistent drawer handles or finger pulls
@@ -167,9 +167,15 @@ A hand-drawn, editorial shelf illustration with physical depth, as on the concep
 - objects that feel placed, not scattered
 - generous white space around the cabinet
 - readable labels on drawer fronts
-- selective tactile detail, without excessive grain, skeuomorphic clutter, or photoreal wood
+- selective tactile detail: longitudinal wood grain on rails and desktop, vertical grain on stiles, visible joints and recessed drawer slots; avoid repetitive stripes or excessive texture
 
-It should feel like an illustrated designer's workbench or archive, not an antique shop, an operating-system desktop, or a furniture store page.
+D-40 replaces the right desk's pen holder, lantern and decorative stacked books with one original, static speaker illustration. Its upholstered shell, grille weave, warm trim, feet and contact shadow follow the publicly visible model's general form. No source model, branded wordmark, viewer or audio interaction is included. Keep the mug, steam and functional contact pen; D-42 places the pen over the writing book.
+
+It should feel like a carefully crafted study desk. D-38 permits realistic material shading with CSS/SVG: connected metal lamp joints, a recessed illuminated reflector, rounded ceramic rims and feet, curved paper and page stacks, restrained glass reflections, and varied connected foliage. Keep text readable and real images unaltered. The laptop's design, placement and interaction are preserved.
+
+D-41 gives the left desk plant three prominent arching stems and narrow leaves inspired by the owner's CodePen reference. Keep its cream pot and contact with the desktop, move it slightly left, and keep foliage away from the social plaque and notebook. Its existing finite sway respects reduced motion.
+
+D-42 uses the owner-supplied photoreal desk image as desktop composition and lighting direction: a taller cabinet resting on a deep brown desk, softer tan wall with window-like dapple, one framed portrait on the left, and verified pinned links on a cork board at the right. Reuse the gated portrait asset, keep the functional open writing book with the contact pen over it, and preserve the laptop, speaker, plants, mug and steam. The image's sample checklist wording and branded marks are visual examples only; actual records and publication gates control all displayed text and media. Decorative wall prints and desk lettering are omitted in the desktop composition to give the cabinet and desk objects room.
 
 ### 3.2 Colour strategy
 
@@ -295,7 +301,7 @@ Each object has exactly one role. Its interaction contract is in [micro-interact
 | Identity frame                | Crown                  | I F E   | Identity                                                                                                                   | About record                                                          | Photo only                             |
 | Book spines                   | Crown                  | I F E   | **Writing entry** (BR-07, D-04). One spine per category with content (the board shows Blogs, Notes, Ideas, plus one more). | Writing booklet at that category                                      | Warm monochrome                        |
 | Globe _(the rotating object)_ | Crown                  | I P E   | Curiosity delight: a real sphere you can spin                                                                              | Drag or keys rotate it (inertia). Does not navigate.                  | Muted map colours                      |
-| Desk lamp                     | Crown (right)          | I E     | **Light switch** for the scene (BR-20)                                                                                     | Toggles lamp lighting on and off                                      | Warm monochrome; warm light pool       |
+| Desk lamp                     | Crown (right)          | D E     | Permanent warm local illumination (D-27, D-38)                                                                           | None; decorative and excluded from hit testing and focus               | Warm monochrome; warm light pool       |
 | Hanging plant; plant on books | Crown; identity column | D P E   | Life accent                                                                                                                | Hover sway only. Optional "Currently learning" only if maintained.    | One green family                       |
 | Currently Building note       | Pinned area            | I F E   | Current activity (D-12)                                                                                                    | Currently Building drawer                                             | Warm monochrome                        |
 | Pinned link cards             | Pinned area            | I F     | Verified GitHub, LinkedIn, X, Instagram (BR-15, D-25)                                                                      | External profile (new tab)                                            | Monochrome; platform icon in ink       |
@@ -310,6 +316,7 @@ Object rules:
 
 - Include an object only if an approved asset exists or it can be drawn in the same style. Never mix styles (no stock clip-art, no emoji, no photoreal renders).
 - Decorative objects (mug, plants without content, stacked books) are `aria-hidden="true"` and not focusable. The cube may become decorative in reduced-motion mode; the functional pen remains operable.
+- The D-40 speaker is decorative and `aria-hidden="true"`. Its top controls do not imply working playback, pairing or power. The top-shelf book under the portrait remains; the stacked books on the right desk are removed.
 - No third-party brand marks in the illustration (e.g. the board's laptop logo is not reproduced).
 - Interactive objects are real `<button>` or `<a>` elements with accessible names stating what happens (e.g. "Open writing: Articles", "Open laptop: résumé and original portfolio", "Desk lamp").
 - An object never blocks or overlaps a drawer label or another control at any breakpoint.
@@ -616,7 +623,7 @@ Mechanics are in [physics-and-interactions.md](physics-and-interactions.md) §4.
   - footer: "Back to shelf"
 - **Mobile:** a full-height sheet in the same order, with the preview at reduced height.
 - **Unavailable résumé** (D-24 undecided or the file not approved): the résumé block is absent and the panel shows only the original-portfolio block and a contact link. Never "coming soon".
-- No iframe of the original portfolio. An optional owner-approved screenshot tile may stand in as a preview.
+- **D-39 overrides the earlier panel-content arrangement:** the live original portfolio fills the physical screen in a scrollable iframe. A small screen footer provides Shelf search, Open in tab and Close. The keyboard's Home key returns from search to the portfolio; geometry and hinge are preserved. The résumé remains subject to D-24.
 
 ### Work with me _(Phase 1, D-13)_
 
@@ -748,8 +755,8 @@ Validate on the deployed site; do not claim in advance.
 - [ ] Writing opens from the open desk book into the open booklet view (BR-07); entries link to canonical articles.
 - [ ] Currently Building note shows only verified content, or is hidden.
 - [ ] Pinned links are correct and verified; placeholders and `uaryushjain` typos excluded (D-25, C-22).
-- [ ] The laptop opens to the résumé (if approved, D-24) and the original-portfolio link; focus returns on close; no iframe.
-- [ ] The lamp toggles the lighting layers; UI contrast passes in both states.
+- [ ] The laptop shows the live original portfolio (D-39), with native scrolling, a direct-link fallback and parent-owned Close; focus returns on close. Résumé remains gated by D-24.
+- [ ] The lamp is permanently lit and decorative, with a recessed bulb, connected supports and controlled local light; no switch or persistence (D-27, D-38). UI contrast passes.
 - [ ] The globe rotates as a sphere with inertia and stops; keyboard alternative present (T-PHY-01–03).
 - [ ] No age, identity-document data, compensation, or signatures appear anywhere (INV-18).
 - [ ] Mobile preserves the concept and works with touch only.

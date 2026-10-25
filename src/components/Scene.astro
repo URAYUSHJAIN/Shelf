@@ -3,23 +3,38 @@ import Icon from './Icon.astro';
 import TopShelf from './TopShelf.astro';
 import Cabinet from './Cabinet.astro';
 import Desk from './Desk.astro';
-import { slimLeaf, vine } from './art';
-import { copy, chips, site, patents, REVIEW_MODE } from '../data/site';
+import { leafPath, vine, vineMarkup } from './art';
+import { copy, chips, site, social, patents, portrait, REVIEW_MODE } from '../data/site';
 
 interface Props {
   active?: string | null;
 }
 const { active = null } = Astro.props;
 
-const wallLeft = [
-  vine([-10, 30], [90, 60], [230, 40], 9, 30, 55, 0.3),
-  vine([-10, 110], [60, 120], [120, 170], 5, 26, 55, 0.3),
-  vine([40, -10], [70, 40], [60, 100], 4, 24, 50, 0.2),
-];
+// The left wall stays clear for the portrait and the profile; foliage hangs on the right.
 const wallRight = [
-  vine([1546, 20], [1460, 40], [1380, 22], 7, 28, 55, 0.3),
-  vine([1546, 90], [1490, 100], [1450, 140], 4, 24, 55, 0.2),
+  vine([1546, 20], [1470, 40], [1400, 24], 6, 28, 55, 0.25),
+  vine([1546, 90], [1500, 100], [1470, 140], 4, 24, 55, 0.2),
+  vine([1540, -10], [1490, 140], [1505, 330], 9, 36, 56, 0.4),
+  vine([1550, -20], [1410, 40], [1320, 12], 8, 34, 58, 0.2),
 ];
+// Side extension: on screens wider than 16:9 the wall and desk continue past
+// both edges (same stage units). Garlands along the top, one long trailing
+// stem at each outer edge, mirrored about the scene's centre.
+const wallSides = [
+  vine([-30, -20], [-90, 60], [-170, 40], 7, 36, 55, 0.25),
+  vine([-215, -20], [-175, 200], [-205, 430], 11, 40, 58, 0.35),
+  vine([-330, -20], [-300, 260], [-360, 520], 12, 42, 58, 0.35),
+  vine([1566, -20], [1626, 60], [1706, 40], 7, 36, 55, 0.25),
+  vine([1751, -20], [1711, 200], [1741, 430], 11, 40, 58, 0.35),
+  vine([1866, -20], [1836, 260], [1896, 520], 12, 42, 58, 0.35),
+];
+const wallVines = [...wallRight, ...wallSides];
+const SOCIAL_ICON: Record<string, string> = { github: 'github', linkedin: 'linkedin', x: 'x' };
+const SOCIAL_NAME: Record<string, string> = { github: 'GitHub', linkedin: 'LinkedIn', x: 'X' };
+const profiles = social.map((s) => ({ href: s.url, icon: SOCIAL_ICON[s.platform] ?? 'external', label: `${SOCIAL_NAME[s.platform] ?? s.platform} (opens in a new tab)` }));
+// Push-pin peg for the paper prints on the wall.
+const PEG = '<rect x="-6" y="-9" width="12" height="20" rx="2" fill="url(#pegWood)" stroke="#2a1f16" stroke-width="1.3" /><path d="M-6 1h12" stroke="#5a3415" stroke-width="1" />';
 const intro = REVIEW_MODE
   ? 'I build web applications and AI-assisted tools, and study Computer Science at ABES Engineering College.'
   : 'I build full-stack web applications and AI-assisted tools.';
@@ -29,45 +44,174 @@ const intro = REVIEW_MODE
     <defs>
       <linearGradient id="bookDark" x1="0" x2="1"><stop offset="0" stop-color="#4a2c18" /><stop offset=".45" stop-color="#7a4b2a" /><stop offset="1" stop-color="#3d2414" /></linearGradient>
       <linearGradient id="bookCream" x1="0" x2="1"><stop offset="0" stop-color="#e2c9a2" /><stop offset=".4" stop-color="#f8ecd6" /><stop offset="1" stop-color="#d9bd93" /></linearGradient>
-      <linearGradient id="brass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f0bf6e" /><stop offset=".45" stop-color="#b8742f" /><stop offset="1" stop-color="#7a4518" /></linearGradient>
+      <linearGradient id="brass" x1="0" y1="0" x2="1" y2=".75"><stop offset="0" stop-color="#54412c" /><stop offset=".18" stop-color="#a08456" /><stop offset=".31" stop-color="#e4c895" /><stop offset=".4" stop-color="#b89b66" /><stop offset=".62" stop-color="#78603e" /><stop offset=".81" stop-color="#b69a6c" /><stop offset="1" stop-color="#59432c" /></linearGradient>
       <linearGradient id="shade" x1="0" y1="0" x2=".3" y2="1"><stop offset="0" stop-color="#9a6130" /><stop offset=".5" stop-color="#6f3f1a" /><stop offset="1" stop-color="#4a2810" /></linearGradient>
       <radialGradient id="bulbHalo"><stop offset="0" stop-color="#fff3c0" stop-opacity=".95" /><stop offset=".5" stop-color="#ffd27a" stop-opacity=".45" /><stop offset="1" stop-color="#ffc35a" stop-opacity="0" /></radialGradient>
-      <linearGradient id="leafA" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#5d9631" /><stop offset="1" stop-color="#a9d46c" /></linearGradient>
-      <linearGradient id="leafB" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#4c8527" /><stop offset="1" stop-color="#93c45a" /></linearGradient>
-      <linearGradient id="pot" x1="0" x2="1"><stop offset="0" stop-color="#e9dfcd" /><stop offset=".4" stop-color="#fdf9f1" /><stop offset="1" stop-color="#d8ccb6" /></linearGradient>
-      <linearGradient id="mug" x1="0" x2="1"><stop offset="0" stop-color="#e8dcc6" /><stop offset=".35" stop-color="#fbf5ea" /><stop offset="1" stop-color="#ddcfb6" /></linearGradient>
+      <linearGradient id="leafA" x1="0" y1="1" x2=".8" y2="0"><stop offset="0" stop-color="#263b20" /><stop offset=".28" stop-color="#536b32" /><stop offset=".48" stop-color="#8b9b50" /><stop offset=".52" stop-color="#5c7538" /><stop offset=".8" stop-color="#a4b66c" /><stop offset="1" stop-color="#76894b" /></linearGradient>
+      <linearGradient id="leafB" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#203720" /><stop offset=".32" stop-color="#3c5930" /><stop offset=".48" stop-color="#69844c" /><stop offset=".53" stop-color="#3c5b31" /><stop offset=".84" stop-color="#7c9658" /><stop offset="1" stop-color="#536f3b" /></linearGradient>
+      <filter id="leafShadow" x="-35%" y="-35%" width="175%" height="175%"><feDropShadow dx="1.5" dy="3" stdDeviation="1.4" flood-color="#273014" flood-opacity=".32" /></filter>
+      <linearGradient id="pot" x1="0" x2="1"><stop offset="0" stop-color="#8f806c" /><stop offset=".12" stop-color="#c8bba5" /><stop offset=".28" stop-color="#f5ecdb" /><stop offset=".36" stop-color="#fff9ed" /><stop offset=".54" stop-color="#eee3ce" /><stop offset=".83" stop-color="#b9aa91" /><stop offset="1" stop-color="#847562" /></linearGradient>
+      <linearGradient id="mug" x1="0" x2="1"><stop offset="0" stop-color="#a79881" /><stop offset=".12" stop-color="#ded2bb" /><stop offset=".25" stop-color="#faf3e5" /><stop offset=".33" stop-color="#fffaf0" /><stop offset=".54" stop-color="#f2e8d5" /><stop offset=".8" stop-color="#d5c7ad" /><stop offset="1" stop-color="#92816b" /></linearGradient>
       <linearGradient id="alu" x1="0" y1="0" x2=".2" y2="1"><stop offset="0" stop-color="#e6e7ea" /><stop offset=".6" stop-color="#cfd1d5" /><stop offset="1" stop-color="#b3b6bc" /></linearGradient>
-      <linearGradient id="deskWood" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f1dbb8" /><stop offset="1" stop-color="#e2c092" /></linearGradient>
+      <linearGradient id="deskWood" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4b2b1b" /><stop offset=".04" stop-color="#a36b43" /><stop offset=".12" stop-color="#8e5735" /><stop offset=".4" stop-color="#98613b" /><stop offset=".75" stop-color="#79482c" /><stop offset="1" stop-color="#4c2a1b" /></linearGradient>
+      <linearGradient id="bookNavy" x1="0" x2="1"><stop offset="0" stop-color="#302d29" /><stop offset=".2" stop-color="#514a3e" /><stop offset=".45" stop-color="#696150" /><stop offset=".85" stop-color="#403b32" /><stop offset="1" stop-color="#28251f" /></linearGradient>
+      <linearGradient id="bookRed" x1="0" x2="1"><stop offset="0" stop-color="#443023" /><stop offset=".24" stop-color="#79553b" /><stop offset=".45" stop-color="#947052" /><stop offset=".85" stop-color="#63442e" /><stop offset="1" stop-color="#36261c" /></linearGradient>
+      <linearGradient id="cupWood" x1="0" x2="1"><stop offset="0" stop-color="#7a441c" /><stop offset=".3" stop-color="#c98b4c" /><stop offset=".5" stop-color="#dfa569" /><stop offset=".8" stop-color="#b8763a" /><stop offset="1" stop-color="#6e3c18" /></linearGradient>
+      <linearGradient id="cork" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d9ad74" /><stop offset=".6" stop-color="#bf8c52" /><stop offset="1" stop-color="#9a6a38" /></linearGradient>
+      <linearGradient id="pegWood" x1="0" x2="1"><stop offset="0" stop-color="#8a5526" /><stop offset=".5" stop-color="#c8904f" /><stop offset="1" stop-color="#7a4a20" /></linearGradient>
+      <linearGradient id="sunsetSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e98f62" /><stop offset=".45" stop-color="#f6c27c" /><stop offset=".8" stop-color="#fbe2a8" /></linearGradient>
+      <linearGradient id="dawnSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9fb7cf" /><stop offset=".6" stop-color="#f3d3a6" /><stop offset="1" stop-color="#f7e3bf" /></linearGradient>
+      <filter id="pinShadow" x="-30%" y="-30%" width="160%" height="170%"><feDropShadow dx="3" dy="6" stdDeviation="3.5" flood-color="#5a3415" flood-opacity=".32" /></filter>
+      <filter id="leafBlur" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="5" /></filter>
+      <pattern id="ceramicSpeckle" width="23" height="19" patternUnits="userSpaceOnUse"><g fill="#6c5a43" opacity=".15"><circle cx="3" cy="7" r=".45" /><circle cx="17" cy="14" r=".3" /><circle cx="11" cy="2" r=".35" /></g></pattern>
+      <pattern id="paperEdges" width="12" height="3" patternUnits="userSpaceOnUse"><path d="M0 .5h12" stroke="#79674e" stroke-opacity=".25" stroke-width=".45" /></pattern>
     </defs>
   </svg>
 
-  <svg class="wall-leaves" viewBox="0 0 1536 260" preserveAspectRatio="none" aria-hidden="true">
-    {[...wallLeft, ...wallRight].map((v) => (
-      <g>
-        <path d={v.d} fill="none" stroke="#b08a66" stroke-width="2" />
-        {v.leaves.map((l) => (
-          <path d={slimLeaf(l.s * 1.3)} transform={`translate(${l.x} ${l.y}) rotate(${l.a})`} fill="#caa47f" stroke="#a37c58" stroke-width="1.2" />
-        ))}
+  <div class="wall-sun" aria-hidden="true"></div>
+
+  <svg class="wall-pins" viewBox="-420 0 2376 864" aria-hidden="true">
+    <!-- left: landscape print -->
+    <g transform="translate(78 340) rotate(-4)" filter="url(#pinShadow)">
+      <rect x="-41" y="-60" width="82" height="122" rx="2" fill="#fbf6ec" stroke="#5b4733" stroke-width="1.2" />
+      <rect x="-35" y="-53" width="70" height="84" fill="url(#dawnSky)" />
+      <path d="M-35 4-14-26 2-8 16-30 35-2V31h-70z" fill="#7d86a8" />
+      <path d="M-35 12-20-6-6 8 10-12 35 14V31h-70z" fill="#5d6b8e" />
+      <path d="M-35 18C-12 12 6 20 35 14V31h-70z" fill="#6f8f3a" />
+      <path d="M-10 31C-6 24 2 22 8 18 4 24 2 28 4 31z" fill="#a9c9d8" />
+      <path d="M-28 24v-9M-24 24v-12M24 22v-10M28 22v-7" stroke="#2f4a1c" stroke-width="2.4" stroke-linecap="round" />
+      <rect x="-35" y="-53" width="70" height="84" fill="none" stroke="#5b4733" stroke-width=".8" />
+    </g>
+    <g transform="translate(78 282) rotate(-4)" set:html={PEG} />
+
+    <!-- left: lightbulb sketch (kept left of the profile column at x 162) -->
+    <g transform="translate(100 458) rotate(5)" filter="url(#pinShadow)">
+      <rect x="-37" y="-48" width="74" height="98" rx="2" fill="#f8f1e3" stroke="#5b4733" stroke-width="1.2" />
+      <g fill="none" stroke="#2a1f16" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M-12-2a16 16 0 1 1 24 0c-4 4-5 7-5 12h-14c0-5-1-8-5-12z" />
+        <path d="M-6 16h12M-5 21h10M-2 26h4M-4 10l2-14 2 6 2-6 2 14" />
+        <path d="M0-36v-6M-20-26l-5-4M20-26l5-4M-26-10h-6M26-10h6" />
       </g>
+    </g>
+    <g transform="translate(97 406) rotate(5)" set:html={PEG} />
+
+    <!-- right: wire grid with a sunset print, above the pinned note -->
+    <g transform="translate(20 -36)" filter="url(#pinShadow)">
+      <rect x="1267" y="106" width="160" height="190" rx="3" fill="none" stroke="#2f2925" stroke-width="3" />
+      <path d="M1287 106v190M1307 106v190M1327 106v190M1347 106v190M1367 106v190M1387 106v190M1407 106v190M1267 126h160M1267 146h160M1267 166h160M1267 186h160M1267 206h160M1267 226h160M1267 246h160M1267 266h160" stroke="#3b3430" stroke-width="1.5" />
+    </g>
+    <g transform="translate(1364 172) rotate(-4)" filter="url(#pinShadow)">
+      <rect x="-53" y="-56" width="106" height="112" rx="2" fill="#fbf6ec" stroke="#5b4733" stroke-width="1.2" />
+      <rect x="-46" y="-49" width="92" height="84" fill="url(#sunsetSky)" />
+      <circle cx="4" cy="2" r="11" fill="#fff4cf" />
+      <path d="M-46 6-22-14-6 0 12-18 46 8V35h-92z" fill="#8a6576" />
+      <path d="M-46 16-28 4-10 14 18 0 46 18V35h-92z" fill="#5d4560" />
+      <path d="M-46 24C-10 20 16 26 46 22V35h-92z" fill="#e9a978" />
+      <path d="M-8 26h24M-2 30h12" stroke="#fff1c8" stroke-width="1.6" stroke-linecap="round" />
+      <rect x="-46" y="-49" width="92" height="84" fill="none" stroke="#5b4733" stroke-width=".8" />
+    </g>
+    <g transform="translate(1366 112) rotate(-4)" set:html={PEG} />
+
+    <!-- right extension: building sketch -->
+    <g transform="translate(1626 440) rotate(6)" filter="url(#pinShadow)">
+      <rect x="-46" y="-48" width="92" height="98" rx="2" fill="#f8f1e3" stroke="#5b4733" stroke-width="1.2" />
+      <g fill="none" stroke="#3a2a1c" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M-12-14a12 12 0 0 1 24 0M-14-14h28M0-26v-6M-2-32h4" />
+        <path d="M-36 30V-2h72v32M-40-2 0-12 40-2" />
+        <path d="M-30 30V4M-22 30V4M-14 30V4M14 30V4M22 30V4M30 30V4M-6 30V10h12v20" />
+        <path d="M-40 30h80M-42 35h84M-44 40h88M-32 1h64" />
+      </g>
+    </g>
+    <g transform="translate(1622 392) rotate(6)" set:html={PEG} />
+
+    <!-- left extension: framed print and a polaroid -->
+    <g transform="translate(-96 236)" filter="url(#pinShadow)">
+      <rect x="-62" y="-78" width="124" height="156" rx="3" fill="url(#pegWood)" stroke="#2a1f16" stroke-width="2" />
+      <rect x="-50" y="-66" width="100" height="132" fill="#f8efdf" stroke="#2a1f16" stroke-width="1.4" />
+      <rect x="-40" y="-56" width="80" height="112" fill="url(#sunsetSky)" />
+      <circle cx="10" cy="-12" r="14" fill="#fff4cf" />
+      <path d="M-40 6-18-20 0 0 20-26 40 4V56h-80z" fill="#8a6576" />
+      <path d="M-40 26-20 12 0 24 22 8 40 28V56h-80z" fill="#5d4560" />
+    </g>
+    <g transform="translate(-82 430) rotate(-6)" filter="url(#pinShadow)">
+      <rect x="-40" y="-48" width="80" height="98" rx="2" fill="#fbf6ec" stroke="#5b4733" stroke-width="1.2" />
+      <rect x="-34" y="-42" width="68" height="70" fill="url(#dawnSky)" />
+      <path d="M-34 8-12-20 4-4 16-24 34 2V28h-68z" fill="#7d86a8" />
+      <path d="M-34 20C-10 14 10 22 34 16V28h-68z" fill="#6f8f3a" />
+    </g>
+    <g transform="translate(-82 374) rotate(-6)" set:html={PEG} />
+
+    <!-- right extension: cork board with blank notes -->
+    <g transform="translate(1636 236)" filter="url(#pinShadow)">
+      <rect x="-86" y="-100" width="172" height="200" rx="4" fill="url(#cork)" stroke="#5a3415" stroke-width="5" />
+      <g fill="#6b4422" opacity=".35"><circle cx="-60" cy="-70" r="1.6"/><circle cx="-20" cy="-30" r="1.4"/><circle cx="40" cy="-60" r="1.6"/><circle cx="60" cy="10" r="1.4"/><circle cx="-50" cy="40" r="1.6"/><circle cx="10" cy="70" r="1.4"/><circle cx="-10" cy="-80" r="1.2"/><circle cx="30" cy="30" r="1.2"/></g>
+      <g transform="translate(-30 -34) rotate(-5)"><rect x="-38" y="-32" width="76" height="64" fill="#f8e58f" stroke="#a88a2a" stroke-width="1" /><path d="M-26-12h52M-26 0h40M-26 12h46" stroke="#9a7d28" stroke-width="1.4" stroke-linecap="round" /></g>
+      <g transform="translate(34 30) rotate(6)"><rect x="-32" y="-30" width="64" height="58" fill="#f6b6a0" stroke="#a8604a" stroke-width="1" /><path d="M-22-10h44M-22 2h34" stroke="#a8604a" stroke-width="1.4" stroke-linecap="round" /></g>
+      <g transform="translate(-34 -34) rotate(-5)" set:html={PEG} />
+      <g transform="translate(34 4) rotate(6)" set:html={PEG} />
+    </g>
+  </svg>
+
+  <svg class="wall-leaves" viewBox="-420 0 2376 864" preserveAspectRatio="none" aria-hidden="true">
+    <g transform="translate(34 46)" filter="url(#leafBlur)" opacity=".16">
+      {wallVines.map((v) => v.leaves.map((l) => (
+        <path transform={`translate(${l.x} ${l.y}) rotate(${l.a})`} d={leafPath(l.s * 1.3)} fill="#5a3010" />
+      )))}
+    </g>
+    {wallVines.map((v) => (
+      <g><Fragment set:html={vineMarkup(v, { stem: 2.2, scale: 1.08, shadow: true, drops: 0 })} /></g>
     ))}
   </svg>
   <div class="wall-shadow" aria-hidden="true"></div>
+  {portrait && (
+    <div class="wall-portrait" aria-hidden="true">
+      <img src={portrait.src} width={portrait.width} height={portrait.height} alt="" decoding="async" fetchpriority="low" />
+    </div>
+  )}
 
-  <svg class="desk-surface" viewBox="0 0 1536 284" preserveAspectRatio="none" aria-hidden="true">
-    <path d="M0 14 1536 2V284H0Z" fill="url(#deskWood)" />
-    <path d="M0 14 1536 2" stroke="#b98d5c" stroke-width="2.4" />
-    <path d="M0 17 1536 5" stroke="#fff6e4" stroke-width="2" opacity=".7" />
-    <g fill="none" stroke="#c99f6e" stroke-width="1.4" opacity=".55">
-      <path d="M0 84C420 78 1100 64 1536 58" />
-      <path d="M0 168C480 160 1080 148 1536 140" />
-      <path d="M0 250C520 242 1060 232 1536 226" />
-      <path d="M340 84 300 168M820 72 800 156M1240 64 1260 148M560 162 540 246M1020 152 1040 234" />
+  <svg class="desk-surface" viewBox="-420 0 2376 284" preserveAspectRatio="none" aria-hidden="true">
+    <defs>
+      <filter id="deskGrain" x="0" y="0" width="100%" height="100%">
+        <feTurbulence type="fractalNoise" baseFrequency=".0018 .055" numOctaves="4" seed="7" />
+        <feColorMatrix values="0 0 0 0 .36  0 0 0 0 .17  0 0 0 0 .05  1.5 0 0 0 -.62" />
+      </filter>
+      <linearGradient id="deskEdge" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d0ac81" /><stop offset=".12" stop-color="#8d6643" /><stop offset=".4" stop-color="#785337" /><stop offset=".85" stop-color="#503823" /><stop offset="1" stop-color="#a17a51" /></linearGradient>
+      <radialGradient id="deskReflection" cx=".57" cy="0" r=".65"><stop stop-color="#ffebc5" stop-opacity=".2" /><stop offset="1" stop-color="#ffebc5" stop-opacity="0" /></radialGradient>
+    </defs>
+    <path d="M-420 10H1956V284H-420Z" fill="url(#deskWood)" />
+    <rect x="-420" y="12" width="2376" height="258" filter="url(#deskGrain)" opacity=".8" />
+    <!-- Irregular long fibres follow each board; joints and edge share perspective. -->
+    <g fill="none" stroke="#593c28" stroke-width=".55" opacity=".27">
+      {Array.from({ length: 33 }, (_, i) => {
+        const y = 20 + i * 7.3;
+        const bend = Math.sin(i * 1.72) * 10;
+        return <path d={`M-420 ${y}C-60 ${y + bend} 150 ${y - bend} 480 ${y + 2}S960 ${y + bend} 1250 ${y - 2}S1680 ${y + bend} 1956 ${y}`} />;
+      })}
+      <path d="M-420 89 1956 76M-420 183 1956 170" stroke-width="1.2" opacity=".65" />
     </g>
-    <g fill="none" stroke="#d2ad80" stroke-width="1" opacity=".5">
-      <path d="M60 40c80-4 160 4 240 0M420 120c90-6 200 2 300-4M900 34c100-4 200 4 260-2M1100 200c80-4 180 2 300-6M140 210c90-4 160 2 240-4" />
+    <path d="M-420 90 1956 77M-420 184 1956 171" fill="none" stroke="#edcf9f" stroke-width=".7" opacity=".35" />
+    <path d="M-420 12H1956V268H-420Z" fill="url(#deskReflection)" />
+    <path d="M-420 10H1956" stroke="#6e3a14" stroke-width="3" />
+    <path d="M-420 14H1956" stroke="#f6c98c" stroke-width="2.4" opacity=".75" />
+    <g fill="none" stroke="#8a4a1c" stroke-width="1.6" opacity=".35">
+      <path d="M-420 52C-100 46 500 58 1100 50S1700 44 1956 48" />
+      <path d="M-420 96C-60 90 640 102 1200 94S1760 90 1956 92" />
+      <path d="M-420 146C0 138 900 152 1260 142S1800 140 1956 142" />
+      <path d="M-420 200C-20 192 940 206 1300 196S1800 194 1956 196" />
+      <path d="M-420 252C20 244 980 258 1340 248S1850 246 1956 248" />
     </g>
-    <ellipse cx="766" cy="18" rx="470" ry="18" fill="#7a5530" opacity=".22" />
+    <g fill="none" stroke="#a3602a" stroke-width="1.1" opacity=".4">
+      <path d="M-380 34c120-6 240 6 360 0M60 34c120-6 240 6 360 0M520 74c140-8 300 4 420-4M980 30c140-6 280 6 400-2M1560 44c120-6 240 6 340 0M-260 120c160-6 300 4 440-2M140 120c160-6 300 4 440-2M760 170c160-8 320 4 480-4M1500 150c140-6 280 6 400-2M-340 226c180-6 340 6 500-2M60 226c180-6 340 6 500-2M900 236c160-6 300 4 520-4M1560 220c100-6 240 6 340-2" />
+      <path d="M-300 60c30 6 40 14 70 16M300 60c30 6 40 14 70 16M1180 118c-30 8-40 16-70 18M1640 70c-30 8-40 16-70 18M640 210c30 6 44 14 74 14" />
+      <!-- knots -->
+      <ellipse cx="-180" cy="150" rx="18" ry="6" /><ellipse cx="1710" cy="120" rx="16" ry="5" /><ellipse cx="380" cy="238" rx="14" ry="4" />
+    </g>
+    <ellipse cx="776" cy="16" rx="420" ry="18" fill="#4e2808" opacity=".32" />
+    <!-- front edge of the desk top -->
+    <path d="M-420 268H1956V284H-420Z" fill="url(#deskEdge)" />
+    <path d="M-420 268H1956" stroke="#5a2e10" stroke-width="1.4" opacity=".7" />
   </svg>
+  <div class="desk-light" aria-hidden="true"></div>
 
   <header class="g-intro">
     <h1 class="wordmark">
@@ -78,7 +222,21 @@ const intro = REVIEW_MODE
     <p class="byline">A personal archive by <strong>Ayush Jain.</strong></p>
     <hr class="rule" />
     <p class="role">{patents.length ? 'Developer & named inventor.' : `${copy.role}.`}</p>
-    <p class="intro">{intro} <a class="intro__mail" href={`mailto:${site.email}`}>Email&nbsp;Ayush</a></p>
+    <p class="intro">{intro}</p>
+    <div class="contact-row">
+      <a class="intro__mail" href={`mailto:${site.email}`}>Email&nbsp;Ayush</a>
+      {profiles.length > 0 && (
+        <ul class="profile-links" role="list" aria-label="Profiles">
+          {profiles.map((p) => (
+            <li>
+              <a class="profile-link" href={p.href} aria-label={p.label} target="_blank" rel="noopener noreferrer me">
+                <Icon name={p.icon} size={18} />
+              </a>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
     {chips.length > 0 && (
       <ul class="chips" role="list" aria-label="Focus areas">
         {chips.map((c) => (
@@ -95,18 +253,10 @@ const intro = REVIEW_MODE
 
   <TopShelf active={active} />
 
-  <div class="lamp-switch needs-js">
-    <svg class="lamp-switch__rays" viewBox="0 0 40 24" aria-hidden="true"><path d="M8 20 4 10M20 18V4M32 20l4-10" stroke="var(--ink)" stroke-width="2.2" stroke-linecap="round" /></svg>
-    <span aria-hidden="true">OFF</span>
-    <button type="button" class="switch" role="switch" aria-checked="true" aria-label="Desk lamp" data-lamp-switch>
-      <span class="switch__knob"></span>
-    </button>
-    <span aria-hidden="true">ON</span>
-  </div>
-
   <Cabinet active={active} />
   <Desk active={active} />
 
+  <!-- Fixed indirect wall light; the shade contains its own directional cone. -->
   <div class="lamp-glow" aria-hidden="true"></div>
-  <div class="lamp-dim" aria-hidden="true"></div>
+  <div class="lamp-beam" aria-hidden="true"></div>
 </div>

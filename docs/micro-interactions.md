@@ -158,6 +158,10 @@ Never call `focus()` on an element that is still `visibility: hidden` or `inert`
 
 ### 5.1 Drawer front
 
+**Current implementation — D-37 (2026-10-25):** the physical assembly here supersedes the earlier front-only Open/Close and handle-drag rows. The original anchor (including handle) moves into the selected panel's assembly and returns to its exact stationary slot on close. Separate floor, back wall and side walls enclose the existing server-rendered header, filters and records. A perspective transform pulls the whole assembly down and forward, while a shell clip hides the portion still inside the cabinet. The empty slot exposes a dark recess and runners. Opening takes 460 ms; closing takes 300 ms, with an ease-out and no bounce. No drag gesture or physics dependency is required.
+
+Only one assembly is mounted. Switching closes the previous drawer before opening the latest requested one; interrupted motion resumes from its current transform. Content is inert during travel, then focus moves to its heading. Escape closes a record to its filtered drawer, or closes the drawer to its front, including when search has text. Enter and Space activate fronts. Back/Forward derive state from the URL and settle immediately. Search opens from the header control, filters remain in the tray, and record navigation preserves the query. Reduced motion settles immediately. Without JavaScript, the existing server-rendered route and ordinary links remain usable. Tablet/mobile focus containment applies to the entire wooden tray; resize preserves active content and focus. See [responsive-design.md](responsive-design.md) §6.1.
+
 | Aspect         | Spec                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | Element        | Real `<a href="/projects/" data-drawer="projects">`, retained after enhancement. The controller intercepts only unmodified primary activation. Keep native new-tab behavior; never replace the anchor with a button or nest controls.                                                                                                                                                                                          |
@@ -346,7 +350,8 @@ All interactive objects share the `ShelfObject` behaviour: a real `<a>` for cont
 - Duration: hinge ≈ 0.41 s (spring f = 2.6 Hz, ζ = 1), then 150 ms wake + 250 ms brightness, then the panel expands over `--motion-base`.
 - Element: `<button aria-expanded aria-controls="laptop-panel">` named "Open laptop: résumé and original portfolio". The panel is a `<dialog>` labelled "Laptop".
 - Focus: moves to the panel heading once expanded. Escape, "Back to shelf", or a click outside closes it, and focus returns to the laptop button.
-- Panel actions: "View résumé (PDF) ↗", "Download PDF", "Open original portfolio ↗" (external; never iframed), "Back to shelf".
+- D-39 screen override: live original portfolio with native wheel/touch scrolling, clicks and typing; footer actions Search shelf, Open in tab and Close. No frame request until opening, except direct `/laptop/` visits. Existing hinge and geometry are preserved.
+- Remote focus: parent Escape handlers cannot receive keystrokes inside the iframe. Keep Close outside the iframe; the frame is a tab stop, and closed/inactive views are inert. Illustrated keys operate the separate Shelf search, Home returns to the portfolio, and the illustrated trackpad can focus the frame but cannot drive its remote DOM.
 - Interruption: closing mid-open reverses from the current φ. Opening a drawer while the panel is open closes the panel first (one primary surface, INV-08).
 - Error: résumé not approved → résumé block absent. Preview image fails → text links only. Original-portfolio link always present.
 - Reduced motion: no hinge or expansion animation; the panel fades in over 120 ms.
@@ -354,16 +359,13 @@ All interactive objects share the `ShelfObject` behaviour: a real `<a>` for cont
 - History: no distinct URL. Push one same-URL utility-state marker on open; Back or the close action consumes it. Content state remains URL-derived. Exact handling: phase-3-handoff.md.
 - Acceptance: T-PHY-05, T-INT-12.
 
-### 8.13 Desk lamp (ANIM + FX, see physics §4.2)
+### 8.13 Desk lamp (static FX, see physics §4.2)
 
-- Trigger: click, tap, or Enter/Space on the lamp (`<button aria-pressed>` "Desk lamp").
-- Initial state: on (D-27). Result: off (lamp-light and shadow layers fade out) or on again.
-- Duration: on 180 ms bulb + 240 ms layers; off 160 ms. No flicker.
-- Focus: stays on the lamp.
-- Interruption: toggling mid-transition reverses from the current opacity.
-- Error: lighting layers missing → only the bulb glow toggles.
-- Reduced motion: instant.
-- Acceptance: T-PHY-09.
+- D-27/D-38: permanently lit decorative SVG, `aria-hidden` and `pointer-events: none`.
+- No trigger, switch, `aria-pressed`, focus stop, stored preference or pointer tracking.
+- The bulb sits inside the shade's reflector. A soft static cone and wall pool supply local warmth; text is above environmental lighting.
+- No animation or reduced-motion variant is needed. If lighting effects fail, the base artwork remains visible.
+- Acceptance: T-PHY-09 (permanent lighting and absence of controls).
 
 ### 8.14 Pen — contact message
 

@@ -120,5 +120,9 @@ export default defineConfig({
   devToolbar: { enabled: false },
   build: { inlineStylesheets: 'auto' },
   integrations: [pruneUnreferencedMedia()],
-  vite: { plugins: [reviewMedia()] },
+  vite: {
+    plugins: [reviewMedia()],
+    // Keep the dev server's native tooling in Node, including CommonJS deps.
+    ssr: { external: ['vite', 'rolldown', 'picomatch'] },
+  },
 });

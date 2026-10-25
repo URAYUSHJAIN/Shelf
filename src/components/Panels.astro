@@ -95,7 +95,7 @@ const SOCIAL_NAME: Record<string, string> = { github: 'GitHub', linkedin: 'Linke
   </Panel>
 
   <!-- Projects -->
-  <Panel id="projects" title="Projects" icon="code" open={active === 'projects'} meta={projects.length ? plural(projects.length, 'folder', 'folders') : undefined} wide>
+  <Panel id="projects" title="Projects" icon="code" open={active === 'projects'} meta={plural(projects.length, 'folder', 'folders')} search={projects.length > 0} wide>
     {projects.length === 0 ? (
       <p class="empty">No public project entries are approved yet. Project folders appear here once the owner approves them.</p>
     ) : (
@@ -378,13 +378,7 @@ const SOCIAL_NAME: Record<string, string> = { github: 'GitHub', linkedin: 'Linke
   <!-- Open book: writing, notes, ideas, album -->
   <Panel id="writing" title="My Writings" icon="book" open={active === 'writing'} wide>
     <div class="book">
-      <div class="book__tabs needs-js" role="tablist" aria-label="Book sections">
-        <button type="button" role="tab" id="tab-blogs" aria-controls="sec-blogs" aria-selected="true" data-tab="blogs">Blogs</button>
-        <button type="button" role="tab" id="tab-notes" aria-controls="sec-notes" aria-selected="false" data-tab="notes" tabindex="-1">Notes</button>
-        <button type="button" role="tab" id="tab-ideas" aria-controls="sec-ideas" aria-selected="false" data-tab="ideas" tabindex="-1">Ideas</button>
-        <button type="button" role="tab" id="tab-album" aria-controls="sec-album" aria-selected="false" data-tab="album" tabindex="-1">Album</button>
-      </div>
-      <section class="book__page" id="sec-blogs" role="tabpanel" aria-labelledby="tab-blogs" data-tabpanel="blogs">
+      <section class="book__page" id="sec-blogs" role="region" aria-label="Blogs" data-tabpanel="blogs">
         <h3 class="sub">Blogs</h3>
         {blogPosts.length ? (
           <ul class="entries" role="list">
@@ -402,7 +396,7 @@ const SOCIAL_NAME: Record<string, string> = { github: 'GitHub', linkedin: 'Linke
           <p class="empty">No public articles are approved yet.</p>
         )}
       </section>
-      <section class="book__page" id="sec-notes" role="tabpanel" aria-labelledby="tab-notes" data-tabpanel="notes">
+      <section class="book__page" id="sec-notes" role="region" aria-label="Notes" data-tabpanel="notes" hidden>
         <h3 class="sub">Notes · build walkthroughs</h3>
         {walkthroughs.length ? (
           <>
@@ -417,7 +411,7 @@ const SOCIAL_NAME: Record<string, string> = { github: 'GitHub', linkedin: 'Linke
           <p class="empty">No public build notes are approved yet.</p>
         )}
       </section>
-      <section class="book__page" id="sec-ideas" role="tabpanel" aria-labelledby="tab-ideas" data-tabpanel="ideas">
+      <section class="book__page" id="sec-ideas" role="region" aria-label="Ideas" data-tabpanel="ideas" hidden>
         <h3 class="sub">Ideas · invention applications</h3>
         {patents.length ? (
           <ul class="entries entries--compact" role="list">
@@ -429,23 +423,13 @@ const SOCIAL_NAME: Record<string, string> = { github: 'GitHub', linkedin: 'Linke
           <p class="empty">No public idea records are approved yet.</p>
         )}
       </section>
-      <section class="book__page" id="sec-album" role="tabpanel" aria-labelledby="tab-album" data-tabpanel="album">
+      <section class="book__page" id="sec-album" role="region" aria-label="Album" data-tabpanel="album" hidden>
         <h3 class="sub">Album</h3>
         <div class="album-empty">
           <Icon name="image" size={40} />
           <p>No photographs have been approved for the album yet. This page stays empty rather than showing placeholder pictures.</p>
         </div>
       </section>
-    </div>
-  </Panel>
-
-  <!-- Laptop -->
-  <Panel id="laptop" title={site.resumeUrl ? 'Original portfolio & résumé' : 'Original portfolio'} icon="code" open={active === 'laptop'} small review={false}>
-    <p>The earlier portfolio is still online. It opens in a new tab and is never embedded here.</p>
-    <div class="actions">
-      <a class="btn btn--solid" href={site.originalPortfolio} {...EXT}>Open original portfolio <Icon name="external" size={16} /><span class="sr-only"> (opens in a new tab)</span></a>
-      {site.resumeUrl && <a class="btn" href={site.resumeUrl} {...EXT}>View résumé (PDF)<span class="sr-only"> (opens in a new tab)</span></a>}
-      <a class="btn" href={`mailto:${site.email}`}><Icon name="mail" size={18} /> Email Ayush</a>
     </div>
   </Panel>
 
@@ -465,3 +449,4 @@ const SOCIAL_NAME: Record<string, string> = { github: 'GitHub', linkedin: 'Linke
     </form>
   </Panel>
 </div>
+

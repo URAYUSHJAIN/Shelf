@@ -13,10 +13,10 @@
    "publicEmail": "urayushjain@gmail.com"
   },
   "portrait": {
-   "src": "/review-media/profile/ayush-jain.webp",
+   "src": "/media/profile/ayush-jain.webp",
    "width": 480,
    "height": 549,
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "id": "media-0742"
   },
   "groups": {
@@ -54,7 +54,7 @@
   {
    "id": "proj-0004",
    "slug": "arogya",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "title": "Arogya",
    "summary": "A healthcare RAG prototype that checks access, evidence, and citations before producing an answer.",
    "kind": "hackathon",
@@ -97,7 +97,7 @@
   {
    "id": "proj-0013",
    "slug": "genshakti",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "title": "GenShakti",
    "summary": "A renewable-energy planning prototype combining maps, site-selection interfaces, and AI-generated guidance.",
    "kind": "group-project",
@@ -159,7 +159,7 @@
   {
    "id": "proj-0008",
    "slug": "xeno-crm",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "title": "XenoCRM Mini",
    "summary": "An engineering-assignment CRM prototype for customer segments, campaign workflows, and AI-assisted planning.",
    "kind": "work-assignment",
@@ -193,7 +193,7 @@
     {
      "src": "/review-media/review/projects/xeno-crm/xenocrm.mp4",
      "start": null,
-     "duration": 31.0,
+     "duration": 31,
      "shared": false,
      "approved": false
     }
@@ -203,7 +203,7 @@
   {
    "id": "proj-0030",
    "slug": "vigil-ai",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "title": "VigilAI",
    "summary": "A retail-analytics challenge project connecting video events to a store-intelligence dashboard.",
    "kind": "work-assignment",
@@ -267,7 +267,7 @@
   {
    "id": "proj-0010",
    "slug": "devstudy",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "title": "DevStudy",
    "summary": "A developer-learning prototype with code editors, browser previews, and a diagramming workspace.",
    "kind": "experiment",
@@ -310,7 +310,7 @@
   {
    "id": "proj-0001",
    "slug": "aadhaar-pulse",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "title": "AadhaarPulse",
    "summary": "An analytics prototype for exploring district-level Aadhaar authentication patterns and service demand.",
    "kind": "hackathon",
@@ -410,7 +410,7 @@
   {
    "id": "proj-0003",
    "slug": "ai-limit-checker",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "title": "AI Limit Checker",
    "summary": "A Chrome extension prototype for displaying token estimates and usage signals beside AI chats.",
    "kind": "experiment",
@@ -446,7 +446,7 @@
   {
    "id": "proj-0005",
    "slug": "arogya-plus",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "title": "ArogyaPlus",
    "summary": "A healthcare interface prototype for uploading reports, reading AI explanations, and locating hospitals.",
    "kind": "group-project",
@@ -486,7 +486,7 @@
   {
    "id": "proj-0007",
    "slug": "calendar-dashboard",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "title": "Calendar Dashboard",
    "summary": "A calendar prototype with month views and persisted event creation, editing, and deletion.",
    "kind": "experiment",
@@ -582,7 +582,7 @@
   {
    "id": "proj-0011",
    "slug": "employee-management-system",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "title": "Employee Management System",
    "summary": "A Spring Boot REST API exercise for creating, searching, updating, and deleting employee records.",
    "kind": "experiment",
@@ -621,7 +621,7 @@
   {
    "id": "proj-0031",
    "slug": "inframe-studio",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "title": "InFrame Studio",
    "summary": "A film-production decision-support prototype for scene risks, location checks, and alternative plans.",
    "kind": "experiment",
@@ -650,7 +650,7 @@
     {
      "src": "/review-media/review/projects/inframe-studio/vordguard.mp4",
      "start": null,
-     "duration": 37.0,
+     "duration": 37,
      "shared": false,
      "approved": false
     }
@@ -660,7 +660,7 @@
   {
    "id": "proj-0014",
    "slug": "ipo-track",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "title": "IPOTrack",
    "summary": "An Indian IPO dashboard prototype with listing views, a calendar, charts, and investment calculations.",
    "kind": "experiment",
@@ -702,7 +702,7 @@
   {
    "id": "proj-0018",
    "slug": "nyay-ai",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "title": "NyayAI",
    "summary": "An AI-assisted legal-document prototype with OCR, plain-language explanations, and speech interfaces.",
    "kind": "experiment",
@@ -743,7 +743,7 @@
   {
    "id": "proj-0019",
    "slug": "placement-tracker",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "title": "Placement Tracker",
    "summary": "A local-first PWA for tracking placement applications and backing them up as JSON.",
    "kind": "experiment",
@@ -898,7 +898,7 @@
   {
    "id": "proj-0002",
    "slug": "plant-disease-detector",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "title": "Plant Disease Detector",
    "summary": "A browser interface that sends plant photographs to Gemini for suggested disease explanations.",
    "kind": "experiment",
@@ -935,7 +935,7 @@
   {
    "id": "proj-0020",
    "slug": "query-pdf",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "title": "QueryPDF",
    "summary": "A browser-based PDF prototype with local text extraction, questions, summaries, and quizzes.",
    "kind": "experiment",
@@ -975,7 +975,7 @@
   {
    "id": "proj-0022",
    "slug": "sentinel-agent",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "title": "Sentinel Agent",
    "summary": "A scripted smart-contract security demonstration with exploit tests, a patch flow, and streamed progress.",
    "kind": "experiment",
@@ -1037,7 +1037,7 @@
   {
    "id": "proj-0023",
    "slug": "shayoga",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "title": "Shayoga",
    "summary": "A Web3 crowdfunding prototype with campaign browsing, wallet connection, and donation-contract flows.",
    "kind": "experiment",
@@ -1098,7 +1098,7 @@
   {
    "id": "proj-0024",
    "slug": "skillforge",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "title": "SkillForge LMS",
    "summary": "A learning-management prototype with course content, enrollment, and separate learner and administrator interfaces.",
    "kind": "experiment",
@@ -1138,7 +1138,7 @@
   {
    "id": "proj-0026",
    "slug": "slotly",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "title": "Slotly",
    "summary": "An appointment-booking assignment with patient and doctor views, availability, and scheduling flows.",
    "kind": "work-assignment",
@@ -1166,7 +1166,7 @@
     {
      "src": "/review-media/review/projects/slotly/slotly.mp4",
      "start": null,
-     "duration": 31.0,
+     "duration": 31,
      "shared": false,
      "approved": false
     }
@@ -1176,7 +1176,7 @@
   {
    "id": "proj-0028",
    "slug": "taskflow",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "title": "TaskFlow",
    "summary": "A personal-productivity PWA bringing tasks, application tracking, and resource links into one browser workspace.",
    "kind": "experiment",
@@ -1312,7 +1312,7 @@
   {
    "id": "proj-0006",
    "slug": "aurevo",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "title": "Aurevo",
    "summary": "A fashion storefront prototype with product browsing, wishlists, and a shopping bag.",
    "kind": "experiment",
@@ -1445,7 +1445,7 @@
   {
    "id": "proj-0009",
    "slug": "cyberkey",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "title": "CyberKey",
    "summary": "An early JavaScript exercise that generates password strings and copies them to the clipboard.",
    "kind": "experiment",
@@ -1500,7 +1500,7 @@
   {
    "id": "proj-0012",
    "slug": "fusion-2048",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "title": "Fusion2048",
    "summary": "A browser puzzle game in which matching numbered tiles merge toward 2048.",
    "kind": "experiment",
@@ -1613,7 +1613,7 @@
   {
    "id": "proj-0015",
    "slug": "listomo",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "title": "Listomo",
    "summary": "A small JavaScript task-list application for adding tasks and marking them complete.",
    "kind": "experiment",
@@ -1705,7 +1705,7 @@
   {
    "id": "proj-0016",
    "slug": "media-query-practice",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "title": "Media Query Practice",
    "summary": "A CSS exercise exploring how a page changes at different viewport widths.",
    "kind": "course-work",
@@ -1776,7 +1776,7 @@
   {
    "id": "proj-0025",
    "slug": "skylens",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "title": "SkyLens",
    "summary": "A weather-page exercise that looks up a city and displays current-condition fields.",
    "kind": "experiment",
@@ -1839,7 +1839,7 @@
    "videos": [
     {
      "src": "/review-media/review/projects/cyberkey/year-one.mp4",
-     "start": 11.0,
+     "start": 11,
      "duration": 34.1,
      "shared": true,
      "approved": false
@@ -1850,7 +1850,7 @@
   {
    "id": "proj-0021",
    "slug": "sdg-dashboard",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "title": "Sustainable Development Dashboard",
    "summary": "A static dashboard exercise presenting Sustainable Development Goal indicators with visual score rings.",
    "kind": "experiment",
@@ -1905,7 +1905,7 @@
   {
    "id": "proj-0027",
    "slug": "tacwin",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "title": "Tacwin",
    "summary": "A React tic-tac-toe game with turn handling, win feedback, and a reset action.",
    "kind": "experiment",
@@ -2075,7 +2075,7 @@
   {
    "id": "proj-0029",
    "slug": "usabilityhub-exercise",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "title": "UsabilityHub Class Exercise",
    "summary": "An HTML and CSS class assignment recreating a marketing-page layout for practice.",
    "kind": "course-work",
@@ -2148,7 +2148,7 @@
   {
    "id": "proj-0017",
    "slug": "zenati",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "title": "Zenati",
    "summary": "An early mental-wellness website prototype with resource pages and chatbot integration.",
    "kind": "experiment",
@@ -2222,7 +2222,7 @@
   {
    "id": "proj-0033",
    "slug": "aventra",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "title": "Aventra",
    "summary": "A financial-intelligence project that explores unusual market behaviour and explains the context around a flagged change.",
    "kind": "group-project",
@@ -2244,7 +2244,7 @@
   {
    "id": "proj-0034",
    "slug": "ecofund",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "title": "Ecofund",
    "summary": "A Web3 donation-interface prototype using React and Ethers.js.",
    "kind": "experiment",
@@ -2267,7 +2267,7 @@
   {
    "id": "proj-0035",
    "slug": "finance-categorizer",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "title": "Finance Categorizer Agent",
    "summary": "A browser-based transaction-categorization prototype using explicit rules.",
    "kind": "experiment",
@@ -2289,7 +2289,7 @@
   {
    "id": "proj-0041",
    "slug": "original-portfolio",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "title": "Original Portfolio",
    "summary": "The earlier Next.js portfolio presenting projects, writing, and professional background.",
    "kind": "original",
@@ -2311,7 +2311,7 @@
   {
    "id": "proj-0042",
    "slug": "promptly",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "title": "Promptly",
    "summary": "A prompt-management interface prototype with version, experiment, and team-workspace screens.",
    "kind": "experiment",
@@ -2333,7 +2333,7 @@
   {
    "id": "proj-0036",
    "slug": "amazon-layout-exercise",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "title": "Amazon Layout Class Exercise",
    "summary": "An HTML and CSS coursework exercise recreating an e-commerce homepage layout.",
    "kind": "course-work",
@@ -2354,7 +2354,7 @@
   {
    "id": "proj-0043",
    "slug": "resqhub",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "title": "ResQHub",
    "summary": "A static disaster-preparedness site organizing explanatory pages and resource links.",
    "kind": "experiment",
@@ -2375,7 +2375,7 @@
   {
    "id": "proj-0046",
    "slug": "web-development-lab",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "title": "Web Development Lab — Semester 3",
    "summary": "A collection of introductory web-development lab exercises.",
    "kind": "course-work",
@@ -2399,9 +2399,9 @@
   {
    "id": "pat-0001",
    "slug": "genshakti-energy-saver",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "summary": "An application describing AI-assisted monitoring and optimization of electricity consumption.",
-   "body": "The published abstract proposes collecting electricity-usage data, analyzing consumption patterns, and presenting optimization guidance. The record describes the proposed system; it does not establish measured energy savings or a granted right.",
+   "body": "The published abstract proposes collecting electricity-usage data, analyzing consumption patterns, and presenting optimization guidance. The record describes the proposed system; it does not establish measured energy savings or an issued patent right.",
    "officialSearchUrl": "https://iprsearch.ipindia.gov.in/PublicSearch/",
    "office": "Indian Patent Office",
    "applicants": [
@@ -2421,7 +2421,7 @@
   {
    "id": "pat-0002",
    "slug": "genshakti-zone-selection",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "summary": "An application describing geospatial analysis for identifying renewable-energy installation zones.",
    "body": "The proposed system combines geographic data collection, machine-learning processing, and a mapping interface to compare potential renewable-energy sites. These are application claims, without independently validated site-selection performance.",
    "officialSearchUrl": "https://iprsearch.ipindia.gov.in/PublicSearch/",
@@ -2443,7 +2443,7 @@
   {
    "id": "pat-0003",
    "slug": "decentralized-document-control",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "summary": "An application describing document storage and controlled sharing using blockchain and IPFS.",
    "body": "The abstract names the proposed platform DocMitra and describes smart-contract access rules, selective disclosure, and key recovery. The portfolio presents the research proposal, without claiming a deployed document-management product.",
    "officialSearchUrl": "https://iprsearch.ipindia.gov.in/PublicSearch/",
@@ -2465,7 +2465,7 @@
   {
    "id": "pat-0004",
    "slug": "pharmaceutical-supply-chain",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "summary": "An application proposing blockchain-based drug-inventory tracking and expiry-management workflows.",
    "body": "The abstract describes tracking inventory, managing expiry through smart contracts, and supporting redistribution of near-expiry medicines. It also uses the name ArogyaPlus; this does not establish a relationship to the separate medical-report application or repository.",
    "officialSearchUrl": "https://iprsearch.ipindia.gov.in/PublicSearch/",
@@ -2487,7 +2487,7 @@
   {
    "id": "pat-0005",
    "slug": "arogyaplus-medical-insights",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "summary": "An application proposing AI-assisted interpretation and explanation of medical reports.",
    "body": "The abstract describes extracting report information with OCR, computer vision, and language processing, then presenting health-information explanations. This is an application-level proposal, without clinical validation or a claim of regulatory approval.",
    "officialSearchUrl": "https://iprsearch.ipindia.gov.in/PublicSearch/",
@@ -2544,7 +2544,7 @@
   {
    "id": "exp-0001",
    "slug": "districtd",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "organization": "DistrictD",
    "role": "Software Developer Trainee",
    "type": "trainee-programme",
@@ -2557,7 +2557,7 @@
   {
    "id": "exp-0002",
    "slug": "joyfullminds",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "organization": "Joyfullminds",
    "role": "Software Development Intern",
    "type": "internship",
@@ -2569,7 +2569,7 @@
   {
    "id": "exp-0003",
    "slug": "singari-global",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "organization": "Singari Global Holding Pvt. Ltd.",
    "role": "Software Engineer Intern",
    "type": "internship",
@@ -2581,7 +2581,7 @@
   {
    "id": "exp-0004",
    "slug": "gdg-abesec",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "organization": "GDG ABESEC",
    "role": "Co-organizer",
    "type": "leadership",
@@ -2593,7 +2593,7 @@
   {
    "id": "exp-0005",
    "slug": "hackster-mentor",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "organization": "Hackster 2025",
    "role": "Mentor",
    "type": "mentor",
@@ -2606,7 +2606,7 @@
   {
    "id": "exp-0006",
    "slug": "hackwave-organizer",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "organization": "Hackwave 2.0",
    "role": "Organizer",
    "type": "organizer",
@@ -2619,7 +2619,7 @@
   {
    "id": "exp-0007",
    "slug": "exora-organizer",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "organization": "Exora",
    "role": "Organizer / Lead",
    "type": "organizer",
@@ -2632,7 +2632,7 @@
   {
    "id": "exp-0008",
    "slug": "hackwithindia",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "organization": "HackwithIndia",
    "role": "Sponsorship Coordinator",
    "type": "volunteer",
@@ -2645,7 +2645,7 @@
   {
    "id": "exp-0009",
    "slug": "bitguild",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "organization": "Coding Club (BitGuild)",
    "role": "Community Lead",
    "type": "leadership",
@@ -2659,7 +2659,7 @@
   {
    "id": "edu-0001",
    "slug": "abes-engineering-college",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "institution": "ABES Engineering College",
    "program": "Bachelor of Technology",
    "discipline": "Computer Science",
@@ -2672,7 +2672,7 @@
   {
    "id": "edu-0002",
    "slug": "sjs-public-school",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "institution": "SJS Public School",
    "program": "Class XII",
    "discipline": "Physics, Chemistry and Mathematics",
@@ -2684,7 +2684,7 @@
   {
    "id": "ach-0001",
    "slug": "mind-mela-2026",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "title": "Mind Mela 2026 — First Place",
    "kind": "hackathon-result",
    "event": "Mind Mela 2026",
@@ -2697,7 +2697,7 @@
   {
    "id": "ach-0002",
    "slug": "google-mcp-issue",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "title": "Open-source issue report — google/mcp",
    "kind": "other",
    "date": "2025-12-25",
@@ -2708,7 +2708,7 @@
   {
    "id": "ach-0003",
    "slug": "create-vrt-dapp",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "title": "npm package — create-vrt-dapp",
    "kind": "other",
    "issuer": "npm registry",
@@ -2721,7 +2721,7 @@
   {
    "id": "cred-0001",
    "slug": "claude-code-in-action",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "title": "Claude Code in Action",
    "issuer": "Anthropic",
    "platform": "Skilljar",
@@ -2733,7 +2733,7 @@
   {
    "id": "cred-0002",
    "slug": "google-prompting-essentials",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "title": "Google Prompting Essentials",
    "issuer": "Google",
    "platform": "Coursera",
@@ -2745,7 +2745,7 @@
   {
    "id": "cred-0003",
    "slug": "prompt-engineering-chatgpt",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "title": "Prompt Engineering for ChatGPT",
    "issuer": "Vanderbilt University",
    "platform": "Coursera",
@@ -2757,7 +2757,7 @@
   {
    "id": "cred-0004",
    "slug": "professional-voice",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "title": "Finding Your Professional Voice: Confidence & Impact",
    "issuer": "University of London and Royal Central School of Speech and Drama",
    "platform": "Coursera",
@@ -2769,7 +2769,7 @@
   {
    "id": "cred-0005",
    "slug": "pre-mba-statistics",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "title": "Pre-MBA Statistics",
    "issuer": "IIM Ahmedabad",
    "platform": "Coursera",
@@ -2781,7 +2781,7 @@
   {
    "id": "cred-0006",
    "slug": "aws-foundations",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "title": "AWS Academy Graduate — Cloud Foundations — Training Badge",
    "issuer": "AWS Academy",
    "platform": "Credly",
@@ -2795,7 +2795,7 @@
   {
    "id": "cred-0007",
    "slug": "aws-architecting",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "title": "AWS Academy Graduate — Cloud Architecting — Training Badge",
    "issuer": "AWS Academy",
    "platform": "Credly",
@@ -2809,7 +2809,7 @@
   {
    "id": "cred-0008",
    "slug": "cisco-cybersecurity",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "title": "Introduction to Cybersecurity",
    "issuer": "Cisco Networking Academy",
    "platform": "Cisco Networking Academy",
@@ -2821,7 +2821,7 @@
   {
    "id": "cred-0009",
    "slug": "python-essentials-1",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "title": "Python Essentials 1",
    "issuer": "Cisco Networking Academy and OpenEDG Python Institute",
    "platform": "Cisco Networking Academy",
@@ -2833,7 +2833,7 @@
   {
    "id": "cred-0010",
    "slug": "python-essentials-2",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "title": "Python Essentials 2",
    "issuer": "Cisco Networking Academy and OpenEDG Python Institute",
    "platform": "Cisco Networking Academy",
@@ -2845,7 +2845,7 @@
   {
    "id": "cred-0011",
    "slug": "canva-classroom",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "title": "AI in the classroom",
    "issuer": "Canva Design School",
    "platform": "Canva",
@@ -2857,7 +2857,7 @@
   {
    "id": "cred-0012",
    "slug": "apertre-3",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "title": "APERTRE 3.0",
    "issuer": "Resourcio Community",
    "kind": "participation",
@@ -2866,7 +2866,7 @@
   {
    "id": "cred-0013",
    "slug": "hacktoberfest-2025",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "title": "Hacktoberfest 2025: Supercontributor",
    "issuer": "Hacktoberfest",
    "platform": "Holopin",
@@ -2878,7 +2878,7 @@
   {
    "id": "cred-0014",
    "slug": "career-essentials-genai",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "title": "Career Essentials in Generative AI by Microsoft and LinkedIn",
    "issuer": "Microsoft and LinkedIn",
    "platform": "LinkedIn Learning",
@@ -2891,7 +2891,7 @@
   {
    "id": "cred-0015",
    "slug": "blockchain-basics",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "title": "Blockchain Basics",
    "issuer": "Cyfrin Updraft",
    "platform": "Cyfrin Updraft",
@@ -2903,7 +2903,7 @@
   {
    "id": "skill-0001",
    "slug": "amazon-bedrock",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "name": "Amazon Bedrock",
    "category": "tools",
    "evidence": [
@@ -2913,7 +2913,7 @@
   {
    "id": "skill-0002",
    "slug": "amazon-polly",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "name": "Amazon Polly",
    "category": "tools",
    "evidence": [
@@ -2923,7 +2923,7 @@
   {
    "id": "skill-0003",
    "slug": "amazon-textract",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "name": "Amazon Textract",
    "category": "tools",
    "evidence": [
@@ -2933,7 +2933,7 @@
   {
    "id": "skill-0004",
    "slug": "aws-lambda",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "name": "AWS Lambda",
    "category": "tools",
    "evidence": [
@@ -2943,7 +2943,7 @@
   {
    "id": "skill-0005",
    "slug": "azure-openai",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "name": "Azure OpenAI",
    "category": "tools",
    "evidence": [
@@ -2953,7 +2953,7 @@
   {
    "id": "skill-0006",
    "slug": "bm25",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "name": "BM25",
    "category": "tools",
    "evidence": [
@@ -2963,7 +2963,7 @@
   {
    "id": "skill-0007",
    "slug": "chart-js",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "name": "Chart.js",
    "category": "tools",
    "evidence": [
@@ -2973,7 +2973,7 @@
   {
    "id": "skill-0008",
    "slug": "chrome-extensions",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "name": "Chrome Extensions",
    "category": "tools",
    "evidence": [
@@ -2983,7 +2983,7 @@
   {
    "id": "skill-0009",
    "slug": "css",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "name": "CSS",
    "category": "language",
    "evidence": [
@@ -3006,7 +3006,7 @@
   {
    "id": "skill-0010",
    "slug": "docker",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "name": "Docker",
    "category": "tools",
    "evidence": [
@@ -3017,7 +3017,7 @@
   {
    "id": "skill-0011",
    "slug": "dom-apis",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "name": "DOM APIs",
    "category": "tools",
    "evidence": [
@@ -3027,7 +3027,7 @@
   {
    "id": "skill-0012",
    "slug": "ethers-js",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "name": "Ethers.js",
    "category": "tools",
    "evidence": [
@@ -3039,7 +3039,7 @@
   {
    "id": "skill-0013",
    "slug": "express",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "name": "Express",
    "category": "tools",
    "evidence": [
@@ -3054,7 +3054,7 @@
   {
    "id": "skill-0014",
    "slug": "fastapi",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "name": "FastAPI",
    "category": "tools",
    "evidence": [
@@ -3065,7 +3065,7 @@
   {
    "id": "skill-0015",
    "slug": "gemini",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "name": "Gemini",
    "category": "tools",
    "evidence": [
@@ -3076,7 +3076,7 @@
   {
    "id": "skill-0016",
    "slug": "groq",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "name": "Groq",
    "category": "tools",
    "evidence": [
@@ -3086,7 +3086,7 @@
   {
    "id": "skill-0017",
    "slug": "h2",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "name": "H2",
    "category": "tools",
    "evidence": [
@@ -3096,7 +3096,7 @@
   {
    "id": "skill-0018",
    "slug": "hardhat",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "name": "Hardhat",
    "category": "tools",
    "evidence": [
@@ -3108,7 +3108,7 @@
   {
    "id": "skill-0019",
    "slug": "html",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "name": "HTML",
    "category": "language",
    "evidence": [
@@ -3134,7 +3134,7 @@
   {
    "id": "skill-0020",
    "slug": "hugging-face",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "name": "Hugging Face",
    "category": "tools",
    "evidence": [
@@ -3144,7 +3144,7 @@
   {
    "id": "skill-0021",
    "slug": "java",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "name": "Java",
    "category": "language",
    "evidence": [
@@ -3154,7 +3154,7 @@
   {
    "id": "skill-0022",
    "slug": "javascript",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "name": "JavaScript",
    "category": "language",
    "evidence": [
@@ -3184,7 +3184,7 @@
   {
    "id": "skill-0023",
    "slug": "junit",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "name": "JUnit",
    "category": "tools",
    "evidence": [
@@ -3194,7 +3194,7 @@
   {
    "id": "skill-0024",
    "slug": "leaflet",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "name": "Leaflet",
    "category": "tools",
    "evidence": [
@@ -3206,7 +3206,7 @@
   {
    "id": "skill-0025",
    "slug": "local-storage",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "name": "Local storage",
    "category": "tools",
    "evidence": [
@@ -3218,7 +3218,7 @@
   {
    "id": "skill-0026",
    "slug": "maven",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "name": "Maven",
    "category": "tools",
    "evidence": [
@@ -3228,7 +3228,7 @@
   {
    "id": "skill-0027",
    "slug": "mermaid",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "name": "Mermaid",
    "category": "tools",
    "evidence": [
@@ -3238,7 +3238,7 @@
   {
    "id": "skill-0028",
    "slug": "monaco-editor",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "name": "Monaco Editor",
    "category": "tools",
    "evidence": [
@@ -3248,7 +3248,7 @@
   {
    "id": "skill-0029",
    "slug": "next-js",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "name": "Next.js",
    "category": "tools",
    "evidence": [
@@ -3261,7 +3261,7 @@
   {
    "id": "skill-0030",
    "slug": "node-js",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "name": "Node.js",
    "category": "tools",
    "evidence": [
@@ -3276,7 +3276,7 @@
   {
    "id": "skill-0031",
    "slug": "opencv",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "name": "OpenCV",
    "category": "tools",
    "evidence": [
@@ -3286,7 +3286,7 @@
   {
    "id": "skill-0032",
    "slug": "pdf-js",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "name": "PDF.js",
    "category": "tools",
    "evidence": [
@@ -3296,7 +3296,7 @@
   {
    "id": "skill-0033",
    "slug": "postgresql",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "name": "PostgreSQL",
    "category": "tools",
    "evidence": [
@@ -3310,7 +3310,7 @@
   {
    "id": "skill-0034",
    "slug": "prisma",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "name": "Prisma",
    "category": "tools",
    "evidence": [
@@ -3320,7 +3320,7 @@
   {
    "id": "skill-0035",
    "slug": "puppeteer",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "name": "Puppeteer",
    "category": "tools",
    "evidence": [
@@ -3330,7 +3330,7 @@
   {
    "id": "skill-0036",
    "slug": "python",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "name": "Python",
    "category": "language",
    "evidence": [
@@ -3343,7 +3343,7 @@
   {
    "id": "skill-0037",
    "slug": "react",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "name": "React",
    "category": "tools",
    "evidence": [
@@ -3371,7 +3371,7 @@
   {
    "id": "skill-0038",
    "slug": "react-flow",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "name": "React Flow",
    "category": "tools",
    "evidence": [
@@ -3381,7 +3381,7 @@
   {
    "id": "skill-0039",
    "slug": "react-router",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "name": "React Router",
    "category": "tools",
    "evidence": [
@@ -3391,7 +3391,7 @@
   {
    "id": "skill-0040",
    "slug": "recharts",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "name": "Recharts",
    "category": "tools",
    "evidence": [
@@ -3401,7 +3401,7 @@
   {
    "id": "skill-0041",
    "slug": "redis",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "name": "Redis",
    "category": "tools",
    "evidence": [
@@ -3411,7 +3411,7 @@
   {
    "id": "skill-0042",
    "slug": "sentence-transformers",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "name": "Sentence Transformers",
    "category": "tools",
    "evidence": [
@@ -3421,7 +3421,7 @@
   {
    "id": "skill-0043",
    "slug": "service-workers",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "name": "Service Workers",
    "category": "tools",
    "evidence": [
@@ -3432,7 +3432,7 @@
   {
    "id": "skill-0044",
    "slug": "socket-io",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "name": "Socket.IO",
    "category": "tools",
    "evidence": [
@@ -3442,7 +3442,7 @@
   {
    "id": "skill-0045",
    "slug": "solidity",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "name": "Solidity",
    "category": "language",
    "evidence": [
@@ -3453,7 +3453,7 @@
   {
    "id": "skill-0046",
    "slug": "spring-boot",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "name": "Spring Boot",
    "category": "tools",
    "evidence": [
@@ -3463,7 +3463,7 @@
   {
    "id": "skill-0047",
    "slug": "spring-data-jpa",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "name": "Spring Data JPA",
    "category": "tools",
    "evidence": [
@@ -3473,7 +3473,7 @@
   {
    "id": "skill-0048",
    "slug": "sql",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "name": "SQL",
    "category": "language",
    "evidence": [
@@ -3483,7 +3483,7 @@
   {
    "id": "skill-0049",
    "slug": "sqlite",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "name": "SQLite",
    "category": "tools",
    "evidence": [
@@ -3493,7 +3493,7 @@
   {
    "id": "skill-0050",
    "slug": "tailwind-css",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "name": "Tailwind CSS",
    "category": "tools",
    "evidence": [
@@ -3515,7 +3515,7 @@
   {
    "id": "skill-0051",
    "slug": "transformers-js",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "name": "Transformers.js",
    "category": "tools",
    "evidence": [
@@ -3525,7 +3525,7 @@
   {
    "id": "skill-0052",
    "slug": "typescript",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "name": "TypeScript",
    "category": "language",
    "evidence": [
@@ -3539,7 +3539,7 @@
   {
    "id": "skill-0053",
    "slug": "vite",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "name": "Vite",
    "category": "tools",
    "evidence": [
@@ -3557,7 +3557,7 @@
   {
    "id": "skill-0054",
    "slug": "yolo",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "name": "YOLO",
    "category": "tools",
    "evidence": [
@@ -3569,7 +3569,7 @@
   {
    "id": "art-0001",
    "slug": "student-patent-guide",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "title": "How Anyone Can Protect Their Big Idea: A Student Guide to Filing Patents",
    "type": "article",
    "category": "articles",
@@ -3581,7 +3581,7 @@
   {
    "id": "art-0002",
    "slug": "presentation-blueprint",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "title": "Your Idea Won’t Speak for Itself; Your Presentation Will. Build It Right.",
    "type": "article",
    "category": "articles",
@@ -3593,7 +3593,7 @@
   {
    "id": "art-0003",
    "slug": "hacktoberfest-student-guide",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "title": "From Zero to Contributor: A Student’s Guide to Conquering Hacktoberfest",
    "type": "article",
    "category": "articles",
@@ -3605,7 +3605,7 @@
   {
    "id": "art-0004",
    "slug": "buildlog-series",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "title": "BuildLog — Project Walkthroughs",
    "type": "build-log",
    "category": "builds",
@@ -3617,7 +3617,7 @@
   {
    "id": "soc-0001",
    "slug": "github",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "platform": "github",
    "url": "https://github.com/URAYUSHJAIN",
    "handle": "URAYUSHJAIN"
@@ -3625,7 +3625,7 @@
   {
    "id": "soc-0002",
    "slug": "linkedin",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "platform": "linkedin",
    "url": "https://www.linkedin.com/in/urayushjain/",
    "handle": "urayushjain"
@@ -3633,7 +3633,7 @@
   {
    "id": "soc-0003",
    "slug": "x",
-   "visibility": "needs-owner-review",
+   "visibility": "public-approved",
    "platform": "x",
    "url": "https://x.com/urayushjain",
    "handle": "urayushjain"

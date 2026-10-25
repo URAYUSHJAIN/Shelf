@@ -1,6 +1,7 @@
 ---
 import '../styles/shelf.css';
 import '../styles/panels.css';
+import '../styles/laptop.css';
 import { site, REVIEW_MODE } from '../data/site';
 
 interface Props {
@@ -14,7 +15,7 @@ const ogImage = site.origin ? new URL('/og/the-shelf-preview.png', site.origin).
 const canonical = site.origin ? new URL(Astro.url.pathname, site.origin).href : null;
 ---
 <!doctype html>
-<html lang="en" data-lamp="on">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -39,9 +40,6 @@ const canonical = site.origin ? new URL(Astro.url.pathname, site.origin).href : 
       (function () {
         var d = document.documentElement;
         d.classList.add('js');
-        try {
-          if (localStorage.getItem('shelf-lamp') === 'off') d.setAttribute('data-lamp', 'off');
-        } catch (e) {}
       })();
     </script>
   </head>

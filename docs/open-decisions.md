@@ -32,12 +32,16 @@ When the owner decides, update the entry's **Status** to `decided (YYYY-MM-DD): 
 | D-24 | Public résumé variant                                                | open — blocks the laptop's résumé items                                                      |
 | D-25 | Instagram (and other unverified) profile URLs                        | open                                                                                         |
 | D-26 | Rubik's cube manipulation level                                      | open (Level 1 default)                                                                       |
-| D-27 | Lamp default state and persistence                                   | open (on, per session)                                                                       |
+| D-27 | Lamp default state and persistence                                   | decided 2026-10-25: always lit, no switch                                                    |
 | D-28 | DistrictD public role label and type                                 | open                                                                                         |
 | D-29 | Which credentials to show                                            | open                                                                                         |
 | D-30 | Patent wording and co-inventor display                               | open                                                                                         |
 | D-31 | Academic results (CGPA) publication                                  | open (not published)                                                                         |
 | D-32 | Owner-authorized phase redefinition                                  | decided 2026-10-24: preparation in Phase 2, implementation in Phase 3, deployment in Phase 4 |
+| D-38 | Physical materials and permanent decorative lighting                 | decided 2026-10-25: owner-authorized realism pass; laptop preserved |
+| D-39 | Live portfolio inside the laptop screen                              | decided 2026-10-25: interactive, scrollable iframe approved |
+| D-40 | Desk speaker replaces three decorations                             | decided 2026-10-25: original SVG inspired by a view-only Editorial model |
+| D-41 | Left desk plant reference and placement                              | decided 2026-10-25: adapt CodePen's stem and leaf silhouette, move plant left |
 
 ---
 
@@ -207,7 +211,8 @@ Resolved by the owner’s exact instruction (D-34): About Me · Projects · Pate
 
 ### D-27 Lamp default and persistence
 
-- **Default:** on at load (matches the board), with the state remembered for the session only. Alternative: remember across visits (`localStorage`), or default to off.
+- **Status:** decided (2026-10-25): the owner removed the ON/OFF control. The lamp is a decorative object with a permanent, subtle warm glow; there is no lamp state to persist.
+- **Affects:** [physics-and-interactions.md](physics-and-interactions.md) §3/§4.2, [design.md](design.md) §4.4, [micro-interactions.md](micro-interactions.md) §8.13 and R-56/T-PHY-09. Any historical switch instructions are superseded by this entry.
 
 ### D-28 DistrictD public label
 
@@ -264,3 +269,47 @@ Resolved by the owner’s exact instruction (D-34): About Me · Projects · Pate
 - **Book spines:** Blogs → articles, Notes → BuildLog walkthrough videos inside project folders, Ideas → invention-application records, Album → an explicit empty state (no approved photographs).
 - **Laptop and pen** are surfaces at `/laptop/` and `/contact/` (noindex) instead of a `history.state` marker, so they work without JavaScript. The pen prepares a message in the visitor's own mail app; nothing is sent by the site.
 - "Curiosity lives here." and "MAKE • LEARN • REPEAT" are decorative scene text from the latest reference, not factual claims.
+
+### D-37 Physical drawer interaction
+
+- **Owner request (2026-10-25):** implement the supplied six-section Drawer Interaction Specification in the existing Astro cabinet. It supersedes detached drawer panels, generic mobile sheets and earlier front-only pull distances. Preserve the eight drawers, existing data, illustrated palette and other scene objects.
+- The entire drawer assembly pulls out: original front/handle, side and rear walls, bottom and content. Keep the cabinet slot stationary and expose its recess. Use browser-native transforms and perspective, without added dependencies.
+- Counts and filters still come from the existing records; sample reference names and numbers do not authorize new content or publication. D-35 remains in force.
+- Owning implementation contracts: [micro-interactions.md](micro-interactions.md) §5.1 and [responsive-design.md](responsive-design.md) §6.1. This is local Phase 3 maintenance; no deployment or Git mutation is authorized.
+
+### D-38 Realistic study-desk materials
+
+- **Decided (2026-10-25):** the owner requests more physically believable construction, materials, proportion and lighting in the existing scene. This supersedes §3.1's earlier restriction against realistic wood. Retain the warm handcrafted character, exact eight drawers, real records, search, filters, writing categories and verified links.
+- Preserve the laptop's source, physical design, position, dimensions, keyboard, trackpad, hinge and screen behaviour. No new dependencies or rendering engine. Reaffirm D-27: the lamp is permanently lit and decorative, with no toggle, stored state or pointer-following light.
+- Implementation uses connected lamp arms and recessed reflector/bulb geometry, directional wood grain and joinery, ceramic rims, paper edges, glass highlights, a shaded globe and deterministic foliage variation. Desktop plant placement keeps the pot on the crown and foliage clear of the portrait, drawers and checklist. The existing portrait is resolved through Astro's local asset import in development; D-35 still controls publication.
+- **Task-specific execution exception:** the owner explicitly prohibited builds, tests, screenshots, browser checks, dev-server restarts and `git diff`. None were run for this pass. This supersedes AGENTS §9 for this task only; visual quality, responsiveness, release output and interactions remain unverified at runtime.
+- Local Phase 3 maintenance only. No content approvals, uploads, deployment or Git mutations. Owning specifications: [design.md](design.md) §3.1 and [physics-and-interactions.md](physics-and-interactions.md) §3/§4.2.
+
+### D-39 Live portfolio in the laptop
+
+- **Decided (2026-10-25):** the owner explicitly requests `urayushjain.tech` open inside the laptop screen, scrollable and usable as a website. This supersedes the original link-only/no-iframe rule and D-38's screen-content preservation restriction. Laptop geometry, keyboard layout, placement and hinge remain unchanged.
+- Use the existing HTTPS original-portfolio URL, which redirects to `https://www.urayushjain.tech/`. A read-only header request on 2026-10-25 returned 200 with no `X-Frame-Options` or CSP `frame-ancestors` restriction. This is header evidence, not a successful browser-rendering test.
+- Load on laptop opening (including a direct `/laptop/` visit), with native iframe scrolling, clicks and keyboard input. Measure the untransformed screen viewport and apply a numeric scale to a 1024px-or-wider browsing viewport; derive its height from available screen height so it fills the display.
+- Keep a parent-owned Close action and Open in tab fallback visible. Closed screen content is inert. Escape is handled by the parent only when focus is outside the remote document; no cross-origin interception or synthetic input forwarding. Illustrated letter keys operate the separate Shelf search view; Home returns to the portfolio. Clicking the illustrated trackpad focuses the iframe; wheel/touch scrolling occurs directly over the screen.
+- A sandbox permits the site's scripts, same-origin storage, forms, downloads and new-tab links, but not top-level navigation. Do not proxy, copy or alter the old portfolio, and do not treat its content as newly approved Shelf records. CSP's documented `frame-src` exception is limited to the portfolio origin; `frame-ancestors 'none'` remains unchanged.
+- Source changes only, with the earlier no-build/no-test/no-browser-check instruction retained. Public-header inspection passed after the sandbox network attempt failed. No dependencies, uploads, Git mutations or deployment; local Phase 3 maintenance.
+
+### D-40 Desk speaker
+
+- **Decided (2026-10-25):** the owner requests one portable speaker on the right desk in place of the pen holder, lantern and decorative stacked desk books. The functional contact pen, mug, steam, handwritten desk text, laptop, cabinet and content remain.
+- **Reference review:** the [exact Sketchfab model](https://sketchfab.com/3d-models/portable-bluetooth-speaker-cdf5e9a6882d48b69f50849a24bd2b6b) is credited to ME.RROR Studio. Its [public model metadata](https://api.sketchfab.com/v3/models/cdf5e9a6882d48b69f50849a24bd2b6b) reports `isDownloadable: false` and an **Editorial** license limited to newsworthy or public-interest events. The published thumbnail was viewed only as design reference in a temporary local file; no model, thumbnail, texture, brand mark or viewer is used by the site.
+- **Implementation:** one original inline SVG, informed by the visible rounded dark cabinet, fine woven grille, brown metal trim and shallow top controls. It has two feet and a compact contact shadow. It is decorative, static and hidden from assistive technology; no invented audio or Bluetooth feature. The object sits beyond the mug and above the handwritten desk text. The existing smaller-screen rule still omits decorative desk objects.
+- **Execution:** local Phase 3 maintenance, no new dependency or service. The owner's explicit no-build/no-test/no-browser-check/no-screenshot/no-`git diff` instruction applies to this task; runtime appearance is not verified. No Git mutation or deployment.
+
+### D-41 Left desk plant
+
+- **Decided (2026-10-25):** the owner asked to use [Ismail Vtl's Plant Animation](https://codepen.io/ismailvtl/pen/wvQYGay) as the look for the left desk plant and move it a little left.
+- The desk plant now has several arching stems and small, narrow leaves, drawn as original inline SVG using the site's existing vine geometry and leaf gradients. Its warm cream ceramic pot remains on the wood surface. No CodePen code, image, dependency or remote embed is shipped.
+- Desktop x-position changes from `-72` to `-82` scene units; the low right sprig is shortened so it clears the social plaque. The existing finite sway and reduced-motion rule remain; no continuous animation is introduced.
+- Local Phase 3 maintenance only. No build, tests, browser checks, screenshots, Git mutations or deployment were performed under the owner's standing task preference.
+
+### D-42 Owner-supplied realistic desk reference
+
+- **Decided (2026-10-25):** the owner requests the newly supplied photoreal desk image as the visual direction for the existing Astro scene. Follow its warmer wall light, deeper wood desk, taller cabinet, framed left portrait, and cork-backed note. The established eight drawers, real content, laptop behaviour, open writing book, speaker, mug and steam remain.
+- The portrait reuses the existing publication-gated asset and is decorative on the left wall. The sample checklist text and branded speaker in the image do not establish real current projects or authorize use of a logo. Pinned links still come from verified records, and the cork board is hidden when no links qualify. The functional contact pen rests over the book; the extra wall prints and desk lettering are visually omitted on desktop.
+- Owning specifications: [design.md](design.md) §3.1, [responsive-design.md](responsive-design.md) §4 and [physics-and-interactions.md](physics-and-interactions.md) §3. This is local Phase 3 maintenance. The owner's standing task preference excludes builds, tests, browser checks, screenshots, dev-server restarts and `git diff`; no deployment or Git mutation is authorized.

@@ -97,7 +97,7 @@ Reporting: path, line, and category only, never the value. Findings in source fo
 
 - External links: `target="_blank" rel="noopener noreferrer"` plus a visible new-tab indicator.
 - URL validation at build time (`src/lib/urls.ts`): only `https:` (and `mailto:` for the contact link). Reject `javascript:`, `data:`, `vbscript:`, and `http:` (unless the owner explicitly approves a specific URL). Repo links are allowlisted to `github.com`.
-- No third-party widgets or iframes at launch. If a video platform embed is ever approved, load it on click only, use a privacy-enhanced embed domain where the provider offers one, and add that origin to the CSP `frame-src` only.
+- No third-party widgets or iframes except the owner-approved original portfolio (D-39), loaded on laptop opening/direct `/laptop/` visits. If a video platform embed is ever approved, load it on click only, use a privacy-enhanced embed domain where the provider offers one, and add that origin to the CSP `frame-src` only.
 - Never embed private repo, drive, or document URLs.
 
 ## 8. HTTP, HTTPS, and headers
@@ -134,11 +134,11 @@ object-src 'none';
 base-uri 'self';
 form-action 'self';
 frame-ancestors 'none';
-frame-src 'none';
+frame-src https://www.urayushjain.tech;
 upgrade-insecure-requests
 ```
 
-- `frame-src 'none'` reflects the decision that the laptop **never iframes** the original portfolio ([physics-and-interactions.md](physics-and-interactions.md) §4.3). Opening a link in a new tab needs no CSP change.
+- D-39 permits only the original portfolio origin in `frame-src`. The iframe uses `referrerpolicy="no-referrer"` and a sandbox allowing scripts, same-origin storage, forms, downloads and new-tab links; top-level navigation remains disallowed. The parent cannot read or control the remote DOM. Keep the Open in tab fallback and parent Close action available. This updates the deployment policy; no hosting headers or deployment are changed in Phase 3.
 - The WebGL globe needs no CSP exception (same-origin script, `img-src 'self'` texture). A `blob:` worker or `wasm` is not used.
 
 - Astro may inline small scripts or styles depending on configuration. Prefer bundling them as external files. If inline code is unavoidable, use hashes (Astro's experimental or stable CSP support, if present in the installed version, can generate them). **Never** add `'unsafe-eval'`. Add `'unsafe-inline'` only as a documented, time-boxed exception with an owner sign-off.
@@ -194,7 +194,7 @@ upgrade-insecure-requests
 - **Analytics:** none at launch (D-09). If approved later: cookieless, no fingerprinting, no personal data in events, IP anonymized or not stored, documented in a short privacy note, and the origin added to CSP `connect-src`/`script-src` explicitly.
 - **Contact:** pen composer with mail-app/copy fallback (D-08). No delivery endpoint is configured. Do not log or persist message text; never claim sent from a mailto action. The public email address is the owner-approved one only. Obfuscation is optional (it does not stop determined scrapers).
 - **If a form is approved later:** server-side validation, rate limiting, a privacy-respecting challenge, a honeypot field, no storage in static assets, credentials only in the host secret store, and a data-handling note.
-- No third-party requests at page load at launch (T-SEC-08).
+- No third-party requests on the closed home scene (T-SEC-08). D-39 permits the live portfolio's requests after laptop opening, including an explicit direct `/laptop/` visit; the remote site's own network activity is outside the parent CSP's control.
 
 ## 14. Logging
 

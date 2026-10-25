@@ -2,6 +2,7 @@
 // State is always derived from the URL; every control is a real link or is
 // enhanced from a non-interactive element, so nothing is dead without JS.
 import { initGlobe } from './globe';
+import { initLaptop } from './laptop';
 
 type State = { surface: string | null; record: string | null; params: URLSearchParams; hash: string };
 
@@ -14,6 +15,9 @@ const $$ = <T extends Element = HTMLElement>(sel: string, root: ParentNode = doc
 const stage = $('[data-scene]')!;
 const baseTitle = 'The Shelf — Ayush Jain';
 let lastTrigger: HTMLElement | null = null;
+const laptopEl = $('[data-laptop]');
+let laptop: ReturnType<typeof initLaptop> | null = null;
+const surfaceEl = (surface: string) => (surface === 'laptop' ? laptopEl : $(`[data-surface="${surface}"]`));
 let current: State = parse(location.href);
 
 function parse(href: string): State {
@@ -30,9 +34,111 @@ function parse(href: string): State {
 
 /* ---------------- Rendering ---------------- */
 
-function render(state: State, focus: 'move' | 'none' = 'move') {
+// The original front is temporarily housed with its tray. Its empty slot stays
+// in the cabinet, preserving layout and exposing the recessed cavity.
+let mounted: HTMLElement | null = null;
+let renderVersion = 0;
+let drawerMotion: Animation[] = [];
+let closedTransform = '';
+let closedClip = '';
+const openTransform = 'translate3d(0, 0, 0) rotateX(var(--tray-angle, 7deg))';
+
+function placeDrawer(panel: HTMLElement) {
+  const slot = $(`[data-drawer-slot="${panel.dataset.surface}"]`)!;
+  const front = $('.drawer', panel) ?? $('.drawer', slot)!;
+  const rect = slot.getBoundingClientRect();
+  const mobile = !desktopMQ.matches;
+  const viewport = window.visualViewport;
+  const vh = viewport?.height ?? innerHeight;
+  const vw = viewport?.width ?? innerWidth;
+  const offsetTop = viewport?.offsetTop ?? 0;
+  const frontHeight = rect.height;
+  const width = mobile ? Math.min(640, vw - 24) : Math.min(590, vw - 48);
+  const left = mobile ? (vw - width) / 2 : Math.max(24, Math.min(vw - width - 24, rect.left + rect.width / 2 - width / 2));
+  // Desktop keeps the tray's rear at its slot. Narrow screens use a framed
+  // wooden tray with an internal scroll area, keeping all controls in reach.
+  const top = mobile ? offsetTop + 34 : Math.max(32, Math.min(rect.top + 28, vh - 280));
+  const depth = mobile ? Math.max(100, vh - frontHeight - 86) : Math.min(465, vh - top - frontHeight - 38);
+  panel.style.cssText = `--u:${getComputedStyle(slot).getPropertyValue('--u')};--tray-angle:${mobile ? 2 : 7}deg;--tray-depth:${depth}px;--front-height:${frontHeight}px;left:${left}px;top:${top}px;width:${width}px;height:${depth + frontHeight + 18}px`;
+  closedTransform = `translate3d(${rect.left - left}px, ${rect.top - top - depth}px, 0) scaleX(${rect.width / width})`;
+  closedClip = `inset(${rect.top - top - 4}px -40px -40px -40px)`;
+  $('.drawer-front-mount', panel)!.append(front);
+  slot.classList.add('is-vacant');
+  panel.classList.add('is-mounted');
+  front.setAttribute('aria-label', `Close ${$('.drawer__label', front)!.textContent}`);
+}
+
+async function animateDrawer(panel: HTMLElement, open: boolean, instant = false) {
+  const assembly = $('.drawer-assembly', panel)!;
+  const from = getComputedStyle(assembly).transform;
+  const clip = getComputedStyle(panel).clipPath;
+  drawerMotion.forEach((a) => a.cancel());
+  const duration = instant || reduceMQ.matches ? 0 : open ? 460 : 300;
+  panel.dataset.phase = open ? 'opening' : 'closing';
+  // Freeze only the content, so pressing the original front can reverse a pull.
+  $('.panel__sheet', panel)!.inert = true;
+  const motion = assembly.animate([
+    { transform: from === 'none' ? closedTransform : from },
+    { transform: open ? openTransform : closedTransform },
+  ], { duration, easing: 'cubic-bezier(.22,.8,.24,1)', fill: 'forwards' });
+  const reveal = panel.animate([
+    { clipPath: clip === 'none' ? closedClip : clip },
+    { clipPath: open ? 'inset(-24px -40px -40px -40px)' : closedClip },
+  ], { duration, easing: 'cubic-bezier(.22,.8,.24,1)', fill: 'forwards' });
+  drawerMotion = [motion, reveal];
+  try { await Promise.all(drawerMotion.map((a) => a.finished)); } catch { return; }
+  assembly.style.transform = open ? openTransform : closedTransform;
+  panel.style.clipPath = open ? 'inset(-24px -40px -40px -40px)' : closedClip;
+  drawerMotion.forEach((a) => a.cancel());
+  drawerMotion = [];
+  panel.dataset.phase = open ? 'open' : 'closed';
+  $('.panel__sheet', panel)!.inert = !open;
+}
+
+function restoreDrawer(panel: HTMLElement) {
+  const slot = $(`[data-drawer-slot="${panel.dataset.surface}"]`)!;
+  const front = $('.drawer', panel)!;
+  slot.append(front);
+  slot.classList.remove('is-vacant');
+  front.removeAttribute('aria-label');
+  panel.classList.remove('is-mounted');
+  panel.removeAttribute('style');
+  $('.drawer-assembly', panel)!.removeAttribute('style');
+  panel.hidden = true;
+  mounted = null;
+}
+
+async function render(state: State, focus: 'move' | 'none' = 'move', instant = false) {
+  const version = ++renderVersion;
   const prev = current;
   current = state;
+  laptop?.sync(state.surface === 'laptop', instant);
+  laptop?.fit();
+  const next = state.surface ? $(`[data-drawer-surface="${state.surface}"]`) : null;
+  if (mounted && mounted !== next) {
+    const closing = mounted;
+    await animateDrawer(closing, false, instant);
+    if (version !== renderVersion) return;
+    restoreDrawer(closing);
+  }
+  if (version !== renderVersion) return;
+  renderContent(state, 'none', prev);
+  if (next) {
+    if (mounted !== next) {
+      mounted = next;
+      placeDrawer(next);
+      $('.drawer-assembly', next)!.style.transform = closedTransform;
+      next.style.clipPath = closedClip;
+    } else if (instant) {
+      placeDrawer(next);
+    }
+    if (next.dataset.phase !== 'open' || instant) await animateDrawer(next, true, instant);
+    if (version !== renderVersion) return;
+  }
+  renderContent(state, focus, prev);
+}
+
+function renderContent(state: State, focus: 'move' | 'none', prev: State) {
   const modal = !desktopMQ.matches;
 
   for (const panel of $$('[data-surface]')) {
@@ -51,17 +157,28 @@ function render(state: State, focus: 'move' | 'none' = 'move') {
   for (const el of $$('[data-nav]')) {
     const nav = el.dataset.nav;
     const isDrawer = el.classList.contains('drawer');
-    if (nav && nav !== 'home' && !el.closest('[data-panels]') && !el.classList.contains('chip') && !el.closest('.note')) {
+    if (nav && nav !== 'home' && !el.closest('[data-panels], .lt-ui') && !el.classList.contains('chip') && !el.closest('.note')) {
       if (nav === state.surface) el.setAttribute('aria-current', isDrawer ? 'page' : 'true');
       else el.removeAttribute('aria-current');
     }
   }
   for (const d of $$('.drawer')) d.setAttribute('aria-expanded', String(d.dataset.nav === state.surface));
-  $('.laptop')?.classList.toggle('is-open', state.surface === 'laptop');
+  const laptopOpen = state.surface === 'laptop';
+  if (laptopEl) {
+    if (laptopOpen) {
+      laptopEl.setAttribute('role', modal ? 'dialog' : 'region');
+      laptopEl.setAttribute('aria-labelledby', 'laptop-title');
+      modal ? laptopEl.setAttribute('aria-modal', 'true') : laptopEl.removeAttribute('aria-modal');
+    } else {
+      for (const a of ['role', 'aria-labelledby', 'aria-modal']) laptopEl.removeAttribute(a);
+    }
+  }
 
-  // Background is inert while a modal sheet is open (tablet/mobile).
+  // Background is inert while a modal sheet is open (tablet/mobile). The
+  // laptop overlay lives inside the stage, so only its surroundings go inert.
   const inertBg = !!state.surface && modal;
-  stage.inert = inertBg;
+  stage.inert = inertBg && !laptopOpen;
+  isolate(inertBg && laptopOpen ? laptopEl : null);
   document.body.style.overflow = inertBg ? 'hidden' : '';
 
   if (state.surface === 'projects') renderProjects(state);
@@ -76,11 +193,11 @@ function render(state: State, focus: 'move' | 'none' = 'move') {
   if (prev.record && prev.record !== state.record) pauseVideos();
   if (prev.surface !== state.surface) pauseVideos();
 
-  const panel = state.surface ? $(`[data-surface="${state.surface}"]`) : null;
+  const panel = state.surface ? surfaceEl(state.surface) : null;
   const recordTitle = state.record ? $(`#record-${CSS.escape(state.record)}-title`) : null;
-  const heading = $('.panel__title', panel ?? document);
+  const heading = laptopOpen ? laptop?.title() ?? null : $('.panel__title', panel ?? document);
   document.title = state.surface
-    ? `${recordTitle?.textContent ?? heading?.textContent ?? ''} — The Shelf · Ayush Jain`
+    ? `${laptopOpen ? 'Laptop' : recordTitle?.textContent ?? heading?.textContent ?? ''} — The Shelf · Ayush Jain`
     : baseTitle;
 
   if (focus === 'none') return;
@@ -92,7 +209,7 @@ function render(state: State, focus: 'move' | 'none' = 'move') {
       folder?.focus();
     }
     if (target === heading) $('.panel__body', panel)?.scrollTo({ top: 0 });
-  } else if (prev.surface && !state.surface) {
+  } else if (prev.surface && !state.surface && prev.surface !== 'laptop') {
     const back =
       (lastTrigger && document.contains(lastTrigger) && !lastTrigger.closest('[data-panels]') ? lastTrigger : null) ??
       $(`.drawer[data-nav="${prev.surface}"]`) ??
@@ -101,9 +218,23 @@ function render(state: State, focus: 'move' | 'none' = 'move') {
   }
 }
 
+let inertAround: HTMLElement[] = [];
+function isolate(el: HTMLElement | null) {
+  for (const n of inertAround) n.inert = false;
+  inertAround = [];
+  for (let n = el; n && n !== document.body; n = n.parentElement) {
+    for (const sib of Array.from(n.parentElement?.children ?? [])) {
+      if (sib !== n && sib instanceof HTMLElement && !sib.inert) {
+        sib.inert = true;
+        inertAround.push(sib);
+      }
+    }
+  }
+}
+
 function navigate(href: string, trigger?: HTMLElement | null, replace = false) {
   const next = parse(href);
-  if (trigger && !trigger.closest('[data-panels]')) lastTrigger = trigger;
+  if (trigger && !trigger.closest('[data-panels]')) lastTrigger = trigger.closest('.lt-ui') && laptop ? laptop.trigger : trigger;
   const url = new URL(href, location.href);
   const same = url.pathname + url.search + url.hash === location.pathname + location.search + location.hash;
   if (!same) history[replace ? 'replaceState' : 'pushState']({ shelf: true }, '', url);
@@ -123,6 +254,7 @@ function renderProjects(state: State) {
     const q = state.params.get('q') ?? '';
     const group = state.params.get('group') ?? 'all';
     if (searchEl && document.activeElement !== searchEl) searchEl.value = q;
+    if (q) $('#panel-projects')?.classList.add('is-searching');
     applyFilter(q, group);
   }
 }
@@ -152,6 +284,11 @@ function updateProjectQuery(q: string | null, group: string | null) {
 }
 
 searchEl?.addEventListener('input', () => updateProjectQuery(searchEl.value, null));
+$('[data-focus-search]')?.addEventListener('click', () => {
+  if (current.record) navigate(`/projects/${location.search}`);
+  $('#panel-projects')?.classList.add('is-searching');
+  searchEl?.focus();
+});
 for (const b of $$('.filter')) b.addEventListener('click', () => updateProjectQuery(null, b.dataset.group ?? 'all'));
 
 function pauseVideos(except?: HTMLVideoElement) {
@@ -163,7 +300,8 @@ document.addEventListener('play', (e) => pauseVideos(e.target as HTMLVideoElemen
 
 const tabs = $$('[role="tab"][data-tab]');
 function selectTab(id: string, focus: boolean) {
-  if (!tabs.some((t) => t.dataset.tab === id)) id = 'blogs';
+  const validBook = $$<HTMLElement>('[data-tabpanel]').some((p) => p.dataset.tabpanel === id);
+  if (!validBook) id = 'blogs';
   for (const t of tabs) {
     const on = t.dataset.tab === id;
     t.setAttribute('aria-selected', String(on));
@@ -199,81 +337,48 @@ document.addEventListener('click', (e) => {
   e.preventDefault();
   const nav = a.dataset.nav!;
   if (nav === 'home') return navigate('/', a);
-  if (nav === current.surface && a.closest('.g-cabinet, .g-top, .g-desk') && !a.dataset.tab) {
+  if (nav === current.surface && (a.classList.contains('drawer') || a.closest('.g-cabinet, .g-top, .g-desk')) && !a.dataset.tab) {
     return navigate('/', a); // pressing an open drawer closes it
   }
-  navigate(a.getAttribute('href')!, a);
+  const href = new URL(a.getAttribute('href')!, location.href);
+  if (current.surface === 'projects' && a.matches('.folder, .back')) href.search = current.params.toString();
+  navigate(href.href, a);
 });
 
-window.addEventListener('popstate', () => render(parse(location.href), 'none'));
+window.addEventListener('popstate', () => render(parse(location.href), 'move', true));
 
 document.addEventListener('keydown', (e) => {
+  if (e.defaultPrevented) return; // handled by a focused control (e.g. the laptop field clearing its text)
+  if (e.key === ' ' && (e.target as Element).matches('.drawer')) {
+    e.preventDefault();
+    (e.target as HTMLElement).click();
+    return;
+  }
+  if (e.key === 'Tab' && current.surface && !desktopMQ.matches) {
+    const panel = surfaceEl(current.surface)!;
+    const controls = $$<HTMLElement>('a[href], button, input, select, textarea, [tabindex="0"]', panel)
+      .filter((el) => !el.closest('[hidden], [inert]') && !el.matches(':disabled') && el.getClientRects().length);
+    const first = controls[0];
+    const last = controls.at(-1);
+    if (first && last && (e.shiftKey ? document.activeElement === first || !controls.includes(document.activeElement as HTMLElement) : document.activeElement === last)) {
+      e.preventDefault();
+      (e.shiftKey ? last : first).focus();
+    }
+  }
   if (e.key !== 'Escape' || !current.surface) return;
-  if ((e.target as Element).closest?.('video, input, textarea') && (e.target as HTMLInputElement).value) return;
   e.preventDefault();
-  navigate('/');
+  navigate(current.record ? `/projects/${location.search}` : '/');
 });
 
-desktopMQ.addEventListener('change', () => render(current, 'none'));
-
-/* ---------------- Enhanced controls (role=button on decorative objects) ---------------- */
-
-function asButton(el: HTMLElement, label: string, onActivate: () => void, pressed?: boolean) {
-  el.setAttribute('role', 'button');
-  el.tabIndex = 0;
-  el.setAttribute('aria-label', label);
-  if (pressed !== undefined) el.setAttribute('aria-pressed', String(pressed));
-  el.addEventListener('click', onActivate);
-  el.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      onActivate();
-    }
-  });
+let resizeFrame = 0;
+function refitDrawer() {
+  cancelAnimationFrame(resizeFrame);
+  resizeFrame = requestAnimationFrame(() => render(current, 'none', true));
 }
+window.addEventListener('resize', refitDrawer);
+window.visualViewport?.addEventListener('resize', refitDrawer);
 
-// Lamp: object and switch share one state.
-const root = document.documentElement;
-const lampObj = $('[data-control="lamp"]');
-const lampSwitch = $('[data-lamp-switch]');
-function setLamp(on: boolean) {
-  root.dataset.lamp = on ? 'on' : 'off';
-  lampSwitch?.setAttribute('aria-checked', String(on));
-  lampObj?.setAttribute('aria-pressed', String(on));
-  try {
-    localStorage.setItem('shelf-lamp', on ? 'on' : 'off');
-  } catch {}
-}
-const lampOn = () => root.dataset.lamp !== 'off';
-if (lampObj) asButton(lampObj, 'Desk lamp', () => setLamp(!lampOn()), lampOn());
-lampSwitch?.addEventListener('click', () => setLamp(!lampOn()));
-setLamp(lampOn());
-
-// Rubik's cube: quarter turns of the whole cube; arrow keys pick the axis.
-const cubeWrap = $('[data-control="cube"]');
-const cube = $('[data-cube]');
-let turnX = 0;
-let turnY = 0;
-function turnCube(dx: number, dy: number) {
-  turnX += dx;
-  turnY += dy;
-  cube?.style.setProperty('--rx', `${-26 + turnX * 90}deg`);
-  cube?.style.setProperty('--ry', `${-38 + turnY * 90}deg`);
-}
-if (cubeWrap) {
-  let n = 0;
-  asButton(cubeWrap, 'Rubik’s cube: turn it (arrow keys choose the direction)', () => {
-    n++;
-    n % 3 === 0 ? turnCube(1, 0) : turnCube(0, 1);
-  });
-  cubeWrap.addEventListener('keydown', (e) => {
-    const map: Record<string, [number, number]> = { ArrowLeft: [0, -1], ArrowRight: [0, 1], ArrowUp: [1, 0], ArrowDown: [-1, 0] };
-    const m = map[e.key];
-    if (!m) return;
-    e.preventDefault();
-    turnCube(...m);
-  });
-}
+/* ---------------- Ambient desk motion ---------------- */
 
 // Plants sway once on load and again when the pointer brushes them.
 function playOnce(el: Element, cls: string) {
@@ -293,6 +398,13 @@ function steam() {
 }
 mug?.addEventListener('pointerenter', steam);
 steam();
+
+// A portrait that fails to load leaves the plain mat, never a broken-image icon.
+for (const img of $$<HTMLImageElement>('.frame img')) {
+  const empty = () => img.replaceWith(Object.assign(document.createElement('span'), { className: 'frame__empty' }));
+  if (img.complete && !img.naturalWidth) empty();
+  else img.addEventListener('error', empty, { once: true });
+}
 
 /* ---------------- Copy and contact ---------------- */
 
@@ -358,5 +470,16 @@ document.addEventListener(
 const globeEl = $('[data-globe]');
 if (globeEl) initGlobe(globeEl, reduceMQ.matches);
 
+if (laptopEl) {
+  laptop = initLaptop(laptopEl, {
+    navigate: (href, trigger) => navigate(href, trigger),
+    close: () => navigate('/'),
+    reduced: () => reduceMQ.matches,
+    overlay: () => !desktopMQ.matches,
+  });
+}
+
 // Direct loads render the URL state without moving focus.
-render(current, 'none');
+render(current, 'none', true);
+
+

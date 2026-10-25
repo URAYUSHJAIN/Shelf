@@ -1,6 +1,6 @@
 # The Shelf — Ayush Jain's Portfolio (portfolio2.0)
 
-**The Shelf** is an Astro-based personal portfolio presented as a physical workspace. Instead of pages and a navbar, visitors explore an illustrated shelf: drawers open into folders, and folders open into detailed project, patent, experience, and credential records. Every record also has its own stable, crawlable URL. Desk objects behave physically: a laptop opens to the résumé and the original portfolio, a lamp switches the scene's light, and a globe spins as a real sphere. The interface is monochrome; real project screenshots and video supply the colour.
+**The Shelf** is an Astro-based personal portfolio presented as a physical workspace. Instead of pages and a navbar, visitors explore an illustrated shelf: drawers open into folders, and folders open into detailed project, patent, experience, and credential records. Every record also has its own stable, crawlable URL. Desk objects behave physically: a laptop opens to the résumé and the original portfolio, a decorative lamp supplies permanent warm light (D-27), and a globe spins as a real sphere. The interface is monochrome; real project screenshots and video supply the colour.
 
 **Current state (2026-10-24):** The Phase 3 Astro 7.4.2 application is implemented (D-33, D-36). Publication decisions and factual verification gaps remain; see [phase-2-report.md](docs/reports/phase-2-report.md) and [docs/open-decisions.md](docs/open-decisions.md). Nothing is deployed.
 

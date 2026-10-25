@@ -131,8 +131,8 @@ Every critical requirement maps to at least one verification. Test definitions: 
 | R-52 | Visual composition matches the concept board, and no board sample text ships                      | design §0.1–§0.2                          | T-DES-07, T-DES-08                                    |
 | R-53 | Globe is a true sphere with bounded inertia and a keyboard alternative                            | physics §4.1                              | T-PHY-01, T-PHY-02, T-PHY-03                          |
 | R-54 | Drawer track limits; content follows logical state when interrupted                               | physics §4.9, design §0.0                 | T-PHY-04, T-PHY-12                                    |
-| R-55 | Laptop hinge, résumé access (approved variant only), original portfolio as a link (no iframe)     | physics §4.3, micro §8.12, security §11.1 | T-PHY-05, T-INT-12, T-SEC-10                          |
-| R-56 | Lamp switch with consistent lighting; UI contrast in both states                                  | physics §3, §4.2                          | T-PHY-08, T-PHY-09, T-A11Y-03                         |
+| R-55 | Laptop hinge, gated résumé, live scrollable portfolio and direct-link fallback (D-39)             | physics §4.3, micro §8.12, security §11.1 | T-PHY-05, T-INT-12, T-SEC-10                          |
+| R-56 | Permanent decorative lamp; consistent local lighting and readable UI (D-27, D-38)               | physics §3, §4.2                          | T-PHY-08, T-PHY-09, T-A11Y-03                         |
 | R-57 | Toy physics bounded and stable (pen, cube, plants); cube state consistent                         | physics §4.4–§4.7                         | T-PHY-06, T-PHY-07, T-PHY-11                          |
 | R-58 | Physics performance: idle loop stops; budgets; degradation                                        | physics §5–§6                             | T-PHY-10, T-PHY-15, T-PHY-16                          |
 | R-59 | Layout modes per viewport, zoom reflow, orientation                                               | responsive §1–§8                          | T-RWD-01 to T-RWD-10                                  |
