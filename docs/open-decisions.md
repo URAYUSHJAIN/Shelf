@@ -42,6 +42,7 @@ When the owner decides, update the entry's **Status** to `decided (YYYY-MM-DD): 
 | D-39 | Live portfolio inside the laptop screen                              | decided 2026-10-25: interactive, scrollable iframe approved |
 | D-40 | Desk speaker replaces three decorations                             | decided 2026-10-25: original SVG inspired by a view-only Editorial model |
 | D-41 | Left desk plant reference and placement                              | decided 2026-10-25: adapt CodePen's stem and leaf silhouette, move plant left |
+| D-43 | GSAP animation library and fitted viewport                           | decided 2026-10-25: GSAP drives all scripted motion; desktop never scrolls, no visible scrollbars |
 
 ---
 
@@ -313,3 +314,11 @@ Resolved by the owner’s exact instruction (D-34): About Me · Projects · Pate
 - **Decided (2026-10-25):** the owner requests the newly supplied photoreal desk image as the visual direction for the existing Astro scene. Follow its warmer wall light, deeper wood desk, taller cabinet, framed left portrait, and cork-backed note. The established eight drawers, real content, laptop behaviour, open writing book, speaker, mug and steam remain.
 - The portrait reuses the existing publication-gated asset and is decorative on the left wall. The sample checklist text and branded speaker in the image do not establish real current projects or authorize use of a logo. Pinned links still come from verified records, and the cork board is hidden when no links qualify. The functional contact pen rests over the book; the extra wall prints and desk lettering are visually omitted on desktop.
 - Owning specifications: [design.md](design.md) §3.1, [responsive-design.md](responsive-design.md) §4 and [physics-and-interactions.md](physics-and-interactions.md) §3. This is local Phase 3 maintenance. The owner's standing task preference excludes builds, tests, browser checks, screenshots, dev-server restarts and `git diff`; no deployment or Git mutation is authorized.
+
+### D-43 GSAP and fitted viewport
+
+- **Decided (2026-10-25):** the owner requires GSAP for the animations, an improved overall UX, and the site always opening fitted to the viewport with no scrollbar. This is a recorded exception to AGENTS.md §7's no-animation-library rule. `gsap` is pinned at 3.15.0 (core only, no plugins).
+- GSAP now drives the drawer pull and push (rebuilt for consistency: one reversible 500 ms ease-in-out timeline per drawer, contents fading in last and out first; see [micro-interactions.md](micro-interactions.md) §5.1), the laptop lift, the mobile/desktop sheet entrance, the plant sway and the mug steam. Plain CSS state transitions (hover, the laptop hinge, focus) stay in CSS. Every tween is one-shot and skipped under reduced motion; no loop is introduced.
+- The mug steam is a small raw-WebGL fragment shader (owner request), with the SVG wisps as the fallback; GSAP owns its time and intensity, so it draws frames only during a puff.
+- UX: project folders settle in (2px rise, 30 ms stagger, at most six) when a filter changes, as [micro-interactions.md](micro-interactions.md) §5 already specified.
+- Viewport: in the desktop layout (≥1000 × 560) `html` and `body` are locked to `100dvh` with `overflow: hidden`, and the 16:9 scene fits both dimensions. Scrollbars are hidden everywhere; panels and the narrow-screen flow still scroll by wheel, touch and keyboard. The narrow-screen flow is longer than one screen by design and is not squeezed into one viewport.

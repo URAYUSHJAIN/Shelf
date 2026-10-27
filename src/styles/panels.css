@@ -64,15 +64,6 @@
   background: linear-gradient(#fdf8ef, #f8eedd);
   color: var(--ink);
   font-family: var(--sans);
-  animation: sheet-up var(--t-med) var(--ease-out);
-}
-@keyframes sheet-up {
-  from { transform: translateY(24px); opacity: 0; }
-  to { transform: none; opacity: 1; }
-}
-@keyframes sheet-in {
-  from { transform: translateX(28px); opacity: 0; }
-  to { transform: none; opacity: 1; }
 }
 .panel__head {
   display: flex;
@@ -167,7 +158,6 @@
     border-radius: 18px;
     overflow: hidden;
     box-shadow: 0 24px 48px rgba(60, 35, 12, 0.32), 0 4px 0 #b98a58;
-    animation-name: sheet-in;
   }
 }
 
@@ -405,7 +395,13 @@ html:not(.js) .toolbar {
   border-radius: 6px;
   background: #fffaf1;
 }
+/* Out of flow, so a tall screenshot cannot stretch the pane past its aspect ratio. */
+.folder__art {
+  position: relative;
+}
 .folder__art img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -914,7 +910,6 @@ html:not(.js) .book__tabs {
   background: linear-gradient(115deg, #fffaf0, #f9edda 85%, #ecd4b3);
   box-shadow: 0 4px 6px #50331e38, inset 0 1px 0 #fffdf6;
   overflow: hidden;
-  animation: none;
   transform: translateZ(1px);
   pointer-events: auto;
 }
@@ -932,7 +927,7 @@ html:not(.js) .book__tabs {
 .is-mounted .panel__meta { margin: 0; font-size: 13px; }
 .is-mounted .panel__close { order: -1; background: none; border: 0; border-radius: 8px; }
 .is-mounted .panel__close:hover { transform: translateX(-2px); }
-.is-mounted .panel__body { padding: 8px 14px 24px; min-height: 0; scrollbar-color: #aa8053 #f4e5ce; scrollbar-width: thin; }
+.is-mounted .panel__body { padding: 8px 14px 24px; min-height: 0; }
 .is-mounted .panel__review { font-size: 11px; line-height: 1.3; padding: 4px 14px; margin: 0; }
 .is-mounted .drawer-front-mount {
   display: block;
@@ -975,7 +970,7 @@ html:not(.js) .book__tabs {
 .is-mounted .filter { min-height: 40px; padding: 4px 11px; font-size: 13px; }
 .is-mounted .toolbar { gap: 8px; margin-bottom: 8px; }
 .is-mounted:not(.is-searching) .search { display: none; }
-.is-mounted .filters { flex-wrap: nowrap; overflow-x: auto; padding: 3px 2px 6px; scrollbar-width: thin; }
+.is-mounted .filters { flex-wrap: nowrap; overflow-x: auto; padding: 3px 2px 6px; }
 .is-mounted .filter { flex: none; }
 .is-mounted [data-project-count] { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
 .is-mounted .status-line { font-size: 12px; margin: 0; }
@@ -1084,7 +1079,6 @@ html:not(.js) .book__tabs {
 
 .is-mounted .panel__body {
   padding: 12px 18px 26px;
-  scrollbar-color: #9d7046 #f1dfc6;
 }
 
 .is-mounted .drawer-front-mount {

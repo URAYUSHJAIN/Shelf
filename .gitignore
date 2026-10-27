@@ -17,3 +17,6 @@ __pycache__/
 # Project-local runtime and release-gated preparation media.
 /.tools/
 /public/media/certifications/
+
+# Shareable source archives.
+*.zip

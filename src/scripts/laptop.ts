@@ -1,6 +1,7 @@
 // Desk laptop: hinge phases, the on-screen search and a working keyboard.
 // The controller owns URL state; this module only opens or closes the object
 // when told to and reports user intent (navigate/close) back to it.
+import { gsap } from 'gsap';
 
 type Options = {
   navigate: (href: string, trigger?: HTMLElement | null) => void;
@@ -37,7 +38,7 @@ export function initLaptop(root: HTMLElement, opts: Options) {
 
   let open = root.dataset.lid === 'open';
   let version = 0;
-  let lift: Animation | null = null;
+  let lift: gsap.core.Tween | null = null;
   let shown: HTMLElement[] = [];
   let selected = -1;
   let caps = false;
@@ -84,19 +85,18 @@ export function initLaptop(root: HTMLElement, opts: Options) {
   const wait = (ms: number) => new Promise((r) => window.setTimeout(r, opts.reduced() ? 0 : ms));
 
   function flip(from: DOMRect) {
-    lift?.cancel();
+    lift?.kill();
+    gsap.set(frame, { clearProps: 'transform,transformOrigin' });
     const to = frame.getBoundingClientRect();
     // No lift from or to a hidden laptop (narrow screens hide it while closed).
     if (opts.reduced() || !to.width || !from.width) return Promise.resolve();
-    const s = from.width / to.width;
-    lift = frame.animate(
-      [
-        { transform: `translate(${from.left - to.left}px, ${from.top - to.top}px) scale(${s})`, transformOrigin: '0 0' },
-        { transform: 'none', transformOrigin: '0 0' },
-      ],
-      { duration: LIFT_MS, easing: 'cubic-bezier(.22,.8,.24,1)' },
-    );
-    return lift.finished.catch(() => {});
+    return new Promise<void>((resolve) => {
+      lift = gsap.fromTo(
+        frame,
+        { x: from.left - to.left, y: from.top - to.top, scale: from.width / to.width, transformOrigin: '0 0' },
+        { x: 0, y: 0, scale: 1, duration: LIFT_MS / 1000, ease: 'power3.out', clearProps: 'transform,transformOrigin', onComplete: resolve, onInterrupt: resolve },
+      );
+    });
   }
 
   // The overlay drops the desk's size container (fixed positioning would be
@@ -108,6 +108,38 @@ export function initLaptop(root: HTMLElement, opts: Options) {
     else desk.style.removeProperty('--u');
   }
 
+  /* ---------- Cursor proximity ---------- */
+
+  // Near the closed laptop the lid lifts a little and the body turns toward
+  // the pointer. Mouse on the desk scene only; never with reduced motion.
+  const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
+  const lean = { peek: 0, yaw: 0 };
+  const applyLean = () => {
+    root.style.setProperty('--peek', `${lean.peek}deg`);
+    root.style.setProperty('--yaw', `${lean.yaw}deg`);
+    root.classList.toggle('is-near', lean.peek > 0.02 || Math.abs(lean.yaw) > 0.02);
+  };
+  const toPeek = gsap.quickTo(lean, 'peek', { duration: 0.6, ease: 'power3.out', onUpdate: applyLean });
+  const toYaw = gsap.quickTo(lean, 'yaw', { duration: 0.6, ease: 'power3.out', onUpdate: applyLean });
+  // Hand the lid back to its CSS hinge transition before it opens.
+  function rest() {
+    gsap.killTweensOf(lean);
+    lean.peek = lean.yaw = 0;
+    applyLean();
+  }
+  window.addEventListener('pointermove', (e) => {
+    if (open || root.classList.contains('is-open') || e.pointerType !== 'mouse' || !finePointer.matches || opts.reduced() || opts.overlay()) return;
+    const r = root.getBoundingClientRect();
+    if (!r.width) return;
+    const zone = r.width * 0.6;
+    const dx = Math.max(r.left - e.clientX, 0, e.clientX - r.right);
+    const dy = Math.max(r.top - e.clientY, 0, e.clientY - r.bottom);
+    const p = Math.max(0, 1 - Math.hypot(dx, dy) / zone);
+    const side = Math.max(-1, Math.min(1, (e.clientX - (r.left + r.width / 2)) / (r.width / 2 + zone)));
+    toPeek(p * p * 6);
+    toYaw(side * p * 5);
+  }, { passive: true });
+
   async function sync(next: boolean, instant = false) {
     if (next === open) return;
     open = next;
@@ -115,6 +147,7 @@ export function initLaptop(root: HTMLElement, opts: Options) {
     showScreen('portfolio', false);
     keyboard.inert = !next;
     if (next) {
+      rest();
       loadPortfolio();
       const from = frame.getBoundingClientRect();
       if (desk && opts.overlay()) desk.style.setProperty('--u', `${desk.clientWidth / 760}px`);

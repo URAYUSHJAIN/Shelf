@@ -222,7 +222,7 @@ The later written request supersedes the original rolling-pen toy. The pen stays
 
 ### 4.9 Shelf, drawers, folders, files
 
-**D-37 implementation override (2026-10-25):** the drawer uses one layered HTML/CSS assembly animated through browser-native Web Animations. The earlier front-only displacement and optional handle-drag simulation below are superseded by [micro-interactions.md](micro-interactions.md) §5.1. Floor, walls, front and handle share the same assembly transform; only the outer clip reveals the portion emerging from the fixed cabinet slot. No free-running animation loop, physics package or 3D engine is introduced.
+**D-37 implementation override (2026-10-25):** the drawer uses one layered HTML/CSS assembly animated through GSAP (D-43; originally browser-native Web Animations). The earlier front-only displacement and optional handle-drag simulation below are superseded by [micro-interactions.md](micro-interactions.md) §5.1. Floor, walls, front and handle share the same assembly transform; only the outer clip reveals the portion emerging from the fixed cabinet slot. No free-running animation loop, physics package or 3D engine is introduced.
 
 **Drawers (1-DOF track; KIN + SIM; ANIM fallback)**
 

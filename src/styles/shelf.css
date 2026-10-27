@@ -39,6 +39,14 @@
 html {
   -webkit-text-size-adjust: 100%;
 }
+/* No visible scrollbars anywhere (owner request); wheel, touch and keyboard
+   scrolling still work inside panels and the narrow-screen flow. */
+* {
+  scrollbar-width: none;
+}
+::-webkit-scrollbar {
+  display: none;
+}
 body {
   margin: 0;
   min-height: 100vh;
@@ -438,28 +446,7 @@ svg.obj {
 .desk-plant .sway--b {
   transform-origin: 50% 100%;
 }
-.is-swaying .sway--a {
-  animation: sway-a 3.4s ease-in-out 1;
-}
-.is-swaying .sway--b {
-  animation: sway-b 4s ease-in-out 1;
-}
-@keyframes sway-a {
-  0%   { transform: rotate(0) scale(1); }
-  15%  { transform: rotate(1.8deg) scale(1.01); }
-  35%  { transform: rotate(-1deg) scale(1); }
-  55%  { transform: rotate(0.8deg); }
-  75%  { transform: rotate(-0.5deg); }
-  100% { transform: rotate(0) scale(1); }
-}
-@keyframes sway-b {
-  0%   { transform: rotate(0) scale(1); }
-  20%  { transform: rotate(-1.6deg) scale(1.01); }
-  45%  { transform: rotate(1deg) scale(1); }
-  65%  { transform: rotate(-0.6deg); }
-  85%  { transform: rotate(0.3deg); }
-  100% { transform: rotate(0) scale(1); }
-}
+/* The sway itself is a one-shot GSAP tween (shelf-controller.ts). */
 
 /* Cabinet */
 .g-cabinet {
@@ -914,19 +901,12 @@ svg.obj {
   filter: drop-shadow(0 0 1.5px rgba(120, 95, 70, 0.55));
   opacity: 0.75;
 }
-.is-steaming .steam__w {
-  animation: steam 2.6s ease-in-out 2;
-}
-.is-steaming .steam__w--2 {
-  animation-delay: 0.4s;
-}
-.is-steaming .steam__w--3 {
-  animation-delay: 0.8s;
-}
-@keyframes steam {
-  0% { transform: translateY(6px); opacity: 0.2; }
-  40% { opacity: 0.85; }
-  100% { transform: translateY(-10px); opacity: 0.15; }
+.steam__gl {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 0 1.5px rgba(120, 95, 70, 0.45));
 }
 
 /* Tablet flow: two drawer columns */
@@ -941,10 +921,15 @@ svg.obj {
 
 /* ---------- Desktop composition: the reference scene (16:9, 1536×864 units) ---------- */
 @media (min-width: 1000px) and (min-height: 560px) {
+  /* The scene always fits the viewport exactly; the page itself never scrolls. */
+  html,
+  body {
+    height: 100dvh;
+    overflow: hidden;
+  }
   body {
     display: grid;
     place-items: center;
-    min-height: 100svh;
     /* Beyond the scene's own side extension: wall above the desk line, wood below. */
     background-color: #75442b;
     background-image: linear-gradient(#c69770 0 73.4%, #75442b 73.4%);
@@ -953,7 +938,7 @@ svg.obj {
     --u: calc(100cqw / 1536);
     display: block;
     max-width: none;
-    width: min(100vw, 177.78svh);
+    width: min(100vw, 177.78dvh);
     aspect-ratio: 16 / 9;
     padding: 0;
     container-type: inline-size;

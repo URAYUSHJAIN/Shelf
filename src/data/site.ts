@@ -34,15 +34,7 @@ function mediaOk(item: { approved?: boolean }) {
 export const identity = raw.identity;
 export const copy = raw.identity.copy;
 export const groups = raw.identity.groups;
-// Resolve the existing portrait through Astro in dev instead of relying on the
-// review-media middleware. This dev-only import is excluded from release execution;
-// the original record and its publication gate still own release visibility.
-const reviewPortrait = import.meta.env.DEV
-  ? (await import('../../assets/profile/ayush-jain.webp')).default
-  : null;
-export const portrait = isPublic({ ...raw.identity.portrait, slug: 'portrait' })
-  ? { ...raw.identity.portrait, ...(reviewPortrait ? { src: reviewPortrait.src, width: reviewPortrait.width, height: reviewPortrait.height } : {}) }
-  : null;
+export const portrait = isPublic({ ...raw.identity.portrait, slug: 'portrait' }) ? raw.identity.portrait : null;
 
 export const projects = visible(raw.projects).map((p) => ({
   ...p,

@@ -1,8 +1,10 @@
 // The Shelf controller: one owner for surface state, history and focus.
 // State is always derived from the URL; every control is a real link or is
 // enhanced from a non-interactive element, so nothing is dead without JS.
+import { gsap } from 'gsap';
 import { initGlobe } from './globe';
 import { initLaptop } from './laptop';
+import { initSteam } from './steam';
 
 type State = { surface: string | null; record: string | null; params: URLSearchParams; hash: string };
 
@@ -38,10 +40,16 @@ function parse(href: string): State {
 // in the cabinet, preserving layout and exposing the recessed cavity.
 let mounted: HTMLElement | null = null;
 let renderVersion = 0;
-let drawerMotion: Animation[] = [];
-let closedTransform = '';
-let closedClip = '';
-const openTransform = 'translate3d(0, 0, 0) rotateX(var(--tray-angle, 7deg))';
+// One paused timeline per mounted drawer runs closed (0) → open (1). Opening
+// and closing both tween its progress with the same ease, so a push is the
+// exact mirror of a pull and a mid-motion press reverses from where it is.
+const PULL_S = 0.5;
+let motion: gsap.core.Timeline | null = null;
+let pull: gsap.core.Tween | null = null;
+let closedPose: gsap.TweenVars = {};
+let openPose: gsap.TweenVars = {};
+let closedClipTop = 0;
+const openClipTop = -24;
 
 function placeDrawer(panel: HTMLElement) {
   const slot = $(`[data-drawer-slot="${panel.dataset.surface}"]`)!;
@@ -59,40 +67,84 @@ function placeDrawer(panel: HTMLElement) {
   // wooden tray with an internal scroll area, keeping all controls in reach.
   const top = mobile ? offsetTop + 34 : Math.max(32, Math.min(rect.top + 28, vh - 280));
   const depth = mobile ? Math.max(100, vh - frontHeight - 86) : Math.min(465, vh - top - frontHeight - 38);
-  panel.style.cssText = `--u:${getComputedStyle(slot).getPropertyValue('--u')};--tray-angle:${mobile ? 2 : 7}deg;--tray-depth:${depth}px;--front-height:${frontHeight}px;left:${left}px;top:${top}px;width:${width}px;height:${depth + frontHeight + 18}px`;
-  closedTransform = `translate3d(${rect.left - left}px, ${rect.top - top - depth}px, 0) scaleX(${rect.width / width})`;
-  closedClip = `inset(${rect.top - top - 4}px -40px -40px -40px)`;
+  const angle = mobile ? 2 : 7;
+  panel.style.cssText = `--u:${getComputedStyle(slot).getPropertyValue('--u')};--tray-angle:${angle}deg;--tray-depth:${depth}px;--front-height:${frontHeight}px;left:${left}px;top:${top}px;width:${width}px;height:${depth + frontHeight + 18}px`;
+  openPose = { x: 0, y: 0, scaleX: 1, scaleY: 1, rotationX: angle };
+  closedClipTop = rect.top - top - 4;
   $('.drawer-front-mount', panel)!.append(front);
   slot.classList.add('is-vacant');
   panel.classList.add('is-mounted');
+  closedPose = fitToSlot(panel, rect);
   front.setAttribute('aria-label', `Close ${$('.drawer__label', front)!.textContent}`);
 }
 
-async function animateDrawer(panel: HTMLElement, open: boolean, instant = false) {
+// The centred origin, taller tray front and its perspective Z-lift make the
+// closed pose impractical to derive, so measure the mounted front and correct
+// until it covers its cabinet slot exactly. Runs synchronously, before paint.
+function fitToSlot(panel: HTMLElement, slot: DOMRect) {
   const assembly = $('.drawer-assembly', panel)!;
-  const from = getComputedStyle(assembly).transform;
-  const clip = getComputedStyle(panel).clipPath;
-  drawerMotion.forEach((a) => a.cancel());
-  const duration = instant || reduceMQ.matches ? 0 : open ? 460 : 300;
+  const front = $('.drawer-front-mount', panel)!;
+  const pose = { x: 0, y: 0, scaleX: 1, scaleY: 1, rotationX: 0 };
+  for (let i = 0; i < 3; i++) {
+    gsap.set(assembly, pose);
+    let f = front.getBoundingClientRect();
+    if (!f.width || !f.height) break; // not laid out; keep the last pose
+    pose.scaleX *= slot.width / f.width;
+    pose.scaleY *= slot.height / f.height;
+    gsap.set(assembly, pose);
+    f = front.getBoundingClientRect();
+    pose.x += slot.left - f.left;
+    pose.y += slot.top - f.top;
+  }
+  return pose;
+}
+
+function buildMotion(panel: HTMLElement, progress = 0) {
+  motion?.kill();
+  // The shell clip is tweened through its top inset only; computed clip-path
+  // strings may be shortened by the browser and would not interpolate reliably.
+  const clip = { top: closedClipTop };
+  const applyClip = () => (panel.style.clipPath = `inset(${clip.top}px -40px -40px -40px)`);
+  motion = gsap
+    .timeline({ paused: true, defaults: { ease: 'none' } })
+    .fromTo($('.drawer-assembly', panel)!, closedPose, { ...openPose, duration: 1 }, 0)
+    .fromTo(clip, { top: closedClipTop }, { top: openClipTop, duration: 1, onUpdate: applyClip }, 0)
+    // Contents surface as the tray clears the cabinet, and sink first on the push back.
+    .fromTo($$('.panel__sheet > *', panel), { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.35 }, 0.65)
+    .progress(progress);
+  applyClip();
+}
+
+function animateDrawer(panel: HTMLElement, open: boolean, instant = false) {
+  const sheet = $('.panel__sheet', panel)!;
+  const target = open ? 1 : 0;
+  pull?.kill();
   panel.dataset.phase = open ? 'opening' : 'closing';
   // Freeze only the content, so pressing the original front can reverse a pull.
-  $('.panel__sheet', panel)!.inert = true;
-  const motion = assembly.animate([
-    { transform: from === 'none' ? closedTransform : from },
-    { transform: open ? openTransform : closedTransform },
-  ], { duration, easing: 'cubic-bezier(.22,.8,.24,1)', fill: 'forwards' });
-  const reveal = panel.animate([
-    { clipPath: clip === 'none' ? closedClip : clip },
-    { clipPath: open ? 'inset(-24px -40px -40px -40px)' : closedClip },
-  ], { duration, easing: 'cubic-bezier(.22,.8,.24,1)', fill: 'forwards' });
-  drawerMotion = [motion, reveal];
-  try { await Promise.all(drawerMotion.map((a) => a.finished)); } catch { return; }
-  assembly.style.transform = open ? openTransform : closedTransform;
-  panel.style.clipPath = open ? 'inset(-24px -40px -40px -40px)' : closedClip;
-  drawerMotion.forEach((a) => a.cancel());
-  drawerMotion = [];
-  panel.dataset.phase = open ? 'open' : 'closed';
-  $('.panel__sheet', panel)!.inert = !open;
+  sheet.inert = true;
+  // A partial reversal takes the matching share of the full travel time.
+  const duration = instant || reduceMQ.matches ? 0 : PULL_S * Math.abs(target - motion!.progress());
+  return new Promise<void>((resolve) => {
+    pull = gsap.to(motion!, {
+      progress: target,
+      duration,
+      ease: 'power2.inOut',
+      onInterrupt: resolve,
+      onComplete: () => {
+        pull = null;
+        panel.dataset.phase = open ? 'open' : 'closed';
+        sheet.inert = !open;
+        resolve();
+      },
+    });
+  });
+}
+
+// Folders settle in: 2px rise, 30 ms stagger, capped at six (micro-interactions §5).
+function settleFolders() {
+  if (reduceMQ.matches) return;
+  const shown = items.filter((li) => !li.hidden).slice(0, 6);
+  gsap.fromTo(shown, { opacity: 0, y: 2 }, { opacity: 1, y: 0, duration: 0.24, stagger: 0.03, ease: 'power2.out', clearProps: 'opacity,transform' });
 }
 
 function restoreDrawer(panel: HTMLElement) {
@@ -103,7 +155,10 @@ function restoreDrawer(panel: HTMLElement) {
   front.removeAttribute('aria-label');
   panel.classList.remove('is-mounted');
   panel.removeAttribute('style');
-  $('.drawer-assembly', panel)!.removeAttribute('style');
+  motion?.kill();
+  motion = null;
+  gsap.set($('.drawer-assembly', panel)!, { clearProps: 'all' });
+  gsap.set($$('.panel__sheet > *', panel), { clearProps: 'opacity,transform' });
   panel.hidden = true;
   mounted = null;
 }
@@ -127,10 +182,11 @@ async function render(state: State, focus: 'move' | 'none' = 'move', instant = f
     if (mounted !== next) {
       mounted = next;
       placeDrawer(next);
-      $('.drawer-assembly', next)!.style.transform = closedTransform;
-      next.style.clipPath = closedClip;
+      buildMotion(next);
     } else if (instant) {
+      // Resize or history: re-measure and keep the tray where it was.
       placeDrawer(next);
+      buildMotion(next, motion?.progress() ?? 0);
     }
     if (next.dataset.phase !== 'open' || instant) await animateDrawer(next, true, instant);
     if (version !== renderVersion) return;
@@ -143,7 +199,12 @@ function renderContent(state: State, focus: 'move' | 'none', prev: State) {
 
   for (const panel of $$('[data-surface]')) {
     const open = panel.dataset.surface === state.surface;
+    const entering = open && panel.hidden && !panel.dataset.drawerSurface;
     panel.hidden = !open;
+    if (entering && !reduceMQ.matches) {
+      const sheet = $('.panel__sheet', panel);
+      gsap.fromTo(sheet, desktopMQ.matches ? { x: 28, opacity: 0 } : { y: 24, opacity: 0 }, { x: 0, y: 0, opacity: 1, duration: 0.26, ease: 'power2.out', clearProps: 'transform,opacity' });
+    }
     if (open && modal) {
       panel.setAttribute('role', 'dialog');
       panel.setAttribute('aria-modal', 'true');
@@ -289,7 +350,10 @@ $('[data-focus-search]')?.addEventListener('click', () => {
   $('#panel-projects')?.classList.add('is-searching');
   searchEl?.focus();
 });
-for (const b of $$('.filter')) b.addEventListener('click', () => updateProjectQuery(null, b.dataset.group ?? 'all'));
+for (const b of $$('.filter')) b.addEventListener('click', () => {
+  updateProjectQuery(null, b.dataset.group ?? 'all');
+  settleFolders();
+});
 
 function pauseVideos(except?: HTMLVideoElement) {
   for (const v of $$<HTMLVideoElement>('video')) if (v !== except && !v.paused) v.pause();
@@ -381,22 +445,37 @@ window.visualViewport?.addEventListener('resize', refitDrawer);
 /* ---------------- Ambient desk motion ---------------- */
 
 // Plants sway once on load and again when the pointer brushes them.
-function playOnce(el: Element, cls: string) {
-  if (reduceMQ.matches || el.classList.contains(cls)) return;
-  el.classList.add(cls);
-  window.setTimeout(() => el.classList.remove(cls), 6000);
+const swayA = { '15%': { rotation: 1.8, scale: 1.01 }, '35%': { rotation: -1, scale: 1 }, '55%': { rotation: 0.8 }, '75%': { rotation: -0.5 }, '100%': { rotation: 0, scale: 1 } };
+const swayB = { '20%': { rotation: -1.6, scale: 1.01 }, '45%': { rotation: 1, scale: 1 }, '65%': { rotation: -0.6 }, '85%': { rotation: 0.3 }, '100%': { rotation: 0, scale: 1 } };
+function sway(plant: Element) {
+  if (reduceMQ.matches || gsap.isTweening($$('.sway', plant))) return;
+  for (const g of $$('.sway', plant)) {
+    const a = g.classList.contains('sway--a');
+    // Mirrors the CSS origins: the top plant's second stem hangs from its top.
+    const origin = a || plant.classList.contains('desk-plant') ? '50% 100%' : '30% 0%';
+    gsap.to(g, { keyframes: a ? swayA : swayB, duration: a ? 3.4 : 4, ease: 'none', easeEach: 'sine.inOut', transformOrigin: origin });
+  }
 }
 for (const p of $$('[data-sway]')) {
-  p.addEventListener('pointerenter', () => playOnce(p, 'is-swaying'));
-  playOnce(p, 'is-swaying');
+  p.addEventListener('pointerenter', () => sway(p));
+  sway(p);
 }
-// Mug steam: two gentle cycles on load and on hover; never continuous.
-const desk = $('.g-desk');
-const mug = $('[data-steam]');
+// Mug steam: one shader puff (SVG wisps without WebGL) on load and on hover; never continuous.
+const waves = $$('.steam__w');
+const steamCanvas = $<HTMLCanvasElement>('.steam__gl');
+if (steamCanvas) steamCanvas.hidden = false; // visible first so the rest frame can be measured
+const puff = steamCanvas ? initSteam(steamCanvas, () => reduceMQ.matches) : null;
+if (puff) $('.steam > svg')?.setAttribute('hidden', '');
+else if (steamCanvas) steamCanvas.hidden = true;
 function steam() {
-  if (desk) playOnce(desk, 'is-steaming');
+  if (puff) return puff();
+  if (reduceMQ.matches || !waves.length || gsap.isTweening(waves)) return;
+  gsap.to(waves, {
+    keyframes: { '0%': { y: 6, opacity: 0.2 }, '40%': { opacity: 0.85 }, '100%': { y: -10, opacity: 0.15 } },
+    duration: 2.6, ease: 'none', easeEach: 'sine.inOut', repeat: 1, stagger: 0.4, clearProps: 'transform,opacity',
+  });
 }
-mug?.addEventListener('pointerenter', steam);
+$('[data-steam]')?.addEventListener('pointerenter', steam);
 steam();
 
 // A portrait that fails to load leaves the plain mat, never a broken-image icon.
@@ -453,6 +532,9 @@ document.addEventListener(
     if (!(el instanceof HTMLVideoElement || el instanceof HTMLImageElement) || !el.closest('[data-panels]')) return;
     if (el.dataset.failed) return;
     el.dataset.failed = 'true';
+    // A folder thumbnail is decorative: leave the plain art pane. A note here
+    // would sit inside the grid cell and stretch the whole row.
+    if (el.closest('.folder__art')) return el.remove();
     const note = document.createElement('p');
     note.className = 'media-error';
     note.textContent =
@@ -464,6 +546,8 @@ document.addEventListener(
   },
   true,
 );
+// Thumbnails that already failed before this module ran never reach the listener.
+for (const img of $$<HTMLImageElement>('.folder__art img')) if (img.complete && !img.naturalWidth) img.remove();
 
 /* ---------------- Boot ---------------- */
 

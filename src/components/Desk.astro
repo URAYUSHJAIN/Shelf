@@ -103,13 +103,17 @@ const noteTitle = site.currentlyBuilding ? 'Currently Building:' : 'Pinned build
     </svg>
   </a>
 
-  <svg class="obj steam" viewBox="0 0 100 104" aria-hidden="true">
-    <g fill="none" stroke-linecap="round">
-      <path class="steam__w steam__w--1" d="M34 100C22 80 46 70 34 50S40 22 34 6" />
-      <path class="steam__w steam__w--2" d="M54 100C44 84 64 72 54 54S60 30 56 14" />
-      <path class="steam__w steam__w--3" d="M72 100C64 86 80 78 72 62S76 44 72 30" />
-    </g>
-  </svg>
+  <!-- SVG wisps are the no-WebGL fallback; the shader canvas replaces them when it runs. -->
+  <div class="obj steam" aria-hidden="true">
+    <svg viewBox="0 0 100 104">
+      <g fill="none" stroke-linecap="round">
+        <path class="steam__w steam__w--1" d="M34 100C22 80 46 70 34 50S40 22 34 6" />
+        <path class="steam__w steam__w--2" d="M54 100C44 84 64 72 54 54S60 30 56 14" />
+        <path class="steam__w steam__w--3" d="M72 100C64 86 80 78 72 62S76 44 72 30" />
+      </g>
+    </svg>
+    <canvas class="steam__gl" hidden></canvas>
+  </div>
 
   <!-- Original desk object, inspired by the reference's form; no model or thumbnail is reused. -->
   <svg class="obj speaker" viewBox="0 0 260 184" aria-hidden="true">
