@@ -62,6 +62,7 @@ The **mode** column is the expected result. Test IDs refer to §8.
 ## 4. Desktop and laptop (D, D+)
 
 - D-43: the page is locked to the viewport (`100dvh`, no page scroll, no visible scrollbars); the 16:9 scene fits whichever dimension binds. Narrower modes keep their scrolling flow with hidden scrollbars.
+- D-44: the Three.js overview is available only in the desktop scene and starts after a visitor activates the “Rotate workspace” control. Its canvas is absent on narrow modes; all portfolio routes and the illustrated scene remain available without WebGL. Reduced motion shows a static angled view until the visitor returns.
 - Cabinet centred with balanced canvas margins. The identity column is ≤ 26% of the scene width.
 - In the D-42 desktop composition, the cabinet crown is at y 250 scene units and its plinth meets the desk at y 634. The left portrait only appears when its existing media gate permits it. The cork board follows the pinned links gate. Tablet and mobile keep their existing flow layout.
 - The tray (opened drawer) is at least 640 px wide at 1280 px, at most the cabinet width + 10%, and at most `100svh − 96px` tall, with its own scroll area.

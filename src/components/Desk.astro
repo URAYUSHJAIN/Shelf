@@ -1,83 +1,40 @@
 ---
 import Laptop from './Laptop.astro';
-import { slimLeaf, vine, type Vine } from './art';
-import { site, featured } from '../data/site';
 
 interface Props {
   active?: string | null;
 }
 const { active = null } = Astro.props;
-
-// CodePen wvQYGay's three arching stems and slim petals, adapted to this
-// physical desk and the existing finite, reduced-motion-safe sway.
-const deskSprigs = [
-  vine([96, 118], [57, 64], [39, 33], 5, 22, 44, 0.22),
-  vine([101, 119], [93, 53], [106, 8], 7, 24, 42, 0.2),
-  vine([104, 119], [147, 48], [177, 44], 6, 22, 46, 0.2),
-  vine([96, 120], [57, 86], [6, 106], 5, 19, 45, 0.25),
-  vine([108, 120], [130, 80], [148, 94], 5, 20, 46, 0.2),
-];
-const sprigMarkup = (sprig: Vine, index: number) => {
-  const stem = `<path d="${sprig.d}" fill="none" stroke="#32472a" stroke-width="2.5" stroke-linecap="round"/>
-    <path d="${sprig.d}" fill="none" stroke="#819558" stroke-opacity=".6" stroke-width=".65" stroke-linecap="round" transform="translate(-.6 -.5)"/>`;
-  return stem + sprig.leaves.map((leaf, i) => {
-    const shape = slimLeaf(leaf.s);
-    const fill = (index + i) % 2 ? 'url(#leafA)' : 'url(#leafB)';
-    const width = (0.87 + 0.12 * Math.sin(index * 2 + i * 1.7)).toFixed(2);
-    return `<path d="M${leaf.px} ${leaf.py}L${leaf.x} ${leaf.y}" stroke="#5c743f" stroke-width="1.2" stroke-linecap="round"/>
-      <g transform="translate(${leaf.x} ${leaf.y}) rotate(${leaf.a}) scale(${width} 1)" filter="url(#leafShadow)">
-        <path d="${shape}" fill="${fill}" stroke="#324b2e" stroke-width=".65"/>
-        <path d="M0 -2Q1 ${(-leaf.s * .52).toFixed(1)} 0 ${(-leaf.s * .84).toFixed(1)}" fill="none" stroke="#c5cf95" stroke-opacity=".45" stroke-width=".65"/>
-      </g>`;
-  }).join('');
-};
-
-// Sticky note: owner-supplied current items (D-12) or verified featured projects.
-const noteItems = site.currentlyBuilding
-  ? site.currentlyBuilding.map((t) => ({ label: t, href: null as string | null, slug: null as string | null }))
-  : featured.slice(0, 3).map((p) => ({ label: p.title, href: `/projects/${p.slug}/`, slug: p.slug }));
-const noteTitle = site.currentlyBuilding ? 'Currently Building:' : 'Pinned builds:';
 ---
-<div class="g-note" hidden={noteItems.length === 0}>
-  <div class="note">
-    <span class="note__pin" aria-hidden="true"></span>
-    <h2 class="note__title">{noteTitle}</h2>
-    <ul class="note__list" role="list">
-      {noteItems.map((n) => (
-        <li>
-          <span class="note__box" aria-hidden="true"></span>
-          {n.href ? (
-            <a href={n.href} data-nav="projects" data-record={n.slug}>{n.label}</a>
-          ) : (
-            <span>{n.label}</span>
-          )}
-        </li>
-      ))}
-    </ul>
-  </div>
-</div>
-
 <div class="g-desk">
-  <svg class="obj desk-plant" viewBox="0 0 186 176" aria-hidden="true" data-sway>
-    <g class="sway sway--a">
-      {deskSprigs.slice(0, 2).map((sprig, i) => <g><Fragment set:html={sprigMarkup(sprig, i)} /></g>)}
+  <!-- Dark stitched leather desk mat under the notebook and laptop. -->
+  <svg class="obj desk-mat" viewBox="0 0 1150 144" aria-hidden="true">
+    <defs>
+      <linearGradient id="matLeather" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#523522" /><stop offset=".42" stop-color="#37231a" /><stop offset="1" stop-color="#22150f" />
+      </linearGradient>
+      <radialGradient id="matSheen" cx=".52" cy="0" r=".75">
+        <stop stop-color="#ffd9a0" stop-opacity=".26" /><stop offset="1" stop-color="#ffd9a0" stop-opacity="0" />
+      </radialGradient>
+      <filter id="matGrain" x="0" y="0" width="100%" height="100%">
+        <feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="2" seed="5" />
+        <feColorMatrix values="0 0 0 0 .95  0 0 0 0 .75  0 0 0 0 .55  0 0 0 .13 0" />
+      </filter>
+      <clipPath id="matShape"><path d="M46 0H1104Q1112 0 1114 6L1148 138Q1150 144 1142 144H8Q0 144 2 138L36 6Q38 0 46 0Z" /></clipPath>
+    </defs>
+    <path d="M46 0H1104Q1112 0 1114 6L1148 138Q1150 144 1142 144H8Q0 144 2 138L36 6Q38 0 46 0Z" fill="url(#matLeather)" stroke="#120a06" stroke-width="2" />
+    <g clip-path="url(#matShape)">
+      <rect width="1150" height="144" filter="url(#matGrain)" />
+      <rect width="1150" height="144" fill="url(#matSheen)" />
+      <path d="M0 2H1150" stroke="#b98a5c" stroke-opacity=".4" stroke-width="2" />
     </g>
-    <g class="sway sway--b">
-      {deskSprigs.slice(2).map((sprig, i) => <g><Fragment set:html={sprigMarkup(sprig, i + 2)} /></g>)}
-    </g>
-    <ellipse cx="100" cy="176" rx="46" ry="5" fill="#3a1d08" opacity=".4" />
-    <ellipse cx="100" cy="172" rx="29" ry="5" fill="#6c5a42" />
-    <path d="M68 124h64l-6 44q-1 6-7 6H81q-6 0-7-6z" fill="url(#pot)" stroke="#7c6a51" stroke-width="1.2" stroke-linejoin="round" />
-    <path d="M68 124h64l-6 44q-1 6-7 6H81q-6 0-7-6z" fill="url(#ceramicSpeckle)" />
-    <path d="M76 130l4 36" stroke="#fff" stroke-opacity=".5" stroke-width="3" stroke-linecap="round" />
-    <path d="M63 116v8c0 8 74 8 74 0v-8" fill="url(#pot)" stroke="#8c795d" stroke-width="1.1" />
-    <ellipse cx="100" cy="116" rx="37" ry="7" fill="url(#pot)" stroke="#e9dfcb" stroke-width="1.2" />
-    <ellipse cx="100" cy="116" rx="33" ry="4" fill="#3a2210" />
-    <ellipse cx="94" cy="115" rx="18" ry="2" fill="#5c3a1c" opacity=".8" />
+    <!-- Gold-thread stitching, with a darker shadow line under each stitch. -->
+    <path d="M58 13H1092L1126 132H24Z" fill="none" stroke="#0e0805" stroke-opacity=".7" stroke-width="2" stroke-dasharray="7 5" stroke-linecap="round" transform="translate(0 1.2)" />
+    <path d="M58 13H1092L1126 132H24Z" fill="none" stroke="#c9a064" stroke-width="1.7" stroke-dasharray="7 5" stroke-linecap="round" stroke-linejoin="round" />
   </svg>
 
-  <!-- Closed leather notebook with an elastic band; it opens My Writings. -->
-  <a class="obj notebook" href="/writing/" data-nav="writing" aria-label="Notebook: open My Writings" aria-current={active === 'writing' ? 'true' : undefined}>
+  <!-- Closed leather notebook with an elastic band; its pages include the contact composer. -->
+  <a class="obj notebook" href="/contact/?page=intro" data-nav="contact" aria-label="Notebook: open contact pages" aria-current={active === 'contact' ? 'true' : undefined}>
     <span class="notebook__body" aria-hidden="true">
       <span class="notebook__band"></span>
       <span class="notebook__ribbon"></span>
@@ -87,7 +44,7 @@ const noteTitle = site.currentlyBuilding ? 'Currently Building:' : 'Pinned build
   <Laptop open={active === 'laptop'} />
 
   <!-- The contact pen rests on the notebook. -->
-  <a class="obj pen" href="/contact/" data-nav="contact" aria-label="Pen: write a message to Ayush" aria-current={active === 'contact' ? 'true' : undefined}>
+  <a class="obj pen" href="/contact/?page=message" data-nav="contact" aria-label="Pen: write a message to Ayush" aria-current={active === 'contact' ? 'true' : undefined}>
     <svg viewBox="0 0 196 70" aria-hidden="true">
       <ellipse cx="100" cy="60" rx="84" ry="5" fill="#5a3a1c" opacity=".2" transform="rotate(14 100 60)" />
       <g transform="rotate(15 98 30)">
@@ -103,6 +60,64 @@ const noteTitle = site.currentlyBuilding ? 'Currently Building:' : 'Pinned build
     </svg>
   </a>
 
+  <!-- Decorative rocket model on a gold stand, standing behind the mug. -->
+  <svg class="obj rocket" viewBox="0 0 80 190" aria-hidden="true">
+    <defs>
+      <linearGradient id="rocketBody" x1="0" x2="1">
+        <stop offset="0" stop-color="#7e8187" /><stop offset=".3" stop-color="#e9eaec" /><stop offset=".48" stop-color="#fbfbfb" /><stop offset=".74" stop-color="#bcbec3" /><stop offset="1" stop-color="#6d7076" />
+      </linearGradient>
+      <linearGradient id="rocketFin" x1="0" x2="1">
+        <stop offset="0" stop-color="#6b2a20" /><stop offset=".5" stop-color="#b24a37" /><stop offset="1" stop-color="#5a2118" />
+      </linearGradient>
+      <radialGradient id="rocketFlame" cx=".5" cy="0" r="1"><stop stop-color="#fff3c0" /><stop offset=".45" stop-color="#ffb04a" stop-opacity=".9" /><stop offset="1" stop-color="#ff7a1c" stop-opacity="0" /></radialGradient>
+    </defs>
+    <ellipse cx="40" cy="182" rx="32" ry="5" fill="#2a1408" opacity=".38" />
+    <!-- stand: gold ring and three legs -->
+    <path d="M31 134 21 178M49 134 59 178M40 136v40" stroke="#4a3412" stroke-width="4.6" stroke-linecap="round" />
+    <path d="M31 134 21 178M49 134 59 178M40 136v40" stroke="url(#brass)" stroke-width="2.6" stroke-linecap="round" />
+    <ellipse cx="40" cy="178" rx="25" ry="5.5" fill="none" stroke="#4a3412" stroke-width="5" />
+    <ellipse cx="40" cy="178" rx="25" ry="5.5" fill="none" stroke="url(#brass)" stroke-width="3" />
+    <!-- exhaust -->
+    <path d="M32 148Q40 188 48 148Z" fill="url(#rocketFlame)" />
+    <!-- fins and body -->
+    <path d="M26 100Q8 118 6 146L28 130Z" fill="url(#rocketFin)" stroke="#2a1008" stroke-width="1.2" stroke-linejoin="round" />
+    <path d="M54 100Q72 118 74 146L52 130Z" fill="url(#rocketFin)" stroke="#2a1008" stroke-width="1.2" stroke-linejoin="round" />
+    <path d="M40 6C52 24 58 52 57 90L55 138H25L23 90C22 52 28 24 40 6Z" fill="url(#rocketBody)" stroke="#55585e" stroke-width="1.3" stroke-linejoin="round" />
+    <path d="M40 6C47 15 51 25 54 36H26C29 25 33 15 40 6Z" fill="url(#rocketFin)" stroke="#2a1008" stroke-width="1" />
+    <path d="M24 102H56M25 124H55" stroke="#55585e" stroke-opacity=".5" stroke-width="1" />
+    <path d="M28 138h24l-3 11H31z" fill="#2c2d30" stroke="#16171a" stroke-width="1" />
+    <circle cx="40" cy="70" r="11" fill="#6d7076" stroke="#3b3d41" stroke-width="1.4" />
+    <circle cx="40" cy="70" r="8" fill="#25303d" />
+    <path d="M34 66a7 7 0 0 1 8-3" fill="none" stroke="#fff" stroke-opacity=".7" stroke-width="1.5" stroke-linecap="round" />
+    <path d="M30 40Q28 80 30 126" fill="none" stroke="#fff" stroke-opacity=".6" stroke-width="2" stroke-linecap="round" />
+  </svg>
+
+  <!-- The clock face is updated from the visitor's local system time. -->
+  <svg class="obj moonclock" viewBox="0 0 130 152" role="img" aria-label="Local time" data-clock>
+    <defs>
+      <radialGradient id="moonGlow"><stop stop-color="#ffe9a8" stop-opacity=".62" /><stop offset=".55" stop-color="#ffd36e" stop-opacity=".22" /><stop offset="1" stop-color="#ffc35a" stop-opacity="0" /></radialGradient>
+      <radialGradient id="moonBody" cx=".4" cy=".35" r=".75"><stop stop-color="#fff6d4" /><stop offset=".5" stop-color="#f2d487" /><stop offset="1" stop-color="#c79c48" /></radialGradient>
+      <linearGradient id="clockBody" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#4a3a2d" /><stop offset=".25" stop-color="#2b211a" /><stop offset="1" stop-color="#14100d" /></linearGradient>
+      <filter id="ledGlow" x="-20%" y="-40%" width="140%" height="180%"><feGaussianBlur stdDeviation="2.2" /></filter>
+    </defs>
+    <ellipse cx="65" cy="150" rx="62" ry="6" fill="#2a1408" opacity=".4" />
+    <circle cx="65" cy="46" r="62" fill="url(#moonGlow)" />
+    <path d="M52 86Q65 92 78 86L82 90H48z" fill="#1a1410" stroke="#0e0a07" stroke-width="1" />
+    <circle cx="65" cy="46" r="39" fill="url(#moonBody)" stroke="#b58c3e" stroke-width="1" />
+    <g fill="#b98f43" opacity=".45">
+      <ellipse cx="50" cy="36" rx="9" ry="7" /><ellipse cx="78" cy="30" rx="6" ry="5" /><ellipse cx="72" cy="58" rx="10" ry="8" /><ellipse cx="46" cy="60" rx="5" ry="4" />
+    </g>
+    <path d="M40 28a28 28 0 0 1 22-16" fill="none" stroke="#fff" stroke-opacity=".65" stroke-width="2.2" stroke-linecap="round" />
+    <rect x="4" y="88" width="122" height="60" rx="6" fill="url(#clockBody)" stroke="#0e0a07" stroke-width="1.4" />
+    <path d="M7 90H123" stroke="#c9a064" stroke-opacity=".6" stroke-width="1.2" />
+    <rect x="13" y="98" width="104" height="38" rx="3" fill="#0b0806" stroke="#5a4630" stroke-width="1" />
+    <g font-family="'Courier New', monospace" font-weight="700" font-size="31" text-anchor="middle">
+      <text x="65" y="127" fill="#ff8a24" filter="url(#ledGlow)" data-clock-digit>--:--</text>
+      <text x="65" y="127" fill="#ffb865" data-clock-digit>--:--</text>
+    </g>
+    <text x="110" y="143" fill="#ffca7d" font-size="8" font-family="Arial, sans-serif" text-anchor="end" data-clock-period></text>
+  </svg>
+
   <!-- SVG wisps are the no-WebGL fallback; the shader canvas replaces them when it runs. -->
   <div class="obj steam" aria-hidden="true">
     <svg viewBox="0 0 100 104">
@@ -116,7 +131,7 @@ const noteTitle = site.currentlyBuilding ? 'Currently Building:' : 'Pinned build
   </div>
 
   <!-- Original desk object, inspired by the reference's form; no model or thumbnail is reused. -->
-  <svg class="obj speaker" viewBox="0 0 260 184" aria-hidden="true">
+  <svg class="obj speaker" viewBox="0 0 260 184" aria-hidden="true" data-speaker-surface>
     <defs>
       <linearGradient id="speakerLeather" x1="0" y1="0" x2="1" y2=".85">
         <stop stop-color="#45413b" /><stop offset=".13" stop-color="#272927" />
@@ -212,4 +227,18 @@ const noteTitle = site.currentlyBuilding ? 'Currently Building:' : 'Pinned build
       <text x="60" y="100">REPEAT</text>
     </g>
   </svg>
+
+  <div class="obj speaker-controls" data-speaker-controls>
+    <button type="button" class="speaker-controls__play" data-speaker-play aria-label="Play desk music" aria-pressed="false">Play music</button>
+    <label class="speaker-controls__volume">Volume <input type="range" min="0" max="100" value="35" data-speaker-volume aria-label="Music volume" /></label>
+    <span class="speaker-controls__status" role="status" data-speaker-status hidden></span>
+    <audio preload="none" src="/media/desk-theme.wav" data-speaker-audio></audio>
+  </div>
+
+  <!-- Inscription is cut into the wood, with its wording supplied by the owner. -->
+  <p class="obj desk-script" aria-hidden="true">
+    <span>CREATIVITY &amp;</span>
+    <span>INNOVATION</span>
+    <span>DONE HERE</span>
+  </p>
 </div>

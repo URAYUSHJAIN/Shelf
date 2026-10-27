@@ -95,13 +95,13 @@ Reference settle times. Critically damped (ζ = 1) settles within 1% at `t ≈ 6
 
 | Source                    | Position                                                                                                                        | Character                                                   | States                                       |
 | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- | -------------------------------------------- |
-| **Desk lamp (key light)** | The lamp head, upper right of the cabinet ([design.md](design.md) §2). Scene coordinates are taken from the final illustration. | Warm, directional cone down-left onto the crown and desk    | Permanently on (D-27)                                     |
+| **Desk lamp (key light)** | The lamp head, upper right of the cabinet ([design.md](design.md) §2). Scene coordinates are taken from the final illustration. | Warm, directional cone down-left onto the crown and desk    | Visitor-operated on/off (D-44)                           |
 | **Ambient (room)**        | Diffuse, from the upper left (a notional window)                                                                                | Neutral-warm, soft                                          | Always on                                    |
 | **Laptop screen**         | Laptop screen plane                                                                                                             | Faint cool-neutral spill on the desk in front of the laptop | Proportional to screen brightness `b` (§4.3) |
 
 ### 3.2 Deliberate approximation
 
-Full dynamic lighting (per-pixel lights and real-time shadow maps) is **rejected**. It needs WebGL for the whole scene, conflicts with the hand-drawn style, and costs battery. Instead:
+D-44 permits restrained dynamic lighting in the user-triggered Three.js overview: one local point light and one directional shadow map. The default HTML illustration continues to use authored layers. Earlier full-scene rejection below describes the pre-D-44 architecture.
 
 1. **Static authored lighting (D-27, D-38).** Each object combines ambient material shading, directional highlights, cast shadows and a contact shadow. The lamp has one permanently lit state.
    D-42 deepens the desk wood and adds a faint, blurred window-and-leaf shadow on the desktop wall; it does not add a light state or animation.
@@ -113,7 +113,7 @@ Full dynamic lighting (per-pixel lights and real-time shadow maps) is **rejected
 
 ### 3.3 Readability guarantee
 
-UI layers (drawer labels, chips, buttons, trays, records, text) sit **above** environmental lighting and are never tinted or dimmed by it. Contrast is checked with the permanent lighting (T-A11Y-03); there is no second lamp state.
+UI layers (drawer labels, chips, buttons, trays, records, text) sit **above** environmental lighting and are never tinted or dimmed by it. Contrast must be checked with the lamp both on and off (T-A11Y-03).
 
 ---
 
@@ -149,7 +149,7 @@ UI layers (drawer labels, chips, buttons, trays, records, text) sit **above** en
 
 ### 4.2 Lamp and environmental lighting (ANIM + FX)
 
-- **Decided (D-27, 2026-10-25): no switch.** The lamp is decorative (`aria-hidden`, never a hit target) and always lit: a warm bulb glow, a soft cone under the shade and a static warm pool on the scene. The "lamp on" lighting below is the only state; the "lamp off" rules are retired.
+- **D-44 supersedes D-27:** the lamp is a native button with on/off states. It changes the illustrated cone and pool as well as the 3D point light. On is the initial state; no preference persists. The surrounding room remains readable when off.
 - The lamp is **not** a theme switch: there is no dark mode, and UI colours never change (§3.3).
 - D-38 construction: parallel articulated arms, pivot screws, a weighted foot and cable, brushed metal shading, a thick shade rim, an elliptical reflector and a recessed warm emitter. No separate flat bulb disk outside the shade. The cone is softly blurred within the lamp SVG; the wall pool does not wash over drawer labels or the portrait.
 - Failure: if lighting layers fail to load, the scene shows the base illustration with the bulb glow.
@@ -254,7 +254,7 @@ The later written request supersedes the original rolling-pen toy. The pen stays
 | Raw WebGL, single fragment shader (no engine)              | Globe sphere only                                              | A few KB of code plus the texture            | One small canvas, renders on change | Low                  | Wrapped in a slider control              | Pixel snapshot plus unit tests of the math | **Use** for the globe only, with 2D-canvas and static fallbacks                                       |
 | Hybrid                                                     | —                                                              | —                                            | —                                   | —                    | —                                        | —                                          | **Chosen:** CSS ANIM + custom 1-DOF SIM/KIN + one raw-WebGL globe                                     |
 
-This keeps [design.md](design.md) §15 ("no 3D engine, no physics library"). The raw shader is a documented, isolated exception.
+The no-engine choice in the preceding comparison is historical. D-44 permits pinned Three.js for the spatial scene. The model is imported after idle on desktop, renders on camera/light changes, and disposes GPU resources on exit. No physics library is used.
 
 ### 5.2 Module layout (future)
 
@@ -303,7 +303,7 @@ This keeps [design.md](design.md) §15 ("no 3D engine, no physics library"). The
 | T-PHY-06 | Cube state consistency              | Auto-unit                                                 | After the sequence plus its inverse, the 54-facelet model equals solved. Every rendered frame corresponds to a valid state.                                                                        |
 | T-PHY-07 | Pen contact                         | Auto-e2e + Manual                                         | Click/tap/Enter opens one composer; Escape/Back closes and restores focus. Invalid input retains text. Mail-app/copy actions never claim delivery. Same function without motion; no fake endpoint. |
 | T-PHY-08 | Shadow consistency                  | Manual                                                    | With permanent lighting, every cast shadow follows the §3.2 direction rule. Moving-object shadows track their objects.                                                                                  |
-| T-PHY-09 | Permanent lamp                         | Auto-e2e + Manual                                         | Lamp is decorative and always lit. No switch, focus stop, pointer tracking or stored lamp state. UI contrast passes; bulb stays inside its reflector.                                                                                   |
+| T-PHY-09 | Lamp switch                            | Auto-e2e + Manual                                         | Click/tap/Enter/Space toggles both illustrated and 3D local light, with matching `aria-pressed`. No stored preference. UI contrast passes in both states; bulb stays inside its reflector.                                               |
 | T-PHY-10 | Idle loop                           | Auto-e2e                                                  | With instrumentation counting rAF callbacks, 0 callbacks occur during 2 s after all bodies sleep.                                                                                                  |
 | T-PHY-11 | Repeated interactions               | Auto-e2e                                                  | 200 random interactions across all objects: no exception, no NaN, every body ends at rest, and no layout shift outside the tray.                                                                   |
 | T-PHY-12 | Interrupted animations              | Auto-e2e                                                  | Starting any interaction mid-motion of another, or navigating Back mid-motion, leaves all logical states consistent with the URL ([micro-interactions.md](micro-interactions.md) §3.3).            |

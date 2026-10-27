@@ -196,6 +196,8 @@ async function render(state: State, focus: 'move' | 'none' = 'move', instant = f
 
 function renderContent(state: State, focus: 'move' | 'none', prev: State) {
   const modal = !desktopMQ.matches;
+  const orbit = $<HTMLButtonElement>('[data-scene-orbit]');
+  if (orbit) orbit.disabled = !!state.surface || orbit.dataset.sceneLoading === 'true';
 
   for (const panel of $$('[data-surface]')) {
     const open = panel.dataset.surface === state.surface;
@@ -244,6 +246,7 @@ function renderContent(state: State, focus: 'move' | 'none', prev: State) {
 
   if (state.surface === 'projects') renderProjects(state);
   if (state.surface === 'writing') selectTab(state.params.get('tab') || 'blogs', false);
+  if (state.surface === 'contact') selectContactPage(state.params.get('page') || 'intro');
   if (state.surface === 'patents' && state.hash.startsWith('#patent-')) {
     const d = $<HTMLDetailsElement>(state.hash);
     if (d) {
@@ -487,6 +490,22 @@ for (const img of $$<HTMLImageElement>('.frame img')) {
 
 /* ---------------- Copy and contact ---------------- */
 
+let selectedContactPage: string | null = null;
+function selectContactPage(page: string) {
+  if (!['intro', 'notes', 'directory', 'message'].includes(page)) page = 'intro';
+  for (const section of $$<HTMLElement>('[data-contact-page]')) {
+    section.hidden = section.dataset.contactPage !== page;
+    if (!section.hidden && selectedContactPage && selectedContactPage !== page && !reduceMQ.matches) {
+      gsap.fromTo(section, { rotationY: -12, x: 12, opacity: .65 }, { rotationY: 0, x: 0, opacity: 1, duration: .32, ease: 'power2.out', clearProps: 'transform,opacity' });
+    }
+  }
+  selectedContactPage = page;
+  for (const link of $$<HTMLAnchorElement>('[data-contact-go]')) {
+    if (link.dataset.contactGo === page) link.setAttribute('aria-current', 'page');
+    else link.removeAttribute('aria-current');
+  }
+}
+
 async function copyText(text: string, statusEl: Element | null, ok: string) {
   try {
     await navigator.clipboard.writeText(text);
@@ -501,13 +520,48 @@ for (const b of $$('[data-copy]')) {
 const form = $<HTMLFormElement>('[data-contact]');
 if (form) {
   const status = $('[data-contact-status]');
+  const preview = $('[data-contact-preview]');
+  const writing = $<HTMLElement>('.contact__writing', form);
+  const messageField = $<HTMLTextAreaElement>('textarea[name="body"]', form);
+  const penTip = $<HTMLElement>('.contact__pen', form);
+  const mirror = document.createElement('div');
+  mirror.className = 'contact__mirror';
+  writing?.append(mirror);
   const compose = () => {
     const fd = new FormData(form);
     const name = String(fd.get('name') ?? '').trim();
+    const email = String(fd.get('email') ?? '').trim();
     const subject = String(fd.get('subject') ?? '').trim();
     const body = String(fd.get('body') ?? '').trim();
-    return { name, subject, body: name ? `${body}\n\n— ${name}` : body };
+    return { name, email, subject, body: `${body}\n\n— ${name}\nReply to: ${email}` };
   };
+  const updatePreview = () => {
+    const m = compose();
+    if (preview) preview.textContent = messageField?.value.trim() ? `To: ${form.getAttribute('action')!.replace('mailto:', '')}\nSubject: ${m.subject}\n\n${m.body}` : 'Your message will appear here as you type.';
+  };
+  const positionPen = () => {
+    if (!messageField || !penTip || document.activeElement !== messageField) { if (penTip) penTip.hidden = true; return; }
+    const style = getComputedStyle(messageField);
+    mirror.style.cssText = `width:${messageField.clientWidth}px;font:${style.font};letter-spacing:${style.letterSpacing};padding:${style.padding};white-space:pre-wrap;overflow-wrap:break-word;line-height:${style.lineHeight};`;
+    mirror.textContent = messageField.value.slice(0, messageField.selectionStart);
+    const marker = document.createElement('span');
+    marker.textContent = '\u200b';
+    mirror.append(marker);
+    const markerBox = marker.getBoundingClientRect();
+    const writingBox = writing!.getBoundingClientRect();
+    const x = Math.max(0, Math.min(messageField.clientWidth - 18, markerBox.left - writingBox.left));
+    const y = Math.max(0, Math.min(messageField.clientHeight - 18, markerBox.top - writingBox.top - messageField.scrollTop));
+    penTip.style.transform = `translate(${x}px, ${y}px)`;
+    penTip.hidden = false;
+  };
+  form.addEventListener('input', () => { updatePreview(); positionPen(); });
+  messageField?.addEventListener('focus', positionPen);
+  messageField?.addEventListener('click', positionPen);
+  messageField?.addEventListener('keyup', positionPen);
+  messageField?.addEventListener('scroll', positionPen);
+  messageField?.addEventListener('blur', () => { if (penTip) penTip.hidden = true; });
+  form.addEventListener('reset', () => requestAnimationFrame(() => { updatePreview(); positionPen(); if (status) status.textContent = 'The writing page is clear.'; }));
+  updatePreview();
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     if (!form.reportValidity()) return;

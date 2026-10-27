@@ -1,0 +1,10 @@
+{
+   "extensionDescription": {
+      "description": "The description of the extension, displayed in the web store.",
+      "message": "Escreva melhor - Detecte e humanize conteúdo de IA, crie imagens, parafraseie, corrija texto, converse com a IA e muito mais!"
+   },
+   "extensionName": {
+      "description": "The name of the extension, displayed in the web store.",
+      "message": "Quillbot: Assistente de IA com Humanizador, Parafraseador e Detector de IA"
+   }
+}

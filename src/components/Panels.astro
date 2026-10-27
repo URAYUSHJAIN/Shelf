@@ -434,19 +434,59 @@ const SOCIAL_NAME: Record<string, string> = { github: 'GitHub', linkedin: 'Linke
   </Panel>
 
   <!-- Pen: contact -->
-  <Panel id="contact" title="Write to Ayush" icon="mail" open={active === 'contact'} small review={false}>
-    <p>{copy.contact}</p>
-    <form class="contact" action={`mailto:${site.email}`} method="get" enctype="text/plain" data-contact>
-      <label>Your name <input name="name" autocomplete="name" maxlength="80" /></label>
-      <label>Subject <input name="subject" maxlength="120" required value="Hello from The Shelf" /></label>
-      <label>Message <textarea name="body" rows="6" maxlength="2000" required></textarea></label>
-      <div class="actions">
-        <button type="submit" class="btn btn--solid"><Icon name="mail" size={18} /> Open in my email app</button>
-        <button type="button" class="btn needs-js" data-copy-message>Copy message and address</button>
-      </div>
-      <p class="muted small">This page does not send anything itself. It prepares the message in your own email app, addressed to {site.email}.</p>
-      <p class="status-line" role="status" aria-live="polite" data-contact-status></p>
-    </form>
+  <Panel id="contact" title="The desk notebook" icon="mail" open={active === 'contact'} wide review={false}>
+    <nav class="contact-book__tabs needs-js" aria-label="Notebook pages">
+      <a href="/contact/?page=intro" data-nav="contact" data-contact-go="intro">Introduction</a>
+      <a href="/contact/?page=notes" data-nav="contact" data-contact-go="notes">Project notes</a>
+      <a href="/contact/?page=directory" data-nav="contact" data-contact-go="directory">Directory</a>
+      <a href="/contact/?page=message" data-nav="contact" data-contact-go="message">Write a message</a>
+    </nav>
+    <div class="contact-book">
+      <section class="contact-book__page" data-contact-page="intro">
+        <p class="contact-book__eyebrow">01 · Introduction</p>
+        <h3>Ideas become useful when they are built.</h3>
+        <p>{copy.contact}</p>
+        <p>Use the page tabs to browse a few build notes, find a verified contact link, or prepare a message in your email app.</p>
+        <a class="btn needs-js" href="/contact/?page=message" data-nav="contact">Turn to the writing page →</a>
+        <a class="contact-book__corner needs-js" href="/contact/?page=notes" data-nav="contact" aria-label="Turn to project notes">Turn page</a>
+      </section>
+      <section class="contact-book__page" data-contact-page="notes">
+        <p class="contact-book__eyebrow">02 · Project notes</p>
+        <h3>Selected builds</h3>
+        {projects.length ? <ul>{projects.slice(0, 3).map((p) => <li><a href={`/projects/${p.slug}/`} data-nav="projects" data-record={p.slug}>{p.title}</a></li>)}</ul> : <p>No public project notes are available.</p>}
+        <p>More detail lives inside the Projects drawer.</p>
+        <a class="contact-book__corner needs-js" href="/contact/?page=directory" data-nav="contact" aria-label="Turn to directory">Turn page</a>
+      </section>
+      <section class="contact-book__page" data-contact-page="directory">
+        <p class="contact-book__eyebrow">03 · Directory</p>
+        <h3>Ways to reach Ayush</h3>
+        <p><a href={`mailto:${site.email}`}>{site.email}</a></p>
+        <ul>{social.map((profile) => <li><a href={profile.url} {...EXT}>{profile.platform}</a></li>)}</ul>
+        <h4>Sample correspondence · demo only</h4>
+        <p>“Could we compare approaches to a prototype?” · fictional example</p>
+        <p>“I’d like to discuss a project walkthrough.” · fictional example</p>
+        <a class="contact-book__corner needs-js" href="/contact/?page=message" data-nav="contact" aria-label="Turn to writing page">Turn page</a>
+      </section>
+      <section class="contact-book__page" data-contact-page="message" id="message">
+        <p class="contact-book__eyebrow">04 · Writing page</p>
+        <h3>Write a message</h3>
+        <form class="contact" action={`mailto:${site.email}`} method="get" enctype="text/plain" data-contact>
+          <label>Your name <input name="name" autocomplete="name" maxlength="80" required /></label>
+          <label>Your email <input name="email" type="email" autocomplete="email" maxlength="254" required /></label>
+          <label>Subject <input name="subject" maxlength="120" required value="Hello from The Shelf" /></label>
+          <label>Message <span class="contact__writing"><textarea name="body" rows="6" maxlength="2000" required></textarea><span class="contact__pen" aria-hidden="true" hidden></span></span></label>
+          <div class="contact__preview"><strong>Preview</strong><pre data-contact-preview>Your message will appear here as you type.</pre></div>
+          <div class="actions">
+            <button type="submit" class="btn btn--solid"><Icon name="mail" size={18} /> Open in my email app</button>
+            <button type="button" class="btn needs-js" data-copy-message>Copy message and address</button>
+            <button type="reset" class="btn">Clear page</button>
+          </div>
+          <p class="muted small">Your email app will open with this draft. The Shelf does not send or store the message.</p>
+          <p class="status-line" role="status" aria-live="polite" data-contact-status></p>
+        </form>
+        <a class="contact-book__corner needs-js" href="/contact/?page=intro" data-nav="contact" aria-label="Turn to introduction">Turn page</a>
+      </section>
+    </div>
   </Panel>
 </div>
 

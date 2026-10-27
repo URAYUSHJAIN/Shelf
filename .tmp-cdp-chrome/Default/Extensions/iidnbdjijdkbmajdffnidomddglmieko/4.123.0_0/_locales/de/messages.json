@@ -1,0 +1,10 @@
+{
+   "extensionDescription": {
+      "description": "The description of the extension, displayed in the web store.",
+      "message": "Verbesserte Texte: Erkenne und humanisiere KI-Inhalte, erstelle Bilder, schreibe Texte um, prüfe Grammatik, nutze KI-Chat und mehr!"
+   },
+   "extensionName": {
+      "description": "The name of the extension, displayed in the web store.",
+      "message": "Quillbot: KI-Schreibassistent mit Humanizer, Paraphrasierer und AI-Detector"
+   }
+}

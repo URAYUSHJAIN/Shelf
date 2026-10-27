@@ -1,0 +1,184 @@
+/* Wall board (desktop scene only): planner, cork panel and stationery pockets in one
+   aluminium frame. Sizes are in stage units (--u); the board is hidden on phones and
+   tablets (shelf.css), where the pinned builds are reachable through the Projects drawer. */
+@media (min-width: 1000px) and (min-height: 560px) {
+  .g-board {
+    --x: 948; --y: 160; --w: 556; --h: 360;
+    z-index: 4;
+  }
+  .board {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: 31fr 34fr 35fr;
+    gap: calc(5 * var(--u));
+    padding: calc(7 * var(--u));
+    border-radius: calc(4 * var(--u));
+    /* Brushed aluminium frame; the gaps between panels show the same metal. */
+    background:
+      repeating-linear-gradient(90deg, #ffffff10 0 1px, transparent 1px 3px),
+      linear-gradient(135deg, #f3f1ed, #b3b2af 22%, #e4e2de 46%, #9c9b98 72%, #d1cfcb);
+    box-shadow:
+      0 calc(16 * var(--u)) calc(26 * var(--u)) rgba(40, 20, 6, 0.42),
+      0 calc(3 * var(--u)) calc(5 * var(--u)) rgba(40, 20, 6, 0.4),
+      inset 0 0 0 calc(1 * var(--u)) #fffc,
+      inset 0 calc(-2 * var(--u)) 0 #0003;
+  }
+  .board > * {
+    position: relative;
+    min-width: 0;
+    overflow: hidden;
+  }
+  .board__gloss {
+    position: absolute !important;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    background: linear-gradient(115deg, rgba(255, 255, 255, 0.26) 0 14%, transparent 28% 64%, rgba(255, 255, 255, 0.12) 72%, transparent 82%);
+  }
+
+  /* Planner: a dry-erase week with no entries written on it. */
+  .board__planner {
+    padding: calc(14 * var(--u)) calc(12 * var(--u));
+    background: linear-gradient(135deg, #fbf9f3, #ebe6da);
+    box-shadow: inset 0 calc(2 * var(--u)) calc(5 * var(--u)) rgba(70, 50, 30, 0.28), inset 0 0 0 calc(1 * var(--u)) #bdb7aa;
+    font-family: var(--hand);
+    color: var(--ink);
+  }
+  .planner__title {
+    margin: 0;
+    max-width: calc(92 * var(--u));
+    font-size: calc(20 * var(--u));
+    font-weight: 700;
+    line-height: 1.1;
+  }
+  .planner__title::after {
+    content: '';
+    display: block;
+    width: 70%;
+    height: calc(2 * var(--u));
+    margin-top: calc(5 * var(--u));
+    border-radius: 2px;
+    background: var(--ink);
+    transform: rotate(-1deg);
+  }
+  .planner__bulb {
+    position: absolute;
+    right: calc(11 * var(--u));
+    top: calc(11 * var(--u));
+    width: calc(26 * var(--u));
+    height: calc(30 * var(--u));
+  }
+  .planner__hint {
+    margin: calc(20 * var(--u)) 0 calc(10 * var(--u));
+    font: 700 calc(12 * var(--u)) var(--sans);
+    line-height: 1.35;
+  }
+  .planner__tasks {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: calc(12 * var(--u));
+  }
+  .planner__tasks li {
+    display: flex;
+    align-items: center;
+    gap: calc(4 * var(--u));
+    min-height: calc(42 * var(--u));
+    border-bottom: calc(1 * var(--u)) solid #6d5a4660;
+  }
+  .planner__tasks input[type='checkbox'] { flex: none; width: max(24px, calc(16 * var(--u))); height: max(24px, calc(16 * var(--u))); accent-color: #684420; }
+  .planner__tasks input[type='text'] {
+    min-width: 0;
+    width: 100%;
+    padding: calc(3 * var(--u));
+    border: 0;
+    border-radius: 2px;
+    background: transparent;
+    font: 700 calc(12 * var(--u)) var(--hand);
+    color: var(--ink);
+  }
+  .planner__tasks input[type='checkbox']:checked + input { text-decoration: line-through; opacity: .7; }
+  .planner__tasks input:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+
+  /* Cork panel */
+  .board__cork {
+    background:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='c'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.55' numOctaves='3' seed='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .3 0 0 0 0 .16 0 0 0 0 .05 1.4 0 0 0 -.55'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23c)'/%3E%3C/svg%3E"),
+      radial-gradient(ellipse at 30% 18%, #d4a06a, transparent 62%),
+      linear-gradient(135deg, #bb8451, #a46d3d 50%, #8e5a31);
+    box-shadow: inset 0 calc(3 * var(--u)) calc(7 * var(--u)) rgba(40, 20, 6, 0.5), inset 0 0 0 calc(1.5 * var(--u)) #6a4220;
+  }
+  .cork__art {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+  /* Overflow stays visible here so the note's pin and curled corner are not cut off. */
+  .board > .board__cork {
+    overflow: visible;
+  }
+  .g-board .note {
+    position: absolute;
+    left: calc(12 * var(--u));
+    top: calc(104 * var(--u));
+    width: calc(160 * var(--u));
+    min-height: 0;
+    margin: 0;
+    padding: calc(24 * var(--u)) calc(12 * var(--u)) calc(12 * var(--u)) calc(14 * var(--u));
+    transform: rotate(-2deg);
+    background:
+      var(--paper-fibre),
+      linear-gradient(168deg, #f6ebcc, #eddfbb 55%, #dcc9a0);
+    clip-path: none;
+    border-radius: 0 0 calc(18 * var(--u)) 0;
+    box-shadow: calc(3 * var(--u)) calc(7 * var(--u)) calc(7 * var(--u)) #3b200a55, inset 0 calc(1 * var(--u)) 0 #fff9e9;
+  }
+  .g-board .note::after {
+    background: linear-gradient(135deg, #e4d6b6 42%, #ac94703d 49%, transparent 55%);
+    border-radius: 0 0 calc(18 * var(--u)) 0;
+  }
+  .g-board .note__pin {
+    left: 50%;
+    top: calc(-5 * var(--u));
+    width: calc(16 * var(--u));
+    height: calc(16 * var(--u));
+    margin-left: calc(-8 * var(--u));
+    border-width: calc(1.2 * var(--u));
+  }
+  .g-board .note__title {
+    margin-bottom: calc(8 * var(--u));
+    font-size: calc(17 * var(--u));
+  }
+  .g-board .note__list {
+    gap: calc(7 * var(--u));
+    font-size: calc(14.5 * var(--u));
+  }
+  .g-board .note__list li {
+    align-items: flex-start;
+    gap: calc(8 * var(--u));
+    line-height: 1.25;
+  }
+  .g-board .note__box {
+    width: calc(13 * var(--u));
+    height: calc(13 * var(--u));
+    margin-top: calc(2 * var(--u));
+    border-color: var(--ink-soft);
+  }
+  .g-board .note__box::after {
+    border-color: var(--ink-soft);
+  }
+
+  /* Stationery pockets */
+  .board__pockets {
+    background: linear-gradient(135deg, #f3f0e9, #dcd8cd);
+    box-shadow: inset 0 calc(2 * var(--u)) calc(5 * var(--u)) rgba(70, 50, 30, 0.28), inset 0 0 0 calc(1 * var(--u)) #bdb7aa;
+  }
+  .board__pockets svg {
+    width: 100%;
+    height: 100%;
+  }
+}

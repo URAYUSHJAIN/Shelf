@@ -195,6 +195,8 @@ upgrade-insecure-requests
 - **Contact:** pen composer with mail-app/copy fallback (D-08). No delivery endpoint is configured. Do not log or persist message text; never claim sent from a mailto action. The public email address is the owner-approved one only. Obfuscation is optional (it does not stop determined scrapers).
 - **If a form is approved later:** server-side validation, rate limiting, a privacy-respecting challenge, a honeypot field, no storage in static assets, credentials only in the host secret store, and a data-handling note.
 - No third-party requests on the closed home scene (T-SEC-08). D-39 permits the live portfolio's requests after laptop opening, including an explicit direct `/laptop/` visit; the remote site's own network activity is outside the parent CSP's control.
+- D-44's speaker audio is original and hosted at `/media/desk-theme.wav`; playback begins only after a user gesture. Demo planner text and checked states are stored only in the visitor's local storage. Contact text and email addresses entered by visitors are never stored by the site.
+- The release scan in `scripts/check-dist.mjs` excludes a ten-digit sequence when it is immediately preceded by a decimal point. This prevents Three.js colour-conversion fractions from looking like phone numbers while retaining the check for actual standalone phone-number-like values.
 
 ## 14. Logging
 

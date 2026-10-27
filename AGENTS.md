@@ -7,6 +7,7 @@ Detailed rules live in `docs/`. This file summarizes them and links to them. It 
 ## 0. Phase boundary (read first)
 
 The owner authorized Phase 3 implementation on 2026-10-24 (D-33). The Astro application is now implemented (D-36); maintain it under the rules below. Deployment, public publication and Git mutations remain unauthorized.
+The 2026-10-28 spatial-studio brief authorizes the Three.js and live desk-object exceptions recorded in D-44; the full default 3D scene remains Phase 3 work.
 
 - Phase 1–2 preparation is historical. Do not rerun completed discovery or destructive generators.
 - Require a supported Node 22 >=22.23.4 or Node 24 LTS (system Node 24.22.1 verified 2026-10-24). Astro 7.4.2 is pinned in `package.json`. An optional, unused portable Node fallback remains in `.tools/node-v24.22.1-win-x64/`; never change system Node or PATH.
@@ -78,9 +79,9 @@ At minimum, read the docs that own the area you are changing (see [docs/document
 - Static output. Prerender every route.
 - Content collections with strict schemas. Internal fields (provenance and similar) never exist in public schemas.
 - One small UI controller (`src/scripts/shelf-controller.ts`) owns state, history, and focus. State is derived from the URL.
-- Physics: a custom 1-DOF integrator and scheduler plus one raw-WebGL globe shader, lazy-loaded, and a small raw-WebGL mug-steam shader (D-43). No physics library, no 3D engine ([docs/physics-and-interactions.md](docs/physics-and-interactions.md) §5).
+- Physics: a custom 1-DOF integrator and scheduler plus raw-WebGL globe and steam shaders (D-43). Three.js is permitted for the spatial scene under D-44; no physics library ([docs/physics-and-interactions.md](docs/physics-and-interactions.md) §5).
 - CSS custom properties for every token. Motion uses `transform`/`opacity`.
-- Images through `astro:assets`. Videos and documents under `public/media/`. The original portfolio is linked, never iframed.
+- Images through `astro:assets`. Videos, original audio and documents under `public/media/`. The original portfolio opens in the laptop iframe under D-39, with a direct-link fallback.
 - Verify Astro APIs against the installed version's documentation; do not rely on memory.
 - File locations: [docs/asset-organization.md](docs/asset-organization.md).
 
@@ -88,7 +89,7 @@ At minimum, read the docs that own the area you are changing (see [docs/document
 
 - **Inspect before editing.** Read the target files and the owning docs first. Never overwrite a file you have not read.
 - **Smallest correct change.** No speculative features, no unrequested refactors, no new abstractions without a second use.
-- **Dependencies:** none without owner approval. Never add a dependency for something CSS or a few lines of TypeScript can do. No 3D, physics, animation, state-management, or UI-kit libraries. Sole exception: GSAP core, owner-approved for scripted motion (D-43).
+- **Dependencies:** none without owner approval. Never add a dependency for something CSS or a few lines of TypeScript can do. GSAP core (D-43) and Three.js (D-44) are owner-approved exceptions. No physics, state-management, or UI-kit libraries.
 - **Design changes:** none without approval. If a requirement seems wrong, raise it; do not "improve" it silently.
 - **Network access:** the Phase 2 request authorizes read-only public-source checks. Never upload local files. Deployment still requires release approval; environment-level sandbox prompts still apply.
 - **Git:** do not commit, push, or rewrite history unless asked. Keep `content/inventory/`, `docs/workspace-audit.md`, and `docs/reference/` out of any public repo (D-16).

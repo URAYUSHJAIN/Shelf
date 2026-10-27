@@ -37,7 +37,7 @@ These rules must not change without explicit owner approval, recorded in [open-d
 | INV-04 | The cabinet remains recognizable in every state: home, drawer open, record open, mobile sheet, 404.                                                                                                                                                                                                                                   |
 | INV-05 | Interface chrome is monochrome. Colour comes only from authentic assets (§3.2).                                                                                                                                                                                                                                                       |
 | INV-06 | Authentic screenshots, photos, and videos are never recoloured, desaturated, or tinted to fit the shell.                                                                                                                                                                                                                              |
-| INV-07 | The identity/photo frame is present in the scene and uses a real, approved photo (D-05).                                                                                                                                                                                                                                              |
+| INV-07 | The home scene presents the identity through the name, introduction, contact links, focus areas and the approved portrait in the top-shelf frame.                                                                                                                                                                                   |
 | INV-08 | Only one primary surface (drawer or record) is open at a time. No stacked modals.                                                                                                                                                                                                                                                     |
 | INV-09 | All meaningful content exists as server-rendered HTML at a stable URL. Nothing important exists only in JavaScript state.                                                                                                                                                                                                             |
 | INV-10 | No autoplay video, no autoplay sound, no continuous or looping animation by default.                                                                                                                                                                                                                                                  |
@@ -49,7 +49,7 @@ These rules must not change without explicit owner approval, recorded in [open-d
 | INV-16 | Desktop is the primary art direction. Mobile is a purposeful reinterpretation, not a scaled screenshot.                                                                                                                                                                                                                               |
 | INV-17 | Do not claim the concept is unprecedented. Originality comes from execution, illustration, interaction quality, and content.                                                                                                                                                                                                          |
 | INV-18 | Never display age, date of birth, or any identity-document data. No government IDs, marks, roll numbers, compensation, or signatures appear anywhere on the site.                                                                                                                                                                     |
-| INV-19 | Every functional object (drawers, laptop, Writing spines, identity frame, pinned links) works through a plain click, tap, or Enter/Space. Physics is an enhancement, never a requirement ([physics-and-interactions.md](physics-and-interactions.md) §1).                                                                             |
+| INV-19 | Every functional object (drawers, laptop, Writing spines and pinned links) works through a plain click, tap, or Enter/Space. Physics is an enhancement, never a requirement ([physics-and-interactions.md](physics-and-interactions.md) §1).                                                                                         |
 
 ### 0.1 The concept board
 
@@ -79,7 +79,7 @@ How to use it:
 | BR-11 | Experience layout              | Personnel folders, "not a résumé timeline"       | Vertical timeline rail with node markers and stacked role cards                                                                                 | **Follow the board** (§8.1). The cards keep folder styling.                                                                                                                                                                                                                                                                                                                                             |
 | BR-12 | Record layout                  | Stacked sections                                 | Tabs: Overview / Tech Stack / Architecture / Gallery (projects); Abstract / Novelty / Use Cases / Timeline (patents); action buttons            | **Follow the board** (§6.5, §7.3). Tabs appear only for sections with content. Without JS they render as stacked sections.                                                                                                                                                                                                                                                                              |
 | BR-13 | Additional desk objects        | Mug, pen, cube                                   | Also desk lamp, closed laptop, hanging plant, potted plant on stacked books; mug carries an "AJ." monogram                                      | **Follow the board** for the object set. Superseded in part by the Phase 1.1 brief: the **laptop is functional** (résumé and original portfolio, BR-19) and the **lamp is a switch** that drives scene lighting (BR-20). Others are decorative or toy objects ([physics-and-interactions.md](physics-and-interactions.md) §1). The laptop shows **no brand logo** (the board's logo is not reproduced). |
-| BR-14 | Identity frame                 | Owner's real photo                               | Frame shows a landscape picture                                                                                                                 | **Keep the text rule** (INV-07). The board's picture is a placeholder for the approved photo (D-05).                                                                                                                                                                                                                                                                                                    |
+| BR-14 | Identity presentation         | Name, introduction, verified links and portrait   | Frame shows a landscape picture                                                                                                                 | **Keep the top-shelf frame** (INV-07). Remove the larger wall frame beside the introduction so that space can be used by the identity column.                                                                                                                                                                                                                                                           |
 | BR-15 | Social links                   | Side spines/tabs                                 | Not shown                                                                                                                                       | **Phase 1.1 brief:** a **pinned area** for GitHub, LinkedIn, X, and Instagram. The pins sit beside the Currently Building note, as small pinned cards with pushpins. Only verified URLs are pinned (D-25).                                                                                                                                                                                              |
 | BR-16 | Contact / Work with me         | Required by the Phase 1 brief                    | Not shown                                                                                                                                       | _Decision D-13._ Default: About record carries contact links. The business-card holder is added only if approved.                                                                                                                                                                                                                                                                                       |
 | BR-17 | "Select a drawer" hint         | Required                                         | Not shown                                                                                                                                       | Keep it: one small line under the cabinet, in graphite.                                                                                                                                                                                                                                                                                                                                                 |
@@ -176,6 +176,8 @@ It should feel like a carefully crafted study desk. D-38 permits realistic mater
 D-41 gives the left desk plant three prominent arching stems and narrow leaves inspired by the owner's CodePen reference. Keep its cream pot and contact with the desktop, move it slightly left, and keep foliage away from the social plaque and notebook. Its existing finite sway respects reduced motion.
 
 D-42 uses the owner-supplied photoreal desk image as desktop composition and lighting direction: a taller cabinet resting on a deep brown desk, softer tan wall with window-like dapple, one framed portrait on the left, and verified pinned links on a cork board at the right. Reuse the gated portrait asset, keep the functional open writing book with the contact pen over it, and preserve the laptop, speaker, plants, mug and steam. The image's sample checklist wording and branded marks are visual examples only; actual records and publication gates control all displayed text and media. Decorative wall prints and desk lettering are omitted in the desktop composition to give the cabinet and desk objects room.
+
+D-44 supersedes the older decorative-only lamp/speaker and no-engine guidance. The owner's new reference calls for a physical 3D workspace, a working lamp and speaker, a live clock, an editable demo planner and a shallow desk engraving reading “CREATIVITY & INNOVATION — DONE HERE.” The installed Three.js overview is a first spatial layer; the default fully interactive 3D scene and requested material quality are still outstanding. Keep the original illustrated HTML scene as the complete fallback while that work continues.
 
 ### 3.2 Colour strategy
 
@@ -285,12 +287,11 @@ Structure from the board. **The board's words are samples**, and the owner must 
 
 No unverified titles, awards, or claims.
 
-### 4.3 Identity frame
+### 4.3 Identity presentation
 
-- A visible photo frame or pinned identity card that is part of the illustration, not a giant hero portrait.
-- Uses the approved real photo (D-05), in natural colour, inside a monochrome frame.
-- **Activation** opens the About record: summary, education link, résumé link (only after privacy review, S-03), contact, social links, and a link to Work with me (D-13).
-- If no About record is approved, the frame stays but becomes decorative (`aria-hidden="true"` on the art, with no button).
+- The home scene uses the name, introduction, contact links, focus areas and the approved real photo in the top-shelf frame.
+- The larger wall frame beside the introduction is omitted so the identity column can use that space.
+- The About record includes the summary, education link, résumé link (only after privacy review, S-03), contact, social links, and a link to Work with me (D-13).
 
 ### 4.4 Objects, roles, and behaviour
 
@@ -298,10 +299,9 @@ Each object has exactly one role. Its interaction contract is in [micro-interact
 
 | Object                        | Zone                   | Class   | Role                                                                                                                       | Activates                                                             | Colour                                 |
 | ----------------------------- | ---------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- | -------------------------------------- |
-| Identity frame                | Crown                  | I F E   | Identity                                                                                                                   | About record                                                          | Photo only                             |
-| Book spines                   | Crown                  | I F E   | **Writing entry** (BR-07, D-04). One spine per category with content (the board shows Blogs, Notes, Ideas, plus one more). | Writing booklet at that category                                      | Warm monochrome                        |
+| Book spines                  | Crown                | I F E   | **Writing entry** (BR-07, D-04). One spine per category with content (the board shows Blogs, Notes, Ideas, plus one more). | Writing booklet at that category                                      | Warm monochrome                        |
 | Globe _(the rotating object)_ | Crown                  | I P E   | Curiosity delight: a real sphere you can spin                                                                              | Drag or keys rotate it (inertia). Does not navigate.                  | Muted map colours                      |
-| Desk lamp                     | Crown (right)          | D E     | Permanent warm local illumination (D-27, D-38)                                                                           | None; decorative and excluded from hit testing and focus               | Warm monochrome; warm light pool       |
+| Desk lamp                     | Crown (right)          | I E     | Local warm illumination (D-44)                                                                                           | Switches the illustrated light pool and 3D point light                 | Warm monochrome; warm light pool       |
 | Hanging plant; plant on books | Crown; identity column | D P E   | Life accent                                                                                                                | Hover sway only. Optional "Currently learning" only if maintained.    | One green family                       |
 | Currently Building note       | Pinned area            | I F E   | Current activity (D-12)                                                                                                    | Currently Building drawer                                             | Warm monochrome                        |
 | Pinned link cards             | Pinned area            | I F     | Verified GitHub, LinkedIn, X, Instagram (BR-15, D-25)                                                                      | External profile (new tab)                                            | Monochrome; platform icon in ink       |
@@ -314,9 +314,9 @@ Each object has exactly one role. Its interaction contract is in [micro-interact
 
 Object rules:
 
-- Include an object only if an approved asset exists or it can be drawn in the same style. Never mix styles (no stock clip-art, no emoji, no photoreal renders).
+- Include an object only if an approved asset exists or it can be built in the same physical visual language. Never mix in stock clip-art, emoji or unlicensed models.
 - Decorative objects (mug, plants without content, stacked books) are `aria-hidden="true"` and not focusable. The cube may become decorative in reduced-motion mode; the functional pen remains operable.
-- The D-40 speaker is decorative and `aria-hidden="true"`. Its top controls do not imply working playback, pairing or power. The top-shelf book under the portrait remains; the stacked books on the right desk are removed.
+- The D-44 speaker uses an original local audio file, a real play/pause button, volume control and honest playback status. No pairing or commercial brand is implied. The top-shelf book under the portrait remains; the stacked books on the right desk are removed.
 - No third-party brand marks in the illustration (e.g. the board's laptop logo is not reproduced).
 - Interactive objects are real `<button>` or `<a>` elements with accessible names stating what happens (e.g. "Open writing: Articles", "Open laptop: résumé and original portfolio", "Desk lamp").
 - An object never blocks or overlaps a drawer label or another control at any breakpoint.
@@ -719,7 +719,7 @@ Target: WCAG 2.2 AA.
 - **One** small client-side controller (a vanilla TypeScript module or a single island) owns UI state, history, and focus. Use a UI framework only if a truly stateful component justifies it. The old portfolio's React stack does not by itself justify React here.
 - Astro content collections with schemas for every record type.
 - Lazy and on-demand media players.
-- No 3D engine and no physics library. The concept is achievable in CSS and SVG, plus a small custom 1-DOF integrator and one isolated raw-WebGL globe shader ([physics-and-interactions.md](physics-and-interactions.md) §5).
+- Three.js is permitted for the spatial workspace under D-44. It is dynamically imported on desktop, renders only when needed, and disposes GPU resources on page exit. HTML controls and stable URLs remain the primary source of truth. No physics library is needed ([physics-and-interactions.md](physics-and-interactions.md) §5).
 - No dependency for a simple transition, icon, or focus trap.
 - Data stays separate from visual components.
 
@@ -744,7 +744,7 @@ Validate on the deployed site; do not claim in advance.
 
 ## 18. Design acceptance checklist
 
-- [ ] Homepage shows the shelf, name and intro, photo frame, approved objects, labeled drawers; no counter strip (INV-01–03, INV-07).
+- [ ] Homepage shows the shelf, name and intro, top-shelf portrait, approved objects, labeled drawers and no counter strip (INV-01–03, INV-07).
 - [ ] 10-second test passes at 1366×768 (§1.1).
 - [ ] No conventional navbar (INV-02).
 - [ ] Drawer labels are readable and visibly interactive at every test size.
@@ -756,7 +756,7 @@ Validate on the deployed site; do not claim in advance.
 - [ ] Currently Building note shows only verified content, or is hidden.
 - [ ] Pinned links are correct and verified; placeholders and `uaryushjain` typos excluded (D-25, C-22).
 - [ ] The laptop shows the live original portfolio (D-39), with native scrolling, a direct-link fallback and parent-owned Close; focus returns on close. Résumé remains gated by D-24.
-- [ ] The lamp is permanently lit and decorative, with a recessed bulb, connected supports and controlled local light; no switch or persistence (D-27, D-38). UI contrast passes.
+- [ ] The lamp has a keyboard-operable switch, recessed bulb, connected supports and controlled local light (D-44). UI contrast passes in both states.
 - [ ] The globe rotates as a sphere with inertia and stops; keyboard alternative present (T-PHY-01–03).
 - [ ] No age, identity-document data, compensation, or signatures appear anywhere (INV-18).
 - [ ] Mobile preserves the concept and works with touch only.

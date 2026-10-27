@@ -361,17 +361,15 @@ All interactive objects share the `ShelfObject` behaviour: a real `<a>` for cont
 - History: no distinct URL. Push one same-URL utility-state marker on open; Back or the close action consumes it. Content state remains URL-derived. Exact handling: phase-3-handoff.md.
 - Acceptance: T-PHY-05, T-INT-12.
 
-### 8.13 Desk lamp (static FX, see physics §4.2)
+### 8.13 Desk lamp (D-44, see physics §4.2)
 
-- D-27/D-38: permanently lit decorative SVG, `aria-hidden` and `pointer-events: none`.
-- No trigger, switch, `aria-pressed`, focus stop, stored preference or pointer tracking.
-- The bulb sits inside the shade's reflector. A soft static cone and wall pool supply local warmth; text is above environmental lighting.
-- No animation or reduced-motion variant is needed. If lighting effects fail, the base artwork remains visible.
-- Acceptance: T-PHY-09 (permanent lighting and absence of controls).
+- The articulated lamp is a real button. Click, tap, Enter or Space toggles `aria-pressed`, its accessible action label, the nearby illustrated light pool and the 3D model's local point light. It is on initially; no preference is stored.
+- The bulb stays inside the shade's reflector. Lighting transitions never dim text or drawer labels. If WebGL fails, the illustrated switch still works.
+- Reduced motion changes the light state without a transition. T-PHY-09 now checks both states and the keyboard path.
 
 ### 8.14 Pen — contact message
 
-Native link to `/contact/`, enhanced to the message composer specified in [phase-3-handoff.md](phase-3-handoff.md). Click/tap/Enter opens; Escape/Back/Close dismisses and returns focus to the pen. It replaces any open primary surface. Use the standard dialog/sheet semantics, 220ms opacity opening (≤120ms with reduced motion), persistent visible Close and no queued openings. Opening an email app and copying a message never claim delivery. Repeated activation focuses the existing composer rather than opening another. Validation retains text on error; clipboard failure exposes selectable text. No JavaScript: email link and copyable public address on the static contact page. No contact path depends on physics.
+The pen links to `/contact/?page=message`, while the notebook links to `/contact/?page=intro`. Both open the same primary surface. Page tabs and paper-corner links change its URL-derived page; without JavaScript all four pages remain server-rendered in sequence. The pen graphic follows the actual textarea caret while it is focused. Escape/Back/Close dismisses the surface and restores focus. Name, email, subject and message use native validation; the preview reflects the editable fields. Reset clears the page. Mail-app and copy actions never claim delivery. Message text is neither logged nor persisted. No contact path depends on physics.
 
 ### 8.15 Credential and certificate sheets (Achievements drawer)
 

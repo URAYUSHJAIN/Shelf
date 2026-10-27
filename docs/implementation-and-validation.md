@@ -422,4 +422,6 @@ Never say "fast", "accessible", "secure", or "SEO optimized" without naming the 
 
 ## Required Stage 4 release separation
 
+D-44 local verification adds browser checks for: real browser-local clock time after load/visibility changes; lamp keyboard and light-state parity; audio play/pause after a trusted gesture and honest load failure; planner edit persistence; contact notebook route, page navigation, validation, preview, caret-linked pen and reset; 3D overview start/stop/return, reduced motion and WebGL failure fallback. The existing T-PHY, T-RWD, T-A11Y and release gates still apply. A successful static build is not a substitute for visual quality review or mobile-device testing.
+
 Implement D-35 before content integration: review records only in a loopback development server, noindex and visible notice; every static/CI/release build rejects review mode and unapproved selected records/media. Keep quarantined assets outside public. Exercise both successful dev review and deliberately rejected release fixtures. Existing T-CNT-02 remains strict for release; no relaxation of privacy or patent truth rules.

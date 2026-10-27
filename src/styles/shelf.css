@@ -17,9 +17,13 @@
   --material-edge: #66503a;
   --material-dark: #4a3323;
   --material-light: #ead5b0;
-  --metal-dark: #4c3c2c;
-  --metal-mid: #9b805a;
-  --metal-light: #d9c09a;
+  /* Brass hardware: drawer pulls and corner caps. */
+  --metal-dark: #5a3f17;
+  --metal-mid: #b48a3e;
+  --metal-light: #f1d68f;
+  /* Walnut: lighter figure streaks that sit over the dark grain on the cabinet and desk. */
+  --grain-hi: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='480' height='240'%3E%3Cfilter id='h'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.004 .09' numOctaves='3' seed='11' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .95 0 0 0 0 .62 0 0 0 0 .34 1.6 0 0 0 -.82'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23h)'/%3E%3C/svg%3E");
+  --grain-upright-hi: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='480'%3E%3Cfilter id='h'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.09 .004' numOctaves='3' seed='17' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .95 0 0 0 0 .62 0 0 0 0 .34 1.6 0 0 0 -.82'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23h)'/%3E%3C/svg%3E");
   --paper-fibre: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='p'%3E%3CfeTurbulence baseFrequency='.72' numOctaves='3' seed='12' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .36 0 0 0 0 .29 0 0 0 0 .2 0 0 0 .09 0'/%3E%3C/filter%3E%3Cpath d='M0 0h160v160H0z' filter='url(%23p)'/%3E%3C/svg%3E");
   --grain-upright: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='480'%3E%3Cfilter id='v'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.065 .003' numOctaves='3' seed='9' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .25 0 0 0 0 .16 0 0 0 0 .08 1.1 0 0 0 -.4'/%3E%3C/filter%3E%3Cpath d='M0 0h160v480H0z' filter='url(%23v)'/%3E%3C/svg%3E");
   /* Long, streaky wood grain (fractal noise stretched along the board). */
@@ -146,11 +150,15 @@ svg.obj {
 .wall-shadow,
 .wall-sun,
 .wall-pins,
-.wall-portrait,
 .desk-surface,
 .desk-light,
 .lamp-glow,
-.speaker {
+.speaker,
+.desk-mat,
+.rocket,
+.moonclock,
+.desk-script,
+.g-board {
   display: none;
 }
 
@@ -258,8 +266,7 @@ svg.obj {
   pointer-events: auto;
 }
 .top-decor,
-.bookend-right,
-.plant-top {
+.bookend-right {
   display: none;
 }
 .bookend-left {
@@ -378,7 +385,7 @@ svg.obj {
   filter: none;
 }
 
-/* Frame */
+/* Identity frame on the top shelf; the larger wall frame is intentionally absent. */
 .frame {
   display: block;
   padding: calc(9 * var(--u));
@@ -427,26 +434,23 @@ svg.obj {
   transform: rotate(-1.5deg) translateY(calc(-3 * var(--u)));
 }
 
-/* Lamp: decorative and always lit; never a hit target, so the frame below stays clickable */
+/* Lamp switch uses the whole shade and articulated body as a keyboard target. */
 .lamp {
-  pointer-events: none;
+  pointer-events: auto;
+  display: block;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
 }
+.lamp:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
 .lamp__bulb {
   filter: drop-shadow(0 0 calc(3 * var(--u)) rgba(255, 233, 179, 0.65));
 }
-
-/* Plants — natural sway inspired by Slack plant animation (CodePen: ismailvtl/wvQYGay) */
-.sway {
-  transform-box: fill-box;
-  transform-origin: 50% 100%;
-}
-.sway--b {
-  transform-origin: 30% 0%;
-}
-.desk-plant .sway--b {
-  transform-origin: 50% 100%;
-}
-/* The sway itself is a one-shot GSAP tween (shelf-controller.ts). */
+.stage[data-lamp='off'] .lamp__bulb { filter: none; opacity: .45; }
+.stage[data-lamp='off'] .lamp-glow,
+.stage[data-lamp='off'] .lamp-beam,
+.stage[data-lamp='off'] .desk-light { opacity: .08; }
 
 /* Cabinet */
 .g-cabinet {
@@ -665,13 +669,7 @@ svg.obj {
   text-underline-offset: calc(6 * var(--u));
 }
 
-/* Sticky note */
-.g-note {
-  --u: 0.82px;
-  display: flex;
-  justify-content: center;
-  padding: 6px 0;
-}
+/* Sticky note (pinned on the wall board's cork panel; the board itself is in board.css) */
 .note {
   position: relative;
   width: calc(206 * var(--u));
@@ -772,17 +770,14 @@ svg.obj {
 .g-desk > * {
   pointer-events: auto;
 }
-/* Plants only react where leaves are painted, so drawers and links beneath stay clickable. */
-.g-top > .plant-top,
-.g-desk > .desk-plant,
-.g-desk > .speaker {
+/* Purely decorative desk props never take clicks, so the objects beneath them stay usable. */
+.g-desk > .speaker,
+.g-desk > .desk-mat,
+.g-desk > .rocket,
+.g-desk > .moonclock,
+.g-desk > .desk-script {
   pointer-events: none;
 }
-.plant-top > *,
-.desk-plant > * {
-  pointer-events: visiblePainted;
-}
-.desk-plant { --x: 557; --y: 6; --w: 186; --h: 176; }
 .notebook { --x: 20; --y: 120; --w: 330; --h: 110; }
 .laptop { --x: 156; --y: 268; --w: 430; --h: 168; }
 .pen { --x: 430; --y: 196; --w: 196; --h: 70; }
@@ -931,8 +926,8 @@ svg.obj {
     display: grid;
     place-items: center;
     /* Beyond the scene's own side extension: wall above the desk line, wood below. */
-    background-color: #75442b;
-    background-image: linear-gradient(#c69770 0 73.4%, #75442b 73.4%);
+    background-color: #5a3019;
+    background-image: linear-gradient(#cfb08f 0 73.4%, #5a3019 73.4%);
   }
   .stage {
     --u: calc(100cqw / 1536);
@@ -964,42 +959,45 @@ svg.obj {
     pointer-events: none;
     border-bottom: calc(2.5 * var(--u)) solid rgba(80, 42, 12, 0.28);
     box-shadow:
-      inset 0 calc(-22 * var(--u)) calc(32 * var(--u)) rgba(100, 54, 18, 0.12),
-      inset 0 calc(26 * var(--u)) calc(40 * var(--u)) rgba(255, 245, 218, 0.22);
+      inset 0 calc(-22 * var(--u)) calc(32 * var(--u)) rgba(100, 62, 30, 0.12),
+      inset 0 calc(26 * var(--u)) calc(40 * var(--u)) rgba(255, 246, 228, 0.2);
+    /* Refined warm-beige plaster: one smooth tone, a fine tooth, and two light pools
+       (the lamp over the cabinet and the window at the upper left). No cloud mottling. */
     background:
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.6' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .48 0 0 0 0 .34 0 0 0 0 .2 0 0 0 .04 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
-      linear-gradient(90deg, rgba(110, 62, 24, 0.24), transparent 15% 85%, rgba(110, 62, 24, 0.24)),
-      radial-gradient(calc(920 * var(--u)) calc(475 * var(--u)) at calc(1127 * var(--u)) calc(259 * var(--u)), rgba(255, 251, 235, 0.78), transparent 65%),
-      radial-gradient(calc(614 * var(--u)) calc(432 * var(--u)) at calc(1618 * var(--u)) calc(173 * var(--u)), rgba(255, 236, 190, 0.34), transparent 58%),
-      radial-gradient(calc(461 * var(--u)) calc(302 * var(--u)) at calc(727 * var(--u)) calc(216 * var(--u)), rgba(255, 244, 215, 0.28), transparent 55%),
-      repeating-linear-gradient(103deg, rgba(110, 68, 28, 0.035) 0 1px, transparent 1px 11px),
-      linear-gradient(155deg, #dbad84 0%, #cea17d 35%, #c69a76 60%, #b58768 100%);
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .38 0 0 0 0 .25 0 0 0 .05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+      linear-gradient(90deg, rgba(120, 82, 48, 0.2), transparent 14% 86%, rgba(120, 82, 48, 0.22)),
+      radial-gradient(calc(700 * var(--u)) calc(430 * var(--u)) at calc(780 * var(--u)) calc(190 * var(--u)), rgba(255, 244, 220, 0.62), transparent 68%),
+      radial-gradient(calc(520 * var(--u)) calc(420 * var(--u)) at calc(60 * var(--u)) calc(130 * var(--u)), rgba(255, 242, 214, 0.4), transparent 66%),
+      linear-gradient(180deg, #dcc4a5 0%, #d3b794 55%, #c6a582 100%);
   }
   .stage > .wall-leaves,
   .stage > .wall-shadow,
   .stage > .wall-sun,
-  .stage > .wall-portrait,
   .stage > .desk-surface,
   .stage > .desk-light,
   .stage > .lamp-glow,
-  .g-desk > .speaker {
+  .stage > .g-board,
+  .g-desk > .speaker,
+  .g-desk > .desk-mat,
+  .g-desk > .rocket,
+  .g-desk > .moonclock,
+  .g-desk > .desk-script {
     display: block;
   }
   .stage > .g-top,
   .stage > .g-cabinet,
-  .stage > .g-note,
+  .stage > .g-board,
   .stage > .g-desk {
     --u: calc(100cqw / 1536);
   }
   .stage > .g-intro,
   .stage > .g-top,
   .stage > .g-cabinet,
-  .stage > .g-note,
+  .stage > .g-board,
   .stage > .g-desk,
   .stage > .wall-leaves,
   .stage > .wall-shadow,
   .stage > .wall-sun,
-  .stage > .wall-portrait,
   .stage > .desk-surface,
   .stage > .desk-light,
   .stage > .lamp-glow {
@@ -1039,14 +1037,9 @@ svg.obj {
     top: 0;
     width: calc(380 * var(--u));
     height: calc(420 * var(--u));
-    opacity: .38;
-    background:
-      radial-gradient(ellipse 15% 5% at 12% 12%, #704c3780 60%, transparent 100%),
-      radial-gradient(ellipse 19% 6% at 30% 24%, #704c3780 60%, transparent 100%),
-      radial-gradient(ellipse 12% 7% at 45% 8%, #704c3780 60%, transparent 100%),
-      radial-gradient(ellipse 18% 6% at 9% 38%, #704c3780 60%, transparent 100%),
-      radial-gradient(ellipse 16% 5% at 54% 34%, #704c3780 60%, transparent 100%),
-      repeating-linear-gradient(112deg, transparent 0 57px, #74533d50 59px 65px, transparent 68px 128px);
+    /* Window-frame shadow: soft diagonal mullion bands, no mottled blobs. */
+    opacity: .2;
+    background: repeating-linear-gradient(112deg, transparent 0 57px, #74533d50 59px 65px, transparent 68px 128px);
     filter: blur(calc(7 * var(--u)));
     transform: rotate(-14deg);
   }
@@ -1058,37 +1051,16 @@ svg.obj {
     max-width: none; /* the global svg cap would squeeze these back to the stage width */
   }
   .wall-pins { display: none; }
-  .wall-portrait {
-    --x: 43; --y: 259; --w: 112; --h: 157;
-    z-index: 2;
-    display: grid;
-    padding: calc(13 * var(--u));
-    border: calc(6 * var(--u)) ridge #6b4126;
-    border-radius: calc(2 * var(--u));
-    background: #e9d7b7;
-    box-shadow: 0 calc(7 * var(--u)) calc(10 * var(--u)) #3c261c66, inset 0 0 0 calc(2 * var(--u)) #a67a4f;
-    transform: rotate(-.5deg);
-    pointer-events: none;
-  }
-  .wall-portrait img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: 50% 20%;
-    box-shadow: inset 0 0 calc(4 * var(--u)) #2a170d;
-  }
   .wall-leaves {
     --x: -420; --y: 0; --w: 2376; --h: 864;
     z-index: 1;
     pointer-events: none;
   }
+  /* Soft cast shadow of the wall board, offset away from the lamp. */
   .wall-shadow {
-    --x: 1160; --y: 100; --w: 376; --h: 520;
+    --x: 936; --y: 156; --w: 600; --h: 400;
     z-index: 0;
-    background:
-      radial-gradient(ellipse 50% 55% at 42% 42%, rgba(120, 80, 40, 0.07), transparent 68%),
-      radial-gradient(ellipse 30% 40% at 70% 80%, rgba(100, 60, 30, 0.04), transparent 65%);
+    background: radial-gradient(ellipse 52% 54% at 52% 56%, rgba(90, 56, 28, 0.2), transparent 72%);
   }
 
   /* Desk top: richer wood, more visible grain */
@@ -1110,13 +1082,13 @@ svg.obj {
   /* Profile column: its own clear band between the wall prints (x < 160) and the
      cabinet (x > 402), as on the reference. */
   .g-intro {
-    --x: 162; --y: 100; --w: 236; --h: 500;
+    --x: 82; --y: 100; --w: 208; --h: 500;
     z-index: 5;
     padding: 0;
   }
   .g-intro .wordmark { margin-right: 0; }
   .wordmark {
-    font-size: calc(56 * var(--u));
+    font-size: calc(54 * var(--u));
     line-height: 0.9;
     letter-spacing: calc(-0.6 * var(--u));
     text-shadow: 0 calc(2 * var(--u)) calc(8 * var(--u)) rgba(42, 31, 22, 0.08);
@@ -1141,32 +1113,31 @@ svg.obj {
     font-size: calc(14.5 * var(--u));
     line-height: 1.35;
     font-weight: 700;
-    white-space: nowrap;
   }
   .intro {
     margin-top: calc(6 * var(--u));
-    font-size: calc(14.5 * var(--u));
+    font-size: calc(14 * var(--u));
     line-height: 1.45;
     max-width: none;
     color: var(--ink-soft);
   }
   .contact-row {
     margin-top: calc(10 * var(--u));
-    gap: calc(14 * var(--u));
+    gap: calc(8 * var(--u)) calc(10 * var(--u));
   }
   .intro__mail {
-    font-size: calc(15 * var(--u));
+    font-size: calc(14 * var(--u));
     text-decoration-thickness: calc(1.5 * var(--u));
     text-underline-offset: calc(4 * var(--u));
     color: var(--ink);
   }
   .profile-links { gap: calc(6 * var(--u)); }
   .profile-link {
-    width: calc(30 * var(--u));
-    height: calc(30 * var(--u));
+    width: calc(28 * var(--u));
+    height: calc(28 * var(--u));
     border-width: calc(1.3 * var(--u));
   }
-  .profile-link .icon { width: calc(16 * var(--u)); height: calc(16 * var(--u)); }
+  .profile-link .icon { width: calc(15 * var(--u)); height: calc(15 * var(--u)); }
   .chips {
     margin: calc(16 * var(--u)) 0 0 0;
     flex-direction: column;
@@ -1191,27 +1162,26 @@ svg.obj {
   /* Top shelf (stage coordinates) */
   .g-top { --x: 0; --y: 24; --w: 1536; --h: 420; z-index: 3; container-type: normal; aspect-ratio: auto; }
   .g-top::after { display: none; }
-  .bookend-right,
-  .plant-top {
+  .bookend-right {
     display: block;
   }
-  /* Top shelf objects: every base rests on the board top (y 226). */
+  /* Top shelf objects: every base rests on the board top (y 226); the cabinet
+     spans x 300–936, so books, globe, portrait and lamp sit inside it. */
   .top-decor { --x: 808; --y: 200; --w: 230; --h: 30; }
-  .bookend-left { --x: 424; --y: 58; --w: 92; --h: 168; }
-  .spine--blogs { --x: 516; --y: 58; --w: 42; --h: 168; }
-  .spine--notes { --x: 558; --y: 76; --w: 40; --h: 150; }
-  .spine--ideas { --x: 598; --y: 98; --w: 38; --h: 128; }
-  .spine--album { --x: 636; --y: 88; --w: 40; --h: 138; }
-  .spine__label { font-size: calc(21 * var(--u)); }
-  .bookend-right { --x: 676; --y: 124; --w: 32; --h: 102; }
-  .globe { --x: 700; --y: 14; --w: 155; --h: 213; }
-  .frame { --x: 852; --y: 106; --w: 110; --h: 120; }
-  .lamp { --x: 840; --y: 16; --w: 280; --h: 221; }
-  .plant-top { --x: 938; --y: 86; --w: 280; --h: 287; }
+  .bookend-left { --x: 314; --y: 72; --w: 84; --h: 154; }
+  .spine--blogs { --x: 398; --y: 66; --w: 36; --h: 160; }
+  .spine--notes { --x: 434; --y: 84; --w: 34; --h: 142; }
+  .spine--ideas { --x: 468; --y: 104; --w: 32; --h: 122; }
+  .spine--album { --x: 500; --y: 93; --w: 34; --h: 133; }
+  .spine__label { font-size: calc(19 * var(--u)); }
+  .bookend-right { --x: 534; --y: 146; --w: 26; --h: 80; }
+  .globe { --x: 560; --y: 33; --w: 142; --h: 194; }
+  .frame { --x: 712; --y: 116; --w: 100; --h: 110; }
+  .lamp { --x: 676; --y: 31; --w: 250; --h: 197; }
 
   /* Cabinet: the scene's anchor, 2 × 4 drawers centred over the laptop. */
   .g-cabinet {
-    --x: 402; --y: 250; --w: 748; --h: 410;
+    --x: 300; --y: 250; --w: 636; --h: 410;
     z-index: 2;
     display: flex;
     filter: drop-shadow(0 calc(16 * var(--u)) calc(18 * var(--u)) rgba(44, 20, 4, 0.35));
@@ -1228,8 +1198,8 @@ svg.obj {
   }
   .cab-body {
     flex: 1;
-    margin: 0 calc(12 * var(--u));
-    padding: calc(48 * var(--u)) calc(40 * var(--u)) calc(16 * var(--u));
+    margin: 0 calc(10 * var(--u));
+    padding: calc(48 * var(--u)) calc(28 * var(--u)) calc(16 * var(--u));
     border-width: calc(2.4 * var(--u));
     background:
       repeating-linear-gradient(91deg, transparent 0 calc(42 * var(--u)), rgba(255, 190, 105, 0.08) calc(43 * var(--u)) calc(44 * var(--u))),
@@ -1256,7 +1226,7 @@ svg.obj {
     box-shadow: 0 0 calc(26 * var(--u)) calc(8 * var(--u)) rgba(255, 208, 112, 0.85);
   }
   .cab-lights span::after { width: calc(180 * var(--u)); height: calc(100 * var(--u)); }
-  .cab-grid { grid-template-columns: 1fr 1fr; column-gap: calc(18 * var(--u)); row-gap: calc(12 * var(--u)); }
+  .cab-grid { grid-template-columns: 1fr 1fr; column-gap: calc(16 * var(--u)); row-gap: calc(12 * var(--u)); }
   .cab-grid .drawer-slot { height: calc(60 * var(--u)); }
   .drawer {
     height: calc(60 * var(--u));
@@ -1288,10 +1258,12 @@ svg.obj {
       0 calc(7 * var(--u)) 0 #6e441c,
       0 calc(14 * var(--u)) calc(18 * var(--u)) rgba(35, 14, 2, 0.52);
   }
-  .drawer__face { inset: 0 calc(46 * var(--u)) calc(6 * var(--u)) calc(16 * var(--u)); gap: calc(14 * var(--u)); }
-  .drawer__icon { width: calc(32 * var(--u)); height: calc(32 * var(--u)); }
-  .drawer__label { font-size: calc(22 * var(--u)); }
-  .drawer__arrow { right: calc(22 * var(--u)); top: calc(50% - 15 * var(--u)); width: calc(24 * var(--u)); height: calc(24 * var(--u)); }
+  /* The 636-wide cabinet gives each front about 270 units: a tighter label row keeps
+     "Skills & Toolbox" clear of the arrow. */
+  .drawer__face { inset: 0 calc(38 * var(--u)) calc(6 * var(--u)) calc(14 * var(--u)); gap: calc(10 * var(--u)); }
+  .drawer__icon { width: calc(28 * var(--u)); height: calc(28 * var(--u)); }
+  .drawer__label { font-size: calc(19 * var(--u)); }
+  .drawer__arrow { right: calc(14 * var(--u)); top: calc(50% - 10 * var(--u)); width: calc(20 * var(--u)); height: calc(20 * var(--u)); }
   .drawer__handle {
     width: calc(74 * var(--u));
     height: calc(12 * var(--u));
@@ -1313,37 +1285,6 @@ svg.obj {
     box-shadow: 0 calc(10 * var(--u)) calc(12 * var(--u)) rgba(42, 18, 3, 0.55);
   }
 
-  /* The verified pinned links sit on a cork board, like the owner's reference. */
-  .g-note { --x: 1222; --y: 231; --w: 240; --h: 306; z-index: 4; padding: 0; display: block; }
-  .g-note[hidden] { display: none; }
-  .g-note::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border: calc(7 * var(--u)) ridge #744b2e;
-    border-radius: calc(6 * var(--u));
-    background:
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44'%3E%3Cpath d='M3 8h2m20 7h2M15 30h2M34 38h2' stroke='%23593424' stroke-opacity='.24'/%3E%3C/svg%3E"),
-      linear-gradient(135deg, #a46c42, #b67d4c 48%, #915d37);
-    box-shadow: 0 calc(7 * var(--u)) calc(13 * var(--u)) #37221566, inset 0 0 0 calc(2 * var(--u)) #cf9b65;
-  }
-  .note {
-    width: calc(204 * var(--u));
-    min-height: calc(258 * var(--u));
-    margin: calc(18 * var(--u)) 0 0 calc(18 * var(--u));
-    padding: calc(42 * var(--u)) calc(15 * var(--u)) calc(18 * var(--u)) calc(17 * var(--u));
-    transform: rotate(-2deg);
-    box-shadow:
-      calc(6 * var(--u)) calc(10 * var(--u)) calc(16 * var(--u)) rgba(60, 38, 10, 0.32),
-      inset calc(10 * var(--u)) 0 calc(20 * var(--u)) rgba(255, 255, 215, 0.18);
-    background: linear-gradient(168deg, #fef4be, #f9e89c 55%, #f3dc88);
-  }
-  .note__pin { left: 50%; margin-left: calc(-10 * var(--u)); top: calc(8 * var(--u)); }
-  .note__title { font-size: calc(20 * var(--u)); margin-bottom: calc(12 * var(--u)); }
-  .note__list { font-size: calc(15.5 * var(--u)); gap: calc(9 * var(--u)); }
-  .note__list li { align-items: flex-start; line-height: 1.25; }
-  .note__box { width: calc(16 * var(--u)); height: calc(16 * var(--u)); margin-top: calc(3 * var(--u)); }
-
   /* Desk objects — refined spacing for balance */
   .g-desk {
     --x: 0; --y: 412; --w: 1536; --h: 452;
@@ -1355,18 +1296,29 @@ svg.obj {
     border-radius: 0;
   }
   /* Desk coordinates are stage units minus the desk's y (412). */
-  .desk-plant { --x: -82; --y: 80; --w: 252; --h: 238; }
-  /* Closed notebook right of the plant, front-left of the laptop. */
-  .notebook { --x: 150; --y: 296; --w: 300; --h: 104; }
-  .laptop { --x: 478; --y: 190; --w: 540; --h: 210; }
+  /* Leather mat first (it sits under everything), then the closed notebook at the
+     left, the laptop centred under the cabinet, and the right-hand props. */
+  .desk-mat { --x: 40; --y: 268; --w: 1150; --h: 144; }
+  .notebook { --x: 72; --y: 296; --w: 262; --h: 104; }
+  .laptop { --x: 362; --y: 190; --w: 540; --h: 210; }
   /* The contact pen rests on the writing book. */
-  .pen { --x: 205; --y: 318; --w: 170; --h: 61; }
-  .steam { --x: 1128; --y: 98; --w: 124; --h: 130; }
-  .mug { --x: 1134; --y: 206; --w: 144; --h: 134; }
-  .speaker { --x: 1286; --y: 128; --w: 238; --h: 168; }
+  .pen { --x: 100; --y: 304; --w: 170; --h: 61; }
+  .rocket { --x: 1036; --y: 76; --w: 82; --h: 192; }
+  .moonclock { --x: 1130; --y: 140; --w: 130; --h: 152; }
+  .steam { --x: 900; --y: 98; --w: 124; --h: 130; }
+  .mug { --x: 906; --y: 206; --w: 144; --h: 134; }
+  .speaker { --x: 1272; --y: 156; --w: 200; --h: 141; pointer-events: auto !important; cursor: pointer; }
+  .speaker-controls { --x: 1292; --y: 220; --w: 165; --h: 68; z-index: 2; display: grid; gap: calc(3 * var(--u)); }
+  .speaker-controls__play { min-height: 24px; border: 1px solid #c4aa7c; border-radius: 999px; background: #251f19; color: #f8e6c3; cursor: pointer; font: 700 calc(11 * var(--u)) var(--sans); }
+  .speaker-controls__volume { display: flex; align-items: center; gap: calc(3 * var(--u)); color: #f8e6c3; font: 700 calc(9 * var(--u)) var(--sans); }
+  .speaker-controls__volume input { min-width: 0; min-height: 24px; flex: 1; accent-color: #e2bd70; }
+  .speaker-controls__status { position: absolute; top: calc(70 * var(--u)); right: 0; width: calc(175 * var(--u)); padding: 5px; border: 1px solid #8d6b43; border-radius: 4px; background: #fff3d8; color: var(--ink); font: 700 max(11px, calc(10 * var(--u))) var(--sans); box-shadow: 0 3px 8px #321c0f55; }
+  .speaker-controls button:focus-visible, .speaker-controls input:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+  /* Illuminated inscription, lettered along the desk's lower right. */
+  .desk-script { --x: 1272; --y: 300; --w: 212; --h: 112; }
   /* Lamp light: warmer, softer pool with gentle ambient spill */
   .lamp-glow {
-    --x: 670; --y: 42; --w: 450; --h: 390;
+    --x: 560; --y: 40; --w: 430; --h: 380;
     z-index: 1;
     pointer-events: none;
     background:
@@ -1377,7 +1329,7 @@ svg.obj {
   .lamp-beam {
     display: block;
     position: absolute;
-    --x: 1180; --y: 280; --w: 420; --h: 540;
+    --x: 940; --y: 440; --w: 560; --h: 420;
     left: calc(var(--x) * var(--u));
     top: calc(var(--y) * var(--u));
     width: calc(var(--w) * var(--u));
@@ -1415,16 +1367,18 @@ svg.obj {
 /* Fitted woodwork: face grain across rails, end-to-end grain on the stiles. */
 .cab-body {
   background:
-    linear-gradient(90deg, #38291e66, transparent 3% 97%, #38291e66),
+    linear-gradient(90deg, #1e100666, transparent 3% 97%, #1e100666),
+    var(--grain-upright-hi) 0 0 / calc(160 * var(--u)) calc(480 * var(--u)),
     var(--grain-upright) 0 0 / calc(160 * var(--u)) calc(480 * var(--u)),
-    linear-gradient(90deg, #765237, #b58c5e 5%, #99714c 48%, #b38b60 95%, #5d422e);
+    linear-gradient(90deg, #3a1f10, #6b3a1d 5%, #7b4523 48%, #6f3d1e 95%, #301709);
 }
 .cab-board,
 .cab-plinth {
-  border-color: var(--material-dark);
+  border-color: #2a160a;
   background:
+    var(--grain-hi) 0 0 / calc(480 * var(--u)) calc(100 * var(--u)),
     var(--grain) 0 0 / calc(480 * var(--u)) calc(100 * var(--u)),
-    linear-gradient(#dbc099, #b28a5d 17%, #966c46 66%, #67472e);
+    linear-gradient(#a87142, #84512b 17%, #6a3f1f 66%, #442712);
 }
 .drawer {
   border-color: var(--material-edge);
@@ -1453,44 +1407,47 @@ svg.obj {
   .cab-board {
     border-radius: calc(6 * var(--u)) calc(6 * var(--u)) calc(4 * var(--u)) calc(4 * var(--u));
     background:
-      linear-gradient(#f4e1bd99 0 9%, transparent 13% 78%, #3c2a1c55),
+      linear-gradient(#f0cf9b99 0 9%, transparent 13% 78%, #1e100666),
+      var(--grain-hi) 0 0 / calc(480 * var(--u)) calc(120 * var(--u)),
       var(--grain) 0 0 / calc(480 * var(--u)) calc(120 * var(--u)),
-      linear-gradient(#d3b48b 0 12%, #ae8458 16%, #916842 65%, #63442d);
+      linear-gradient(#b9814e 0 12%, #8e5830 16%, #6d4121 65%, #432610);
     box-shadow:
-      0 calc(6 * var(--u)) calc(8 * var(--u)) rgba(50, 24, 6, 0.5),
-      inset 0 calc(2 * var(--u)) 0 rgba(255, 232, 180, 0.5),
-      inset 0 calc(-3 * var(--u)) 0 rgba(90, 42, 12, 0.35);
+      0 calc(6 * var(--u)) calc(8 * var(--u)) rgba(30, 14, 4, 0.55),
+      inset 0 calc(2 * var(--u)) 0 rgba(255, 220, 160, 0.5),
+      inset 0 calc(-3 * var(--u)) 0 rgba(40, 18, 6, 0.45);
   }
 
-  /* Cabinet carcass: grained side stiles with a soft sheen and dark edges. */
+  /* Cabinet carcass: dark walnut with figured grain, a soft sheen and shaded edges. */
   .cab-body {
     background:
-      linear-gradient(90deg, #34271c88, transparent 2.5% 97.5%, #34271c88),
-      linear-gradient(0deg, #39291b66, transparent 8% 91%, #39291b66),
+      linear-gradient(90deg, #1e100688, transparent 2.5% 97.5%, #1e100688),
+      linear-gradient(0deg, #1e100666, transparent 8% 91%, #1e100666),
+      var(--grain-upright-hi) 0 0 / calc(160 * var(--u)) calc(480 * var(--u)),
       var(--grain-upright) 0 0 / calc(160 * var(--u)) calc(480 * var(--u)),
-      linear-gradient(90deg, #6c4c34, #ac845b 4%, #bd9669 20%, #a47d54 50%, #ad8559 80%, #9b734e 96%, #5d422d);
+      linear-gradient(90deg, #371c0e, #6a3a1c 4%, #81492a 20%, #6f3e20 50%, #7a4626 80%, #5f3319 96%, #2f1608);
   }
   /* Recessed interior: darker grained back panel, warm wash under the shelf lights. */
   .cab-body::before {
     background:
       radial-gradient(ellipse 65% 26% at 60% 0%, #f5d69c40, transparent 68%),
       var(--grain) 0 0 / calc(480 * var(--u)) calc(200 * var(--u)),
-      linear-gradient(#38291d, #5b402b 16%, #785638 55%, #503824);
+      linear-gradient(#24120a, #3a2112 16%, #4c2d1a 55%, #36200f);
   }
   .cab-plinth {
     background:
+      var(--grain-hi) 0 0 / calc(480 * var(--u)) calc(100 * var(--u)),
       var(--grain) 0 0 / calc(480 * var(--u)) calc(100 * var(--u)),
-      linear-gradient(#d5b88e 0 9%, #92704b 13% 21%, #b28b5e 24%, #7a573a 75%, #4b3524);
+      linear-gradient(#b9814e 0 9%, #5d3519 13% 21%, #8e5830 24%, #623a1c 75%, #36200f);
   }
 
   /* Raised rails below each drawer, a central stile, and narrow mortise seams. */
   .cab-grid {
     background:
-      linear-gradient(90deg, #6a4d33, #bc986a 35%, #8b6642 73%, #533c29) 50% 0 / calc(12 * var(--u)) 100% no-repeat;
+      linear-gradient(90deg, #3f2212, #8f5b33 35%, #693d1e 73%, #34190c) 50% 0 / calc(12 * var(--u)) 100% no-repeat;
   }
   .cab-grid .drawer-slot {
     border-radius: calc(5 * var(--u));
-    box-shadow: 0 calc(2 * var(--u)) 0 #2e2118, 0 calc(4 * var(--u)) 0 #bd9868;
+    box-shadow: 0 calc(2 * var(--u)) 0 #1a0d05, 0 calc(4 * var(--u)) 0 #94603a;
   }
   .cab-board::before,
   .cab-plinth::before {
@@ -1524,89 +1481,120 @@ svg.obj {
   .drawer {
     border-radius: calc(5 * var(--u));
     border-width: calc(1.4 * var(--u));
-    border-color: var(--material-dark);
+    border-color: #4a2f12;
     background:
       var(--paper-fibre),
       linear-gradient(#fff9ee66, transparent 35%),
       linear-gradient(#f9f2e4, #efe2cc 65%, #e0c9a6);
+    /* A brass rim frames each cream label plate. */
     box-shadow:
-      inset 0 0 0 calc(3 * var(--u)) #bd9d72,
+      inset 0 0 0 calc(3 * var(--u)) #b08a3c,
       inset 0 0 0 calc(4.2 * var(--u)) #f5e7ce,
       inset 0 0 0 calc(5 * var(--u)) #bfa783,
       inset 0 calc(8 * var(--u)) calc(5 * var(--u)) #fffdf077,
       inset 0 calc(-5 * var(--u)) calc(6 * var(--u)) #a2835833,
-      0 calc(3 * var(--u)) 0 #6a4c32,
-      0 calc(5 * var(--u)) calc(5 * var(--u)) #2e211a88;
+      0 calc(3 * var(--u)) 0 #3a2008,
+      0 calc(5 * var(--u)) calc(5 * var(--u)) #1e100688;
+  }
+  /* Riveted brass corner caps. */
+  .g-cabinet .drawer::before {
+    content: '';
+    position: absolute;
+    inset: calc(1.6 * var(--u));
+    z-index: 1;
+    pointer-events: none;
+    background:
+      linear-gradient(135deg, var(--metal-light), var(--metal-mid) 55%, var(--metal-dark) 56% 60%, transparent 61%) 0 0 / calc(16 * var(--u)) calc(16 * var(--u)) no-repeat,
+      linear-gradient(225deg, var(--metal-light), var(--metal-mid) 55%, var(--metal-dark) 56% 60%, transparent 61%) 100% 0 / calc(16 * var(--u)) calc(16 * var(--u)) no-repeat,
+      linear-gradient(45deg, var(--metal-light), var(--metal-mid) 55%, var(--metal-dark) 56% 60%, transparent 61%) 0 100% / calc(16 * var(--u)) calc(16 * var(--u)) no-repeat,
+      linear-gradient(315deg, var(--metal-light), var(--metal-mid) 55%, var(--metal-dark) 56% 60%, transparent 61%) 100% 100% / calc(16 * var(--u)) calc(16 * var(--u)) no-repeat;
   }
   .g-cabinet .drawer__handle {
     border-width: calc(1.1 * var(--u));
     border-color: var(--metal-dark);
-    background: linear-gradient(var(--metal-dark), var(--metal-light) 23%, var(--metal-mid) 36%, #645039 62%, #3c2e21 83%, #ac9168);
-    box-shadow: inset 0 calc(1 * var(--u)) 0 #f4dfbb66, 0 calc(3 * var(--u)) calc(2 * var(--u)) #35271d66;
+    background: linear-gradient(var(--metal-dark), var(--metal-light) 23%, var(--metal-mid) 36%, #7a5a26 62%, #4d3412 83%, #d3ad62);
+    box-shadow: inset 0 calc(1 * var(--u)) 0 #fff0bf99, 0 calc(3 * var(--u)) calc(2 * var(--u)) #1e100688;
   }
   .g-cabinet .drawer__handle::before,
   .g-cabinet .drawer__handle::after {
     background: linear-gradient(90deg, var(--metal-dark), var(--metal-light) 40%, var(--metal-mid) 65%, var(--metal-dark));
     border-width: calc(1 * var(--u));
   }
-  .plant-top {
-    /* The pot still meets the crown at y=226; trailing leaves clear the drawers. */
-    --x: 990; --y: 105; --w: 240; --h: 246;
-  }
-  .lamp { --x: 810; --y: 7; }
-  .desk-plant { --x: -82; --y: 101; --w: 230; --h: 217; }
   .g-top > .frame { z-index: 3; }
   .g-top > .lamp { z-index: 2; }
-  .g-top > .plant-top { z-index: 3; }
   .globe__stand,
   .bookend-left,
   .bookend-right {
     filter: drop-shadow(calc(-3 * var(--u)) calc(3 * var(--u)) calc(2 * var(--u)) #3c2c2040);
   }
 
-  .note {
-    background:
-      var(--paper-fibre),
-      linear-gradient(168deg, #f6ebcc, #eddfbb 55%, #dcc9a0);
-    clip-path: none;
-    border-radius: 0 0 calc(22 * var(--u)) 0;
-    box-shadow: calc(3 * var(--u)) calc(7 * var(--u)) calc(7 * var(--u)) #49341e33, inset 0 calc(1 * var(--u)) 0 #fff9e9;
-  }
-  .note::after { background: linear-gradient(135deg, #e4d6b6 42%, #ac94703d 49%, transparent 55%); border-radius: 0 0 calc(22 * var(--u)) 0; }
-  .note__box { border-color: var(--ink-soft); }
-  .note__box::after { border-color: var(--ink-soft); }
-
   .desk-surface {
     filter: none;
   }
+  /* The lamp pools warm light on the desk beside the mug and rocket; the edges fall off. */
   .desk-light {
     background:
-      radial-gradient(ellipse 18% 40% at 77% 13%, #f9dbab26, transparent 70%),
-      linear-gradient(90deg, #46332222, transparent 16% 84%, #46332222),
-      linear-gradient(transparent 70%, #39271b33);
+      radial-gradient(ellipse 20% 55% at 58% 8%, #ffd08a3d, transparent 72%),
+      radial-gradient(ellipse 14% 40% at 27% 10%, #ffd9a01f, transparent 70%),
+      linear-gradient(90deg, #2a140822, transparent 16% 84%, #2a140822),
+      linear-gradient(transparent 70%, #2a140833);
     mix-blend-mode: normal;
   }
 
+  /* Soft contact shadows: each prop's shadow falls right and slightly down, away from the lamp. */
   .g-desk > .pen {
-    filter: drop-shadow(calc(1 * var(--u)) calc(3 * var(--u)) calc(2 * var(--u)) #39281c40);
+    filter: drop-shadow(calc(1 * var(--u)) calc(3 * var(--u)) calc(2 * var(--u)) #1e100666);
   }
   .g-desk > .mug {
-    filter: drop-shadow(calc(4 * var(--u)) calc(4 * var(--u)) calc(3 * var(--u)) #39281c33);
+    filter: drop-shadow(calc(5 * var(--u)) calc(4 * var(--u)) calc(3 * var(--u)) #1e100655);
   }
   .g-desk > .laptop {
-    filter: drop-shadow(0 calc(12 * var(--u)) calc(10 * var(--u)) rgba(45, 20, 4, 0.36));
+    filter: drop-shadow(0 calc(12 * var(--u)) calc(10 * var(--u)) rgba(30, 12, 2, 0.5));
   }
+  .g-desk > .desk-mat {
+    filter: drop-shadow(0 calc(4 * var(--u)) calc(6 * var(--u)) rgba(25, 10, 2, 0.5));
+  }
+  .g-desk > .rocket,
+  .g-desk > .moonclock,
+  .g-desk > .speaker {
+    filter: drop-shadow(calc(4 * var(--u)) calc(3 * var(--u)) calc(3 * var(--u)) #1e100655);
+  }
+  .g-desk > .moonclock {
+    filter: drop-shadow(calc(4 * var(--u)) calc(3 * var(--u)) calc(3 * var(--u)) #1e100655) drop-shadow(0 0 calc(18 * var(--u)) rgba(255, 205, 110, 0.35));
+  }
+
+  /* A shallow, dark impression in the wood catches light along one edge. */
+  .desk-script {
+    margin: 0;
+    transform: rotate(-14deg);
+    transform-origin: 0 100%;
+    font-family: var(--serif);
+    font-weight: 700;
+    letter-spacing: .06em;
+    font-size: calc(15 * var(--u));
+    line-height: 1.05;
+    color: #3a2112;
+    text-shadow: 0 calc(1 * var(--u)) 0 #c89a65;
+  }
+  .desk-script span { display: block; white-space: nowrap; }
+  .desk-script span:nth-child(2) { padding-left: calc(8 * var(--u)); }
+  .desk-script span:nth-child(3) { padding-left: calc(18 * var(--u)); }
+  .desk-script__spark { display: none; }
 }
 
-/* Phones and tablets: no pinned note and no illustrated desk (the profile links
+/* Phones and tablets: no wall board and no illustrated desk (the profile links
    sit in the introduction). /laptop/ still opens the laptop as its overlay. */
 @media (max-width: 999px), (max-height: 559px) {
-  .g-note,
-  .g-desk > .desk-plant,
+  .g-board,
+  .g-desk > .desk-mat,
+  .g-desk > .rocket,
+  .g-desk > .moonclock,
+  .g-desk > .desk-script,
   .g-desk > .notebook,
   .g-desk > .pen,
   .g-desk > .steam,
   .g-desk > .mug,
+  .g-desk > .speaker-controls,
   .g-desk > .laptop:not(.is-open) {
     display: none;
   }
@@ -1617,3 +1605,41 @@ svg.obj {
     container-type: normal;
   }
 }
+
+/* A user-initiated 3D model sits over the illustrated HTML scene only during
+   its short overview. The routes and controls below remain the fallback. */
+.scene3d {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 280ms ease;
+}
+.stage.is-touring .scene3d { opacity: 1; pointer-events: auto; }
+.scene-orbit {
+  position: absolute;
+  right: calc(31 * var(--u));
+  bottom: calc(22 * var(--u));
+  z-index: 9;
+  min-width: calc(145 * var(--u));
+  min-height: 40px;
+  padding: calc(7 * var(--u)) calc(12 * var(--u));
+  border: 1px solid #5b391d;
+  border-radius: 6px;
+  background: linear-gradient(#f9ebcc, #d9b986);
+  box-shadow: 0 3px 8px #2d180a80, inset 0 1px #fff7e5;
+  color: var(--ink);
+  font: 700 max(13px, calc(14 * var(--u))) var(--sans);
+  cursor: pointer;
+}
+.scene-orbit:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+.scene-orbit:disabled { opacity: .55; cursor: not-allowed; }
+html:not(.js) .scene-orbit { display: none; }
+@media (max-width: 999px), (max-height: 559px) {
+  .scene-orbit, .scene3d { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { .scene3d { transition: none; } }

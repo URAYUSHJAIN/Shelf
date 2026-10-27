@@ -127,6 +127,7 @@ Create folders only when the first file needs them. Do not scaffold empty direct
 | Project screenshots, covers, profile photo, logos, article covers | `src/assets/...`                                                                                   | `astro:assets` generates responsive sizes and modern formats, and sets width/height (prevents CLS)                                                                |
 | Shelf illustration (cabinet, drawers, objects)                    | Inline SVG inside components, or `src/assets/shelf/*.svg` imported as components                   | Interactive and accessible per element. Never one flattened raster.                                                                                               |
 | Videos                                                            | `public/media/video/`                                                                              | Served as-is. Range requests are handled by the host.                                                                                                             |
+| Original desk audio                                               | `public/media/desk-theme.wav`                                                                       | Procedurally composed for this site; loaded only after explicit playback. No third-party source or licence is needed.                                            |
 | Video posters                                                     | Generated from a still in `src/assets/` via `astro:assets` (preferred), or `public/media/posters/` |                                                                                                                                                                   |
 | Captions                                                          | `public/media/captions/*.vtt`                                                                      | Only real transcripts                                                                                                                                             |
 | Public PDFs                                                       | `public/media/documents/`                                                                          | Only after privacy review. Prefer linking to official records instead of re-hosting.                                                                              |
@@ -226,7 +227,7 @@ Layered HTML/CSS and inline SVG for the cabinet frame, shelf levels, drawer face
 
 ## 9. Avoid overengineering
 
-- No 3D library. No state-management library. No CSS framework is required (the old site's Tailwind is not a reason to add one; if adopted, tokens still live in `tokens.css`).
+- D-44 permits pinned Three.js for the spatial scene. No physics or state-management library or CSS framework is required (the old site's Tailwind is not a reason to add one; if adopted, tokens still live in `tokens.css`).
 - No generic design system with unused tokens.
 - No duplicated content across components.
 - No provenance or internal notes in any public output.

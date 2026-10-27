@@ -19,7 +19,9 @@ const forbidden = [
   [/needs-owner-review/, 'unapproved visibility value'],
   [/content\/inventory|placement\/|BuildLog\//, 'internal source path'],
   [/provenance|openQuestions|reviewNotes|sourceReview/, 'private inventory field'],
-  [/(?:\+91[\s-]?)?\b[6-9]\d{9}\b/, 'phone-number-like value'],
+  // A decimal point immediately before ten digits denotes a fractional
+  // numeric constant (for example, colour conversion in the 3D renderer).
+  [/(?<![\d.])(?:\+91[\s-]?)?[6-9]\d{9}\b/, 'phone-number-like value'],
   [/\bgranted\b|\bpatented\b/i, 'grant wording'],
 ];
 const errors = [];
