@@ -323,11 +323,12 @@ All interactive objects share the `ShelfObject` behaviour: a real `<a>` for cont
 - Activation: opens `/work-with-me/` with record-sheet behaviour.
 - Reduced motion: no rise.
 
-### 8.9 Currently Building note (D-12)
+### 8.9 Pinboard project papers and mode selector (D-12, D-36)
 
-- Hover/focus: the pinned corner lifts (`rotate(1.5deg)`, origin at the pin).
-- Activation: opens the Currently Building drawer (`/currently-building/`), with the note as the return-focus target. Individual checklist items are plain text, not separate controls.
-- Hidden entirely when no verified content exists.
+- The Pinned Builds paper lists verified featured prototypes. Each project slip lifts briefly on hover or focus and opens a paper-styled project preview on activation; its stable project URL remains the no-JavaScript path. The preview shows only existing title, summary, technologies and available links. Close, Escape and backdrop click return focus to the originating slip.
+- The pinned project Polaroid uses an approved project image when one exists. Without approved media it shows the real project title on paper, never a fabricated screenshot. It opens the same preview and retains a direct project URL without JavaScript.
+- The planner's three-position selector offers Ideas, Currently Building and Completed. Completed shows featured built prototypes, with the note titled Pinned Builds; this does not assert that development has ended. Currently Building uses only owner-supplied D-12 items; Ideas and unverified current work show explicit empty states. The selector is a native radio group and works by click, tap or arrow keys.
+- Board papers are not draggable: the compact cork area does not provide collision-free positions or an accessible equivalent. Motion is one-shot and is removed under reduced-motion preference. The board enters the scrolling flow on narrow screens; the three-column desktop frame stays unchanged.
 
 ### 8.10 Pinned link cards (GitHub, LinkedIn, X, Instagram)
 

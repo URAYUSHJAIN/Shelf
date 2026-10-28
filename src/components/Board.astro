@@ -1,16 +1,16 @@
 ---
-// Wall board (desktop only): a weekly planner, a cork panel with the Pinned
-// builds note, and stationery pockets in one aluminium frame. Everything on it
-// is decoration except the note's links, which come from verified records.
+// The board uses release-gated project records; review-only images stay in the
+// loopback preview and never enter a production build.
 import { site, featured } from '../data/site';
 
 const plannerSamples = ['Sketch an idea', 'Build prototype', 'Write notes'];
 
-// Owner-supplied current items (D-12) or verified featured projects.
-const noteItems = site.currentlyBuilding
-  ? site.currentlyBuilding.map((t) => ({ label: t, href: null as string | null, slug: null as string | null }))
-  : featured.slice(0, 3).map((p) => ({ label: p.title, href: `/projects/${p.slug}/`, slug: p.slug }));
-const noteTitle = site.currentlyBuilding ? 'Currently Building:' : 'Pinned Builds';
+const completedItems = featured.slice(0, 3);
+const buildingItems = site.currentlyBuilding ?? [];
+const initialMode = buildingItems.length > 0 ? 'building' : 'completed';
+const photoProject = featured.find((p) => p.images.length > 0) ?? featured[0];
+const photo = photoProject?.images[0];
+const previewProjects = [...new Map([...completedItems, ...(photoProject ? [photoProject] : [])].map((p) => [p.slug, p])).values()];
 
 const papers = [
   { y: 112, tilt: -1.2, lines: 5 },
@@ -35,6 +35,13 @@ const papers = [
           <input type="text" data-planner-text={i} aria-label={`Task ${i + 1}`} value={task} maxlength="48" />
         </li>)}
       </ul>
+      <fieldset class="board-switch" data-board-switch data-mode={initialMode}>
+        <legend class="sr-only">Pinboard view</legend>
+        <span class="board-switch__track" aria-hidden="true"></span>
+        <label><input type="radio" name="board-mode" value="ideas" aria-label="Ideas" /><span>Ideas</span></label>
+        <label><input type="radio" name="board-mode" value="building" aria-label="Currently Building" checked={initialMode === 'building'} /><span>Currently<br />Building</span></label>
+        <label><input type="radio" name="board-mode" value="completed" aria-label="Completed prototypes" checked={initialMode === 'completed'} /><span>Completed</span></label>
+      </fieldset>
     </div>
 
     <div class="board__cork">
@@ -56,17 +63,6 @@ const papers = [
           <circle cx="0" cy="-37" r="3.6" fill="url(#tack)" stroke="#3a260f" stroke-width=".8" />
         </g>
 
-        <!-- landscape print (decorative drawing, not a record) -->
-        <g transform="translate(131 54) rotate(5)" filter="url(#corkShadow)">
-          <rect x="-35" y="-33" width="70" height="66" fill="#fbf6ec" stroke="#a89476" stroke-width=".8" />
-          <rect x="-30" y="-28" width="60" height="45" fill="url(#dawnSky)" />
-          <path d="M-30 -2-14-17 0-5 12-20 30 -4V17h-60z" fill="#7d86a8" />
-          <path d="M-30 4-18-8-6 3 8-10 30 6V17h-60z" fill="#5d6b8e" />
-          <path d="M-30 11C-10 6 8 13 30 8V17h-60z" fill="#6f8f3a" />
-          <path d="M-6 17C-3 12 3 11 8 8 5 12 3 15 4 17z" fill="#a9c9d8" />
-          <circle cx="0" cy="-32" r="3.6" fill="url(#tack)" stroke="#3a260f" stroke-width=".8" />
-        </g>
-
         <!-- headphones hanging from a tack -->
         <g filter="url(#corkShadow)">
           <path d="M60 296C60 246 124 246 124 296" fill="none" stroke="#6b665e" stroke-width="10.5" stroke-linecap="round" />
@@ -81,21 +77,30 @@ const papers = [
         </g>
       </svg>
 
-      <div class="note" hidden={noteItems.length === 0}>
+      {photoProject && (
+        <a class="board-polaroid" href={`/projects/${photoProject.slug}/`} data-board-preview={photoProject.slug} aria-label={`Preview ${photoProject.title}`} data-board-photo hidden={initialMode !== 'completed'}>
+          <span class="board-polaroid__image">
+            {photo ? <img src={photo.thumb?.src ?? photo.full.src} alt={photo.alt} loading="lazy" width={photo.thumb?.width ?? photo.full.width} height={photo.thumb?.height ?? photo.full.height} /> : <span class="board-polaroid__placeholder">Project file</span>}
+          </span>
+          <span class="board-polaroid__caption">{photoProject.title}</span>
+        </a>
+      )}
+
+      <div class="note" data-board-note>
         <span class="note__pin" aria-hidden="true"></span>
-        <h2 class="note__title">{noteTitle}</h2>
-        <ul class="note__list" role="list">
-          {noteItems.map((n) => (
+        <h2 class="note__title" data-board-title>{initialMode === 'building' ? 'Currently Building' : 'Pinned Builds'}</h2>
+        <ul class="note__list" role="list" data-board-list="completed" hidden={initialMode !== 'completed'}>
+          {completedItems.map((project) => (
             <li>
               <span class="note__box" aria-hidden="true"></span>
-              {n.href ? (
-                <a href={n.href} data-nav="projects" data-record={n.slug}>{n.label}</a>
-              ) : (
-                <span>{n.label}</span>
-              )}
+              <a href={`/projects/${project.slug}/`} data-board-preview={project.slug}>{project.title}</a>
             </li>
           ))}
         </ul>
+        <ul class="note__list" role="list" data-board-list="building" hidden={initialMode !== 'building' || buildingItems.length === 0}>
+          {buildingItems.map((item) => <li><span>{item}</span></li>)}
+        </ul>
+        <p class="note__empty" data-board-empty hidden={initialMode === 'completed' || buildingItems.length > 0}>No verified current builds are public yet.</p>
       </div>
     </div>
 
@@ -153,4 +158,20 @@ const papers = [
 
     <span class="board__gloss" aria-hidden="true"></span>
   </div>
+  <dialog class="board-preview" data-board-dialog aria-label="Project preview">
+    <button type="button" class="board-preview__close" data-board-close aria-label="Close project preview">×</button>
+    {previewProjects.map((project) => (
+      <article data-board-detail={project.slug} hidden>
+        <p class="board-preview__eyebrow">Project file</p>
+        <h2>{project.title}</h2>
+        <p>{project.summary}</p>
+        {project.technologies && project.technologies.length > 0 && <p class="board-preview__stack"><strong>Tools</strong> · {project.technologies.slice(0, 5).join(' · ')}</p>}
+        <div class="board-preview__links">
+          <a href={`/projects/${project.slug}/`} data-nav="projects" data-record={project.slug}>Open project</a>
+          {project.repo && <a href={project.repo} target="_blank" rel="noopener noreferrer">Repository ↗</a>}
+          {project.demo && <a href={project.demo} target="_blank" rel="noopener noreferrer">Live demo ↗</a>}
+        </div>
+      </article>
+    ))}
+  </dialog>
 </div>

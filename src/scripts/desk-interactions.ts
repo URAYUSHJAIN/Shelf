@@ -37,7 +37,7 @@ if (lamp && stage) {
 
 const audio = document.querySelector<HTMLAudioElement>('[data-speaker-audio]');
 const play = document.querySelector<HTMLButtonElement>('[data-speaker-play]');
-const surface = document.querySelector<SVGSVGElement>('[data-speaker-surface]');
+const surfaces = document.querySelectorAll<HTMLElement>('[data-speaker-surface]');
 const volume = document.querySelector<HTMLInputElement>('[data-speaker-volume]');
 const speakerStatus = document.querySelector<HTMLElement>('[data-speaker-status]');
 if (audio && play) {
@@ -45,7 +45,7 @@ if (audio && play) {
     play.textContent = playing ? 'Pause music' : 'Play music';
     play.setAttribute('aria-pressed', String(playing));
     play.setAttribute('aria-label', playing ? 'Pause desk music' : 'Play desk music');
-    surface?.classList.toggle('is-playing', playing);
+    surfaces.forEach((surface) => surface.classList.toggle('is-playing', playing));
     if (speakerStatus) { speakerStatus.textContent = playing ? 'Desk music playing.' : 'Desk music paused.'; speakerStatus.hidden = true; }
   };
   audio.volume = Number(volume?.value ?? 35) / 100;
@@ -56,10 +56,17 @@ if (audio && play) {
     catch { setPlaying(false); if (speakerStatus) { speakerStatus.textContent = 'Music could not load. Please try again later.'; speakerStatus.hidden = false; } }
   };
   play.addEventListener('click', toggle);
-  surface?.addEventListener('click', toggle);
+  surfaces.forEach((surface) => surface.addEventListener('click', toggle));
   audio.addEventListener('pause', () => setPlaying(false));
   audio.addEventListener('ended', () => setPlaying(false));
   audio.addEventListener('error', () => { setPlaying(false); if (speakerStatus) { speakerStatus.textContent = 'Music could not load. Please try again later.'; speakerStatus.hidden = false; } });
+}
+
+// A desktop enhancement; the illustrated speaker stays visible until the GLB loads.
+if (document.querySelector('[data-speaker-canvas]') && matchMedia('(min-width: 1000px) and (min-height: 560px)').matches) {
+  const start = () => { void import('./speaker-model').then(({ mountSpeaker }) => mountSpeaker()).catch(() => {}); };
+  if ('requestIdleCallback' in window) window.requestIdleCallback(start);
+  else setTimeout(start, 500);
 }
 
 const planner = document.querySelector<HTMLElement>('[data-planner]');

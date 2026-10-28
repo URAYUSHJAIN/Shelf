@@ -1,7 +1,4 @@
-/* Wall board (desktop scene only): planner, cork panel and stationery pockets in one
-   aluminium frame. Sizes are in stage units (--u); the board is hidden on phones and
-   tablets (shelf.css), where the pinned builds are reachable through the Projects drawer. */
-@media (min-width: 1000px) and (min-height: 560px) {
+/* Wall board: the 556×360 desktop composition also adapts to the narrow flow. */
   .g-board {
     --x: 948; --y: 160; --w: 556; --h: 360;
     z-index: 4;
@@ -181,4 +178,169 @@
     width: 100%;
     height: 100%;
   }
+
+/* Small mechanical selector in the planner's clear lower margin. */
+.board-switch {
+  position: absolute;
+  left: calc(12 * var(--u)); right: calc(12 * var(--u)); bottom: calc(26 * var(--u));
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  align-items: stretch;
+  height: calc(41 * var(--u));
+  margin: 0;
+  padding: calc(3 * var(--u));
+  border: calc(1.5 * var(--u)) solid #6b5846;
+  border-radius: calc(5 * var(--u));
+  background: linear-gradient(#a89f91, #ded6c9 18% 76%, #8b8277);
+  box-shadow: inset 0 calc(2 * var(--u)) calc(3 * var(--u)) #3b2a1b77, 0 calc(2 * var(--u)) calc(2 * var(--u)) #3b2a1b55;
+  font-family: var(--sans);
+}
+.board-switch__track {
+  position: absolute;
+  inset: calc(3 * var(--u));
+  border-radius: calc(3 * var(--u));
+  background: #665b4d;
+  box-shadow: inset 0 calc(2 * var(--u)) calc(3 * var(--u)) #21170e99;
+  pointer-events: none;
+}
+.board-switch__track::after {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0; width: 33.333%;
+  border: calc(1 * var(--u)) solid #726454;
+  border-radius: calc(3 * var(--u));
+  background: linear-gradient(155deg, #fff9ec, #c8b79d 55%, #8b755b);
+  box-shadow: 0 calc(2 * var(--u)) calc(4 * var(--u)) #21170e99, inset 0 calc(1 * var(--u)) 0 #fff;
+  transform: translateX(200%);
+  transition: transform 180ms ease-out;
+}
+.board-switch[data-mode='ideas'] .board-switch__track::after { transform: translateX(0); }
+.board-switch[data-mode='building'] .board-switch__track::after { transform: translateX(100%); }
+.board-switch label {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  cursor: pointer;
+  font: 700 max(8px, calc(9 * var(--u)))/1.1 var(--sans);
+}
+.board-switch input { position: absolute; opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
+.board-switch label:has(input:focus-visible) { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+/* A real project image appears only when its media gate allows it. */
+.board-polaroid {
+  position: absolute;
+  left: calc(96 * var(--u)); top: calc(20 * var(--u));
+  width: calc(76 * var(--u)); height: calc(83 * var(--u));
+  display: flex;
+  flex-direction: column;
+  gap: calc(3 * var(--u));
+  padding: calc(6 * var(--u));
+  transform: rotate(5deg);
+  transform-origin: 50% 4%;
+  border: calc(1 * var(--u)) solid #b8a78b;
+  background: #fffaf0;
+  box-shadow: calc(2 * var(--u)) calc(4 * var(--u)) calc(5 * var(--u)) #3b200a88;
+  color: var(--ink);
+  text-align: center;
+  text-decoration: none;
+  transition: transform 180ms ease-out, box-shadow 180ms ease-out;
+}
+.board-polaroid::before {
+  content: '';
+  position: absolute;
+  left: calc(50% - 4 * var(--u)); top: calc(-4 * var(--u));
+  width: calc(8 * var(--u)); height: calc(8 * var(--u));
+  border: calc(1 * var(--u)) solid #614018;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 25%, #ffe5a5, #a66c26 65%, #583913);
+  box-shadow: 0 calc(2 * var(--u)) calc(2 * var(--u)) #3b200a88;
+}
+.board-polaroid:hover,
+.board-polaroid:focus-visible {
+  transform: translateY(calc(-3 * var(--u))) rotate(3deg);
+  box-shadow: calc(3 * var(--u)) calc(8 * var(--u)) calc(8 * var(--u)) #3b200aaa;
+}
+.board-polaroid__image {
+  display: grid;
+  place-items: center;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  background: linear-gradient(145deg, #eadbc4, #b8a484);
+  border: calc(1 * var(--u)) solid #a68e6f;
+}
+.board-polaroid__image img { width: 100%; height: 100%; object-fit: cover; }
+.board-polaroid__placeholder { padding: calc(4 * var(--u)); font: 700 calc(10 * var(--u))/1.15 var(--serif); }
+.board-polaroid__caption { overflow: hidden; font: 700 calc(9 * var(--u))/1.1 var(--hand); white-space: nowrap; text-overflow: ellipsis; }
+
+.g-board .note__list li {
+  position: relative;
+  min-height: calc(23 * var(--u));
+  padding: calc(3 * var(--u)) calc(4 * var(--u));
+  background: linear-gradient(#fff5d8, #e9d5a9);
+  box-shadow: 0 calc(2 * var(--u)) calc(3 * var(--u)) #3b200a66, inset 0 calc(1 * var(--u)) 0 #fff9e9;
+  transform: rotate(-1deg);
+  transform-origin: 50% 0;
+  transition: transform 180ms ease-out, box-shadow 180ms ease-out;
+}
+.g-board .note__list li:nth-child(2) { transform: rotate(1deg); }
+.g-board .note__list li:hover,
+.g-board .note__list li:focus-within {
+  transform: translateY(calc(-3 * var(--u))) rotate(0);
+  box-shadow: 0 calc(5 * var(--u)) calc(6 * var(--u)) #3b200a88;
+}
+.g-board .note__box,
+.g-board .note__box::after { display: none; }
+.g-board .note__list li::before {
+  content: '';
+  position: absolute;
+  left: calc(2 * var(--u)); top: calc(2 * var(--u));
+  width: calc(5 * var(--u)); height: calc(5 * var(--u));
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 25%, #ffe5a5, #a66c26 65%, #583913);
+  box-shadow: 0 calc(1 * var(--u)) calc(1 * var(--u)) #3b200a88;
+}
+.g-board .note__list { gap: calc(5 * var(--u)); font-size: calc(12 * var(--u)); }
+.g-board .note__list li a { display: block; width: 100%; text-decoration: none; }
+.g-board .note__list li a:focus-visible { outline: 3px solid var(--focus); outline-offset: 1px; }
+.g-board .note__empty { margin: calc(6 * var(--u)) 0 0; font: 700 calc(11 * var(--u))/1.3 var(--hand); }
+
+.board-preview {
+  width: min(440px, calc(100vw - 24px));
+  max-height: calc(100dvh - 32px);
+  overflow: auto;
+  padding: 28px 30px 26px;
+  border: 2px solid #8d6636;
+  border-radius: 5px 5px 20px 5px;
+  background: var(--paper-fibre), linear-gradient(155deg, #fff4d5, #ead5a9);
+  box-shadow: 0 20px 50px #24150899, inset 0 2px #fff9e8;
+  color: var(--ink);
+}
+.board-preview::backdrop { background: #24150899; }
+.board-preview[open] { animation: board-card-turn 220ms ease-out 1; transform-origin: top center; }
+@keyframes board-card-turn { from { opacity: 0; transform: perspective(600px) rotateY(-14deg) translateY(8px); } to { opacity: 1; transform: perspective(600px) rotateY(0) translateY(0); } }
+.board-preview__close { position: absolute; right: 12px; top: 10px; width: 36px; height: 36px; border: 1px solid var(--ink); border-radius: 50%; background: #fff6e0; cursor: pointer; font-size: 24px; }
+.board-preview__eyebrow { margin: 0 0 8px; font: 700 11px var(--sans); letter-spacing: .14em; text-transform: uppercase; }
+.board-preview h2 { margin: 0 0 12px; font: 700 28px var(--serif); }
+.board-preview p { line-height: 1.5; }
+.board-preview__stack { font-size: 14px; }
+.board-preview__links { display: flex; flex-wrap: wrap; gap: 10px 18px; margin-top: 24px; font: 700 14px var(--sans); }
+.board-preview__links a { text-underline-offset: 3px; }
+
+@media (max-width: 999px), (max-height: 559px) {
+  .g-board { display: block; position: relative; width: 100%; height: auto; --u: 1px; }
+  .board { position: relative; display: grid; grid-template-columns: repeat(auto-fit, minmax(184px, 1fr)); gap: 8px; padding: 8px; }
+  .board > .board__planner,
+  .board > .board__cork,
+  .board > .board__pockets { width: 100%; max-width: 200px; min-height: 344px; margin: auto; }
+  .board > .board__cork { width: 184px; }
+  .board__pockets svg { max-width: 190px; margin: auto; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .board-switch__track::after,
+  .board-polaroid,
+  .g-board .note__list li { transition: none; }
+  .board-preview[open] { animation: none; }
 }

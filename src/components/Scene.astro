@@ -233,10 +233,12 @@ const intro = 'I build web applications, AI-assisted tools, and turn ideas into 
     )}
     <a class="contact-cta" href="/contact/" data-nav="contact">
       <Icon name="mail" size={22} />
-      <span>Contact Me</span>
-      <span aria-hidden="true">→</span>
+      <span class="contact-cta__copy">
+        <strong>Contact Me</strong>
+        <small>Have an idea? Let's build it together!</small>
+      </span>
+      <span class="contact-cta__arrow" aria-hidden="true">→</span>
     </a>
-    <p class="contact-subtitle">Have an idea? Let's build it together!</p>
     {profiles.length > 0 && (
       <ul class="profile-links" role="list" aria-label="Profiles">
         {profiles.map((p) => (

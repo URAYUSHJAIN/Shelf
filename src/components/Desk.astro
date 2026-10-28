@@ -130,7 +130,7 @@ const { active = null } = Astro.props;
     <canvas class="steam__gl" hidden></canvas>
   </div>
 
-  <!-- Original desk object, inspired by the reference's form; no model or thumbnail is reused. -->
+  <!-- Original illustration remains the no-WebGL fallback for the desk speaker. -->
   <svg class="obj speaker" viewBox="0 0 260 184" aria-hidden="true" data-speaker-surface>
     <defs>
       <linearGradient id="speakerLeather" x1="0" y1="0" x2="1" y2=".85">
@@ -199,6 +199,9 @@ const { active = null } = Astro.props;
     <path d="M244 117l1 19" stroke="#65635a" stroke-width=".8" opacity=".55" />
     <rect x="242" y="125" width="3" height="9" rx="1.5" fill="#0e100f" />
   </svg>
+  <div class="obj speaker-model" data-speaker-surface data-speaker-model aria-hidden="true">
+    <canvas data-speaker-canvas hidden></canvas>
+  </div>
 
   <svg class="obj mug" viewBox="0 0 146 134" aria-hidden="true" data-steam>
     <defs>

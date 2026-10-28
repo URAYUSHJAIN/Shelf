@@ -179,6 +179,8 @@ D-42 uses the owner-supplied photoreal desk image as desktop composition and lig
 
 D-44 supersedes the older decorative-only lamp/speaker and no-engine guidance. The owner's new reference calls for a physical 3D workspace, a working lamp and speaker, a live clock, an editable demo planner and a shallow desk engraving reading “CREATIVITY & INNOVATION — DONE HERE.” The installed Three.js overview is a first spatial layer; the default fully interactive 3D scene and requested material quality are still outstanding. Keep the original illustrated HTML scene as the complete fallback while that work continues.
 
+The desktop speaker body uses the locally hosted CC0 Carry Sound GLB (D-44) in the existing right-desk slot. Its embedded PBR materials, front-facing twin grille, feet and tan handle remain intact. The existing HTML play/pause and volume controls and original local audio stay in place; a brief, restrained indicator pulse accompanies playback. The original SVG body remains the fallback when the model or WebGL cannot load.
+
 ### 3.2 Colour strategy
 
 **Warm-neutral monochrome cabinet, authentic colour** (BR-01). The interface uses one warm hue family (cream paper, beige shading, warm-grey to near-black ink). Real work supplies the colour.

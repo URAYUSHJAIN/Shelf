@@ -64,6 +64,7 @@ The **mode** column is the expected result. Test IDs refer to §8.
 - D-43: the page is locked to the viewport (`100dvh`, no page scroll, no visible scrollbars); the 16:9 scene fits whichever dimension binds. Narrower modes keep their scrolling flow with hidden scrollbars.
 - D-44: the desk and lamp controls remain available in the desktop scene, while the illustrated HTML portfolio remains the primary and fully accessible fallback without WebGL.
 - Cabinet centred with balanced canvas margins. The identity column is ≤ 26% of the scene width.
+- The desktop identity column uses the clear wall strip at scene x 34–286. Its heading, byline, role and introduction read top to bottom; evidenced focus links sit in a two-column grid, followed by a single two-line contact control and a centred row of verified social links. These coordinates use the implemented 1536 × 864 CSS scene grid; smaller layouts retain the flow layout.
 - In the D-42 desktop composition, the cabinet crown is at y 250 scene units and its plinth meets the desk at y 634. The left portrait only appears when its existing media gate permits it. The cork board follows the pinned links gate. Tablet and mobile keep their existing flow layout.
 - The tray (opened drawer) is at least 640 px wide at 1280 px, at most the cabinet width + 10%, and at most `100svh − 96px` tall, with its own scroll area.
 - Records open as sheets over the tray, at most 960 px wide, with a 68ch text column.
