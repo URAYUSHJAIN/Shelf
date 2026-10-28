@@ -5,7 +5,7 @@ import Cabinet from './Cabinet.astro';
 import Desk from './Desk.astro';
 import Board from './Board.astro';
 import { leafPath, vine, vineMarkup } from './art';
-import { copy, chips, site, social, patents, REVIEW_MODE } from '../data/site';
+import { chips, social } from '../data/site';
 
 interface Props {
   active?: string | null;
@@ -33,9 +33,7 @@ const SOCIAL_NAME: Record<string, string> = { github: 'GitHub', linkedin: 'Linke
 const profiles = social.map((s) => ({ href: s.url, icon: SOCIAL_ICON[s.platform] ?? 'external', label: `${SOCIAL_NAME[s.platform] ?? s.platform} (opens in a new tab)` }));
 // Push-pin peg for the paper prints on the wall.
 const PEG = '<rect x="-6" y="-9" width="12" height="20" rx="2" fill="url(#pegWood)" stroke="#2a1f16" stroke-width="1.3" /><path d="M-6 1h12" stroke="#5a3415" stroke-width="1" />';
-const intro = REVIEW_MODE
-  ? 'I turn ideas into useful products—from web applications to AI-assisted tools. I study Computer Science at ABES Engineering College.'
-  : 'I turn ideas into useful products—from web applications to AI-assisted tools.';
+const intro = 'I build web applications, AI-assisted tools, and turn ideas into useful products. Currently studying Computer Science at ABES Engineering College.';
 ---
 <div class="stage" data-scene>
   <svg class="defs" aria-hidden="true" focusable="false">
@@ -219,22 +217,8 @@ const intro = REVIEW_MODE
     </h1>
     <p class="byline">A personal archive by <strong>Ayush Jain.</strong></p>
     <hr class="rule" />
-    <p class="role">{patents.length ? 'Developer & named inventor.' : `${copy.role}.`}</p>
+    <p class="role">Developer · Inventor · Product Builder</p>
     <p class="intro">{intro}</p>
-    <div class="contact-row">
-      <a class="intro__mail" href={`mailto:${site.email}`}>Email&nbsp;Ayush</a>
-      {profiles.length > 0 && (
-        <ul class="profile-links" role="list" aria-label="Profiles">
-          {profiles.map((p) => (
-            <li>
-              <a class="profile-link" href={p.href} aria-label={p.label} target="_blank" rel="noopener noreferrer me">
-                <Icon name={p.icon} size={18} />
-              </a>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
     {chips.length > 0 && (
       <ul class="chips" role="list" aria-label="Focus areas">
         {chips.map((c) => (
@@ -242,6 +226,23 @@ const intro = REVIEW_MODE
             <a class="chip" href={c.href} data-nav={c.href.startsWith('/patents') ? 'patents' : 'projects'} data-group={c.href.split('group=')[1]}>
               <Icon name={c.icon} size={22} />
               <span>{c.label}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    )}
+    <a class="contact-cta" href="/contact/" data-nav="contact">
+      <Icon name="mail" size={22} />
+      <span>Contact Me</span>
+      <span aria-hidden="true">→</span>
+    </a>
+    <p class="contact-subtitle">Have an idea? Let's build it together!</p>
+    {profiles.length > 0 && (
+      <ul class="profile-links" role="list" aria-label="Profiles">
+        {profiles.map((p) => (
+          <li>
+            <a class="profile-link" href={p.href} aria-label={p.label} target="_blank" rel="noopener noreferrer me">
+              <Icon name={p.icon} size={18} />
             </a>
           </li>
         ))}
@@ -258,5 +259,4 @@ const intro = REVIEW_MODE
   <!-- Fixed indirect wall light; the shade contains its own directional cone. -->
   <div class="lamp-glow" aria-hidden="true"></div>
   <div class="lamp-beam" aria-hidden="true"></div>
-  <button type="button" class="scene-orbit" data-scene-orbit data-scene-loading="true" disabled aria-label="Three-dimensional overview is preparing">Preparing 3D…</button>
 </div>

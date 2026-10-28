@@ -102,7 +102,7 @@ export const chips = [
   { label: 'Full-Stack', icon: 'code', href: '/projects/?group=full-stack', ok: projects.some((p) => p.group === 'full-stack') },
   { label: 'AI & Data', icon: 'cube', href: '/projects/?group=ai', ok: projects.some((p) => p.group === 'ai') },
   { label: 'Web3', icon: 'gear', href: '/projects/?group=web3', ok: projects.some((p) => p.group === 'web3') },
-  { label: 'Invention', icon: 'leaf', href: '/patents/', ok: patents.length > 0 },
+  { label: 'Innovation', icon: 'leaf', href: '/patents/', ok: patents.length > 0 },
 ].filter((c) => c.ok);
 
 export function fmtMonth(v?: string | null) {

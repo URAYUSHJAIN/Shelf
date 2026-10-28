@@ -2,13 +2,102 @@
 
 **The Shelf** is an Astro-based personal portfolio presented as a physical workspace. Instead of pages and a navbar, visitors explore an illustrated shelf: drawers open into folders, and folders open into detailed project, patent, experience, and credential records. Every record also has its own stable, crawlable URL. Desk objects behave physically: a laptop opens to the résumé and the original portfolio, a decorative lamp supplies permanent warm light (D-27), and a globe spins as a real sphere. The interface is monochrome; real project screenshots and video supply the colour.
 
-**Current state (2026-10-24):** The Phase 3 Astro 7.4.2 application is implemented (D-33, D-36). Publication decisions and factual verification gaps remain; see [phase-2-report.md](docs/reports/phase-2-report.md) and [docs/open-decisions.md](docs/open-decisions.md). Nothing is deployed.
+**Current state (2026-10-28):** The Phase 3 Astro 7.4.2 application is implemented (D-33, D-36). The profile layout, contact entry point, responsive scene positioning, and desk-object placement have been refined. Publication decisions and factual verification gaps remain; see [phase-2-report.md](docs/reports/phase-2-report.md) and [docs/open-decisions.md](docs/open-decisions.md). Nothing is deployed, and deployment remains outside the current implementation scope.
 
-**Run (Node 22 >=22.23.4 or Node 24 LTS):** `npm install`, then `npm run dev` for the loopback review preview at http://127.0.0.1:4321/ (shows `needs-owner-review` records with a review notice and noindex). `npm run build` is the release build: `scripts/release-gate.mjs` runs first and `scripts/check-dist.mjs` scans `dist/` afterwards; only ids in `src/data/release-allowlist.json` with approved visibility are rendered (currently none, so drawers show empty states). `node scripts/release-gate.mjs --selftest` proves review-only fixtures are rejected. After inventory changes, re-run `npm run export:content` to regenerate `src/data/records.json` (explicit public-field allowlist) and the review-only WebP derivatives in `assets/review/derived/`.
+**Run (Node 22 >=22.23.4 or Node 24 LTS):** `npm install`, then `npm run dev` for the loopback review preview at http://127.0.0.1:4321/ (shows `needs-owner-review` records with a review notice and noindex). `npm run build` is the release build: `scripts/release-gate.mjs` runs first and `scripts/check-dist.mjs` scans `dist/` afterwards; only ids in `src/data/release-allowlist.json` with approved visibility are rendered. The current release gate reports 135 approved allowlisted records. `node scripts/release-gate.mjs --selftest` proves review-only fixtures are rejected. After inventory changes, re-run `npm run export:content` to regenerate `src/data/records.json` (explicit public-field allowlist) and the review-only WebP derivatives in `assets/review/derived/`.
 
-**Content state:** 39 project records (the 31 local projects plus eight preview-cleared extras), eight patent records and all other collections render in the loopback preview. No record is release-approved yet. Project media stays quarantined outside `public/`. Exact eight drawers follow D-34; loopback review versus publication follows D-35.
+**Content state:** 39 project records (the 31 local projects plus eight preview-cleared extras), eight patent records and all other collections render in the loopback preview. The release allowlist currently contains 135 approved records; review-only records are still excluded from production output. Project media stays quarantined outside `public/`. Exact eight drawers follow D-34; loopback review versus publication follows D-35.
 
 ---
+
+## What is implemented
+
+The application is an HTML-first, statically rendered portfolio with progressive enhancement:
+
+- The home route presents the illustrated cabinet and desk as the primary navigation surface.
+- The left profile area contains the `THE SHELF` heading, Ayush Jain's concise introduction, four skill chips, the `Contact Me` link, and verified social links.
+- The `Contact Me` link routes to the existing notebook/contact experience at `/contact/`; it does not pretend to send a message.
+- The cabinet exposes exactly eight drawer categories. Drawer and record routes are stable, prerendered URLs and remain usable without client-side JavaScript.
+- The laptop is a CSS 3D desk object. Its résumé and original-portfolio actions are handled by the existing laptop interaction.
+- The mug, rocket, clock, speaker, lamp, globe, notebook, pen, cabinet, and other desk objects remain part of the existing scene. The former separate “Rotate workspace” control has been removed.
+- Desktop scene coordinates are controlled by CSS custom properties in `src/styles/shelf.css`. The current desktop placement keeps the laptop near the foreground center and places the mug to its right without covering the clock, speaker, or rocket.
+- Responsive layouts reinterpret the scene at smaller widths instead of exposing a conventional navigation bar or replacing the cabinet with a card grid.
+
+### Rendering and content flow
+
+Public content follows this one-way path:
+
+1. Read-only source material is reviewed and classified.
+2. Internal records in `content/inventory/` preserve provenance and visibility decisions.
+3. `scripts/export_content.py` produces the public-field-only `src/data/records.json`.
+4. `src/data/site.ts` applies the development preview and production release rules.
+5. Astro prerenders the routes into `dist/`.
+6. The release gate and distribution scan reject preview-only or disallowed records.
+
+The loopback development server may show public-safe `needs-owner-review` records with a visible review notice and `noindex`. A production build rejects those records and renders only the approved release allowlist. Review media remains outside `public/` until it has the required approval.
+
+## Important application files
+
+| Area               | File or folder                                              | Responsibility                                                                         |
+| ------------------ | ----------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| Page shell         | `src/pages/`                                                | Stable Astro routes and prerendered pages                                              |
+| Scene composition  | `src/components/Scene.astro`                                | Profile panel, shelf scene composition, CTA, and social links                          |
+| Desk objects       | `src/components/Desk.astro`                                 | Desk, laptop, mug, notebook, pen, rocket, clock, speaker, and related markup           |
+| Laptop             | `src/components/Laptop.astro` and `src/styles/laptop.css`   | Accessible laptop controls and CSS 3D laptop geometry                                  |
+| Cabinet and panels | `src/components/Shelf.astro`, `src/components/Panels.astro` | Shelf navigation, drawers, record surfaces, and contact notebook                       |
+| Scene layout       | `src/styles/shelf.css`                                      | Tokens, responsive layout, object coordinates, drawers, profile panel, and CTA styling |
+| Interaction state  | `src/scripts/shelf-controller.ts`                           | URL-derived state, drawer navigation, contact routing, focus handling, and history     |
+| Content data       | `src/data/`                                                 | Schemas, exported records, social links, drawer data, and release allowlist            |
+| Validation         | `scripts/`                                                  | Content export, release gate, link check, drawer check, and distribution scan          |
+| Contracts          | `docs/`                                                     | Design, accessibility, responsive, content, security, and release requirements         |
+
+## Local development
+
+Use the supported system runtime: Node 22.23.4 or newer in the Node 22 line, or Node 24 LTS. The project currently uses Node 24.22.1 and Astro 7.4.2.
+
+```powershell
+npm install
+npm run dev
+```
+
+Open [http://127.0.0.1:4321/](http://127.0.0.1:4321/). If that port is already in use, Astro selects the next available port and prints it in the terminal.
+
+Useful commands:
+
+| Command                  | Purpose                                                       |
+| ------------------------ | ------------------------------------------------------------- |
+| `npm run dev`            | Start the local loopback preview                              |
+| `npm run build`          | Run the release gate, build the static site, and scan `dist/` |
+| `npm run preview`        | Serve the built `dist/` output locally                        |
+| `npm test`               | Run the release-gate self-test and Markdown/local-link check  |
+| `npm run check:gate`     | Run the release gate without building                         |
+| `npm run check:links`    | Check local Markdown links and referenced paths               |
+| `npm run export:content` | Regenerate public-field-only content after inventory changes  |
+
+Do not run source projects from `portfolio/`, `BuildLog/`, `placement/`, or `context/`. They are read-only source material, and `placement/` also contains restricted personal documents.
+
+## Layout and responsive verification
+
+The scene should be checked at both representative desktop and mobile sizes:
+
+- Mobile: 320×568, 375×667, and 430×932
+- Landscape: 667×375
+- Desktop: 1024×768, 1280×720, 1440×900, and 1920×1080
+
+The layout pass verified that these sizes have no horizontal overflow and retain the profile CTA, cabinet drawer navigation, laptop, and mug. When changing scene objects, update the owning CSS scene coordinates rather than applying an unrelated absolute-position workaround elsewhere.
+
+## Git and release boundary
+
+This folder is the writable application workspace, but a passing build does not mean the site is ready for public release. Before staging or pushing, review:
+
+1. `git status --short` and the focused diff.
+2. Any deletion of temporary or generated files to ensure it is intentional.
+3. `npm test` and `npm run build`.
+4. The browser preview at desktop and mobile sizes.
+5. The release checklist in [docs/implementation-and-validation.md](docs/implementation-and-validation.md) and all blockers in [docs/security.md](docs/security.md) §15.
+6. Open owner decisions, especially repository visibility, résumé approval, domain, contact mechanism, and publication policy.
+
+Do not commit, push, deploy, or publish from an agent session unless the owner explicitly authorizes that Git or deployment operation. The current implementation is ready for owner review and staging after the intentional cleanup deletions have been reviewed; it is not pushed by this workspace.
 
 ## Design principles (summary)
 
@@ -43,24 +132,24 @@ Facts flow one way: **sources → `content/inventory/` (internal, verified, clas
 
 ## Documentation map
 
-| Kind                | File                                                                                                                                               | Defines                                                                                                |
-| ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| **Design**          | [docs/design.md](docs/design.md)                                                                                                                   | Visual contract: invariants, decision hierarchy, board reconciliation, drawer IA, objects, records     |
-|                     | [docs/micro-interactions.md](docs/micro-interactions.md)                                                                                           | Interaction contract: tokens, state machine, focus, per-interaction table (§12)                        |
-|                     | [docs/physics-and-interactions.md](docs/physics-and-interactions.md)                                                                               | Simulated motion, lighting model, globe, laptop, lamp, cube, pen, drawers, physics architecture, tests |
-|                     | [docs/responsive-design.md](docs/responsive-design.md)                                                                                             | Layout modes, viewport matrix, scaling, responsive tests                                               |
-| **Content**         | [docs/workspace-audit.md](docs/workspace-audit.md)                                                                                                 | What the sources contain: patents, résumés, credentials, profile links, conflicts, sensitive findings  |
-|                     | [docs/contest.md](docs/contest.md)                                                                                                                 | Extraction and reconciliation brief (the filename is historical; it is not about a contest)            |
-|                     | [docs/content-inventory-template.md](docs/content-inventory-template.md)                                                                           | Record schemas, verification and visibility classes                                                    |
-| **Implementation**  | [docs/asset-organization.md](docs/asset-organization.md)                                                                                           | Astro structure, asset placement, schemas                                                              |
-|                     | [docs/implementation-and-validation.md](docs/implementation-and-validation.md)                                                                     | Phase 3 plan (legacy 23 stages), test catalogue, release checklist                                     |
-| **Discoverability** | [docs/seo-optimization.md](docs/seo-optimization.md)                                                                                               | Search: canonical host, metadata, sitemap, structured data                                             |
-|                     | [docs/ai-optimization.md](docs/ai-optimization.md)                                                                                                 | Entity identity, verified profiles, AI crawlers, answer engines                                        |
-| **Safety**          | [docs/security.md](docs/security.md)                                                                                                               | Security, privacy, résumé access, licensing, release blockers                                          |
-| **Governance**      | [docs/open-decisions.md](docs/open-decisions.md)                                                                                                   | Owner decisions D-01 to D-31 and interim defaults                                                      |
-|                     | [docs/documentation-quality.md](docs/documentation-quality.md)                                                                                     | Doc checks, requirements-to-tests and traceability matrices, drift control                             |
-|                     | [docs/reports/](docs/reports/) (phase 1, 1.1 and 2 reports, validation, self-containment audit) · [docs/internal/](docs/internal/) (content manuscript, content review, asset manifest) | Phase records and private preparation material                                                                                          |
-| **Agents**          | [AGENTS.md](AGENTS.md) · [CLAUDE.md](CLAUDE.md) · [agent.md](agent.md)                                                                             | Coding-agent instructions (AGENTS.md is canonical)                                                     |
+| Kind                | File                                                                                                                                                                                    | Defines                                                                                                |
+| ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| **Design**          | [docs/design.md](docs/design.md)                                                                                                                                                        | Visual contract: invariants, decision hierarchy, board reconciliation, drawer IA, objects, records     |
+|                     | [docs/micro-interactions.md](docs/micro-interactions.md)                                                                                                                                | Interaction contract: tokens, state machine, focus, per-interaction table (§12)                        |
+|                     | [docs/physics-and-interactions.md](docs/physics-and-interactions.md)                                                                                                                    | Simulated motion, lighting model, globe, laptop, lamp, cube, pen, drawers, physics architecture, tests |
+|                     | [docs/responsive-design.md](docs/responsive-design.md)                                                                                                                                  | Layout modes, viewport matrix, scaling, responsive tests                                               |
+| **Content**         | [docs/workspace-audit.md](docs/workspace-audit.md)                                                                                                                                      | What the sources contain: patents, résumés, credentials, profile links, conflicts, sensitive findings  |
+|                     | [docs/contest.md](docs/contest.md)                                                                                                                                                      | Extraction and reconciliation brief (the filename is historical; it is not about a contest)            |
+|                     | [docs/content-inventory-template.md](docs/content-inventory-template.md)                                                                                                                | Record schemas, verification and visibility classes                                                    |
+| **Implementation**  | [docs/asset-organization.md](docs/asset-organization.md)                                                                                                                                | Astro structure, asset placement, schemas                                                              |
+|                     | [docs/implementation-and-validation.md](docs/implementation-and-validation.md)                                                                                                          | Phase 3 plan (legacy 23 stages), test catalogue, release checklist                                     |
+| **Discoverability** | [docs/seo-optimization.md](docs/seo-optimization.md)                                                                                                                                    | Search: canonical host, metadata, sitemap, structured data                                             |
+|                     | [docs/ai-optimization.md](docs/ai-optimization.md)                                                                                                                                      | Entity identity, verified profiles, AI crawlers, answer engines                                        |
+| **Safety**          | [docs/security.md](docs/security.md)                                                                                                                                                    | Security, privacy, résumé access, licensing, release blockers                                          |
+| **Governance**      | [docs/open-decisions.md](docs/open-decisions.md)                                                                                                                                        | Owner decisions D-01 to D-31 and interim defaults                                                      |
+|                     | [docs/documentation-quality.md](docs/documentation-quality.md)                                                                                                                          | Doc checks, requirements-to-tests and traceability matrices, drift control                             |
+|                     | [docs/reports/](docs/reports/) (phase 1, 1.1 and 2 reports, validation, self-containment audit) · [docs/internal/](docs/internal/) (content manuscript, content review, asset manifest) | Phase records and private preparation material                                                         |
+| **Agents**          | [AGENTS.md](AGENTS.md) · [CLAUDE.md](CLAUDE.md) · [agent.md](agent.md)                                                                                                                  | Coding-agent instructions (AGENTS.md is canonical)                                                     |
 
 ## Recommended reading order
 
@@ -84,13 +173,13 @@ Coding agents start at [AGENTS.md](AGENTS.md).
 
 ## Phase scope
 
-| Phase | Scope                                                                                                               | Status                                     |
-| ----- | ------------------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
-| 1     | Documentation system                                                                                                | Complete                                   |
-| 1.1   | Documentation audit and refinement (placement audit, physics, responsive, SEO, AI discoverability, agent readiness) | Complete                                   |
+| Phase | Scope                                                                                                               | Status                                                  |
+| ----- | ------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| 1     | Documentation system                                                                                                | Complete                                                |
+| 1.1   | Documentation audit and refinement (placement audit, physics, responsive, SEO, AI discoverability, agent readiness) | Complete                                                |
 | 2     | Research, content, asset preparation, and specifications                                                            | See [phase-2-report.md](docs/reports/phase-2-report.md) |
-| 3     | Application implementation, legacy Stages 4–21                                                                      | Authorized (D-33)                          |
-| 4     | Deployment and monitoring, legacy Stages 22–23                                                                      | Authorized (D-33)                          |
+| 3     | Application implementation, legacy Stages 4–21                                                                      | Authorized (D-33)                                       |
+| 4     | Deployment and monitoring, legacy Stages 22–23                                                                      | Defined, but not authorized for execution               |
 
 ## Workflow
 
@@ -136,4 +225,4 @@ Run before accepting any documentation change ([docs/documentation-quality.md](d
 
 ## Implementation status
 
-Phase 3 is implemented (D-36). See **Run** above for commands. Review-only records appear only in loopback development; production release gates remain strict and no record is approved yet. All 67 uncleared project media files are outside public. No deployment or parent Git mutation was performed.
+Phase 3 is implemented (D-36). See **Run** above for commands. Review-only records appear only in loopback development; production release gates remain strict and render only the approved allowlist. All 67 uncleared project media files are outside public. No deployment or parent Git mutation was performed.

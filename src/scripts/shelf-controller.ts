@@ -196,8 +196,6 @@ async function render(state: State, focus: 'move' | 'none' = 'move', instant = f
 
 function renderContent(state: State, focus: 'move' | 'none', prev: State) {
   const modal = !desktopMQ.matches;
-  const orbit = $<HTMLButtonElement>('[data-scene-orbit]');
-  if (orbit) orbit.disabled = !!state.surface || orbit.dataset.sceneLoading === 'true';
 
   for (const panel of $$('[data-surface]')) {
     const open = panel.dataset.surface === state.surface;
