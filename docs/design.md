@@ -157,6 +157,8 @@ The geometry follows the home panel of the concept board (§0.1). The zones belo
 
 ### 3.1 Overall style
 
+**D-45 (2026-11-12)** makes the owner's warm study-room reference the visual authority for the home scene: profile column on the left wall, walnut cabinet in the centre with books, globe, portrait and desk lamp on its top, a framed corkboard on the right wall, and a wide walnut desk in the foreground carrying the open notebook and pen, the laptop, mug, rocket, speaker, digital clock and two potted plants. Drawer fronts are walnut with an inset cream label plate (icon, label with an ink stroke, arrow); strip lights under the top slab wash the upper drawers. Physical objects are lit meshes drawn by the studio layer ([physics-and-interactions.md](physics-and-interactions.md), Studio object layer); surfaces are CSS over procedural textures. Earlier paragraphs in this section describe the previous illustrated pass and remain as history where D-45 does not contradict them.
+
 A warm, handcrafted shelf with physically believable materials and construction, following the concept board (BR-02) and the owner's realism direction (D-38):
 
 - fine material-coloured edges, bevels and directional highlights; avoid thick outlines around physical objects
@@ -182,6 +184,8 @@ D-44 supersedes the older decorative-only lamp/speaker and no-engine guidance. T
 The desktop speaker body uses the locally hosted CC0 Carry Sound GLB (D-44) in the existing right-desk slot. Its embedded PBR materials, front-facing twin grille, feet and tan handle remain intact. The existing HTML play/pause and volume controls and original local audio stay in place; a brief, restrained indicator pulse accompanies playback. The original SVG body remains the fallback when the model or WebGL cannot load.
 
 ### 3.2 Colour strategy
+
+**D-45 (2026-11-12) governs the home scene.** The room is richly coloured: deep walnut (`public/textures/walnut.webp`, `walnut-dark.webp`), cork, brass, cream paper label plates, a peach-cream plaster wall lit by two amber lamp pools, a near-black leather mat and green plants. Scene tokens live in `src/styles/studio.css` (`--wall-1` to `--wall-3`, `--amber`, `--brass-1` to `--brass-3`, `--walnut`, `--cork`). One light logic applies everywhere: the pendant lamp is the key from the upper left, the desk lamp an amber rim from the right, and the lamp switch fades both CSS pools and re-lights the meshes together. The palette below continues to govern content surfaces (drawer sheets, records, booklet, laptop UI), where INV-05 still applies.
 
 **Warm-neutral monochrome cabinet, authentic colour** (BR-01). The interface uses one warm hue family (cream paper, beige shading, warm-grey to near-black ink). Real work supplies the colour.
 

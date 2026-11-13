@@ -48,3 +48,16 @@ if (board && dialog) {
     trigger = null;
   });
 }
+
+// A project image that fails to load gives way to the neutral file card.
+const shot = photo?.querySelector<HTMLImageElement>('img');
+if (shot) {
+  const swap = () => {
+    const card = document.createElement('span');
+    card.className = 'board-polaroid__placeholder';
+    card.textContent = 'Project file';
+    shot.replaceWith(card);
+  };
+  if (shot.complete && !shot.naturalWidth) swap();
+  else shot.addEventListener('error', swap, { once: true });
+}

@@ -8,11 +8,11 @@ Phase 3 is authorized (D-33) and the Astro application is implemented (D-36). Re
 
 ## Project in one line
 
-An Astro portfolio for Ayush Jain where an illustrated shelf is the navigation (drawers → folders → records, each record at a stable URL), with physical desk objects: a laptop for the résumé and the original portfolio, a lamp that lights the scene, and a spinnable globe. Contracts: [docs/design.md](docs/design.md), [docs/micro-interactions.md](docs/micro-interactions.md), [docs/physics-and-interactions.md](docs/physics-and-interactions.md), [docs/responsive-design.md](docs/responsive-design.md).
+An Astro portfolio for Ayush Jain where an illustrated shelf is the navigation (drawers → folders → records, each record at a stable URL), with physical desk objects drawn by the studio layer (D-45): a laptop for the résumé and the original portfolio, a lamp that lights the scene, a globe you can turn, and a rocket. Contracts: [docs/design.md](docs/design.md), [docs/micro-interactions.md](docs/micro-interactions.md), [docs/physics-and-interactions.md](docs/physics-and-interactions.md), [docs/responsive-design.md](docs/responsive-design.md).
 
 ## Non-negotiables (summary; full list in AGENTS.md §2)
 
-No navbar · no home-scene counters (computed counts only inside opened drawers) · cabinet always visible · warm-neutral monochrome UI with other colour only from real media · one surface open at a time · HTML-first with stable URLs · no autoplay or looping motion · keyboard, touch, and reduced-motion parity · physics is an enhancement, never a requirement · **never fabricate**, never copy the concept board's sample text, never call a patent application "granted", and use "named inventor" · never display age, identity data, compensation, or signatures.
+No navbar · no home-scene counters (computed counts only inside opened drawers) · cabinet always visible · warm walnut study-room scene (D-45) with paper-and-ink content surfaces whose other colour comes only from real media · one surface open at a time · HTML-first with stable URLs · no autoplay or looping motion · keyboard, touch, and reduced-motion parity · physics is an enhancement, never a requirement · **never fabricate**, never copy the concept board's sample text, never call a patent application "granted", and use "named inventor" · never display age, identity data, compensation, or signatures.
 
 To view the concept board, Read `docs/reference/refrance2.0.png` (Claude Code can read images). Compare UI work against it, using the resolutions in [docs/design.md](docs/design.md) §0.2.
 

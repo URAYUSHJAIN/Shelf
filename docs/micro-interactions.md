@@ -458,3 +458,19 @@ One row per interaction listed in the Phase 1.1 brief. Columns: technique (ANIM,
 ## Current drawer and book authority
 
 D-34 supersedes earlier crown-spine entry and drawer-category examples. Render exactly About Me, Projects, Patents, Experience, Education, Achievements, Skills & Toolbox, Certifications. The open desk book is the sole collection entry for approved writing/notes/articles/albums. Use the existing booklet region/sheet focus, Escape, Back and reduced-motion contracts; album thumbnails have dimensions, lazy loading, supplied ordering and captions, and optional keyboard/touch lightbox with restored focus. No album assets means no album category.
+
+---
+
+## D-45 additions (2026-11-12)
+
+These supersede earlier rows for the same objects. Mechanics and numbers are in [physics-and-interactions.md](physics-and-interactions.md) (Studio object layer).
+
+| Object                    | Trigger             | Response                                                                                                            | Keyboard                                | Reduced motion                  |
+| ------------------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------- | --------------------------------------- | ------------------------------- |
+| Drawer front (cabinet)    | Hover, focus        | Eases 2.5 units towards the viewer, scale 1.022, shadow deepens, label stroke extends, arrow moves 6 units (320 ms) | Focus gives the same state; Enter opens | State change without transition |
+| Globe                     | Drag, tap           | Turns with the pointer, keeps inertia, settles                                                                      | Left/Right, Home, Enter/Space           | Steps only                      |
+| Rocket                    | Press               | One ignition, lift, hover and landing (2.6 s); ignores presses in flight                                            | Enter/Space on the button               | Flame brightens; no travel      |
+| Book spine                | Hover, focus        | Tips out by its head; press dips it                                                                                 | Focus; Enter follows the link           | Instant pose                    |
+| Desk lamp                 | Press               | Room light layers and meshes fade together (620 ms); head nods                                                      | Enter/Space                             | Instant change                  |
+| Pen, headphones, notebook | Hover               | One finite roll, swing or lift                                                                                      | Focus (pen, notebook)                   | No motion                       |
+| Speaker                   | Press the brass key | Play/pause; volume slider appears on hover or focus                                                                 | Tab to key and slider                   | Unchanged                       |

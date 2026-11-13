@@ -1,10 +1,34 @@
 ---
 import Laptop from './Laptop.astro';
+import { vine, vineMarkup } from './art';
 
 interface Props {
   active?: string | null;
 }
 const { active = null } = Astro.props;
+
+// Potted plants (fixed geometry, no randomness): stems rise from the pot mouth.
+const leftPlant = [
+  vine([100, 300], [40, 200], [22, 96], 6, 46, 58, 0.18),
+  vine([100, 300], [96, 170], [70, 40], 7, 44, 60, 0.2),
+  vine([102, 300], [150, 190], [168, 86], 6, 46, 58, 0.18),
+  vine([100, 300], [130, 240], [186, 196], 4, 40, 56, 0.15),
+  vine([98, 300], [60, 250], [14, 214], 4, 40, 56, 0.15),
+];
+const rightPlant = [
+  vine([60, 150], [30, 96], [16, 40], 5, 30, 58, 0.2),
+  vine([60, 150], [62, 80], [50, 14], 5, 30, 60, 0.2),
+  vine([62, 150], [96, 96], [108, 44], 5, 30, 58, 0.2),
+];
+const POT = (cx: number, top: number, w: number, h: number) => {
+  const l = cx - w / 2;
+  const r = cx + w / 2;
+  const b = top + h;
+  return `<ellipse cx="${cx}" cy="${b + 2}" rx="${w * 0.62}" ry="${h * 0.09}" fill="#1e0e05" opacity=".45"/>`
+    + `<path d="M${l} ${top}L${l + w * 0.1} ${b - 6}Q${l + w * 0.12} ${b} ${l + w * 0.2} ${b}H${r - w * 0.2}Q${r - w * 0.12} ${b} ${r - w * 0.1} ${b - 6}L${r} ${top}Z" fill="url(#pot)" stroke="#8b7a64" stroke-width="1"/>`
+    + `<path d="M${l} ${top}L${l + w * 0.1} ${b - 6}Q${l + w * 0.12} ${b} ${l + w * 0.2} ${b}H${r - w * 0.2}Q${r - w * 0.12} ${b} ${r - w * 0.1} ${b - 6}L${r} ${top}Z" fill="url(#ceramicSpeckle)"/>`
+    + `<ellipse cx="${cx}" cy="${top}" rx="${w / 2}" ry="${w * 0.09}" fill="#3a2414" stroke="#d9cdb8" stroke-width="2.4"/>`;
+};
 ---
 <div class="g-desk">
   <!-- Dark stitched leather desk mat under the notebook and laptop. -->
@@ -33,18 +57,24 @@ const { active = null } = Astro.props;
     <path d="M58 13H1092L1126 132H24Z" fill="none" stroke="#c9a064" stroke-width="1.7" stroke-dasharray="7 5" stroke-linecap="round" stroke-linejoin="round" />
   </svg>
 
-  <!-- Closed leather notebook with an elastic band; its pages include the contact composer. -->
-  <a class="obj notebook" href="/contact/?page=intro" data-nav="contact" aria-label="Notebook: open contact pages" aria-current={active === 'contact' ? 'true' : undefined}>
-    <span class="notebook__body" aria-hidden="true">
-      <span class="notebook__band"></span>
-      <span class="notebook__ribbon"></span>
-    </span>
+  <!-- Open notebook: its pages are decorative; the link opens the contact pages. -->
+  <a class="obj notebook" href="/contact/?page=intro" data-nav="contact" data-studio="notebook" aria-label="Notebook: open contact pages" aria-current={active === 'contact' ? 'true' : undefined}>
+    <svg viewBox="0 0 380 124" aria-hidden="true">
+      <path d="M44 6H340L378 112H2Z" fill="#3a2416" stroke="#1c0f07" stroke-width="2" stroke-linejoin="round" />
+      <path d="M50 10H190V104H12Z" fill="#f6ecd6" stroke="#b7a383" />
+      <path d="M190 10H334L368 104H190Z" fill="#f9f0dc" stroke="#b7a383" />
+      <path d="M190 10V104" stroke="#8f7a5c" stroke-width="2" />
+      <g fill="none" stroke="#3b2c1e" stroke-width="1.6" stroke-linecap="round">
+        <path d="M110 30c18 4 30 22 30 40l-22 4c-12-10-16-30-8-44zM118 74l-10 14 14-6M140 70l12 10-16 0M128 46a5 5 0 1 0 .1 0" />
+        <path d="M226 40c14-8 30-8 44 0M224 62c18-8 36-8 52 0M222 84c22-8 46-8 66 0" />
+      </g>
+    </svg>
   </a>
 
   <Laptop open={active === 'laptop'} />
 
   <!-- The contact pen rests on the notebook. -->
-  <a class="obj pen" href="/contact/?page=message" data-nav="contact" aria-label="Pen: write a message to Ayush" aria-current={active === 'contact' ? 'true' : undefined}>
+  <a class="obj pen" href="/contact/?page=message" data-nav="contact" data-studio="pen" aria-label="Pen: write a message to Ayush" aria-current={active === 'contact' ? 'true' : undefined}>
     <svg viewBox="0 0 196 70" aria-hidden="true">
       <ellipse cx="100" cy="60" rx="84" ry="5" fill="#5a3a1c" opacity=".2" transform="rotate(14 100 60)" />
       <g transform="rotate(15 98 30)">
@@ -60,8 +90,9 @@ const { active = null } = Astro.props;
     </svg>
   </a>
 
-  <!-- Decorative rocket model on a gold stand, standing behind the mug. -->
-  <svg class="obj rocket" viewBox="0 0 80 190" aria-hidden="true">
+  <!-- Desk rocket: one short, finite ignition per press. -->
+  <button class="obj rocket" type="button" data-studio="rocket" data-rocket aria-label="Desk rocket: ignite the engine">
+  <svg viewBox="0 0 80 190" aria-hidden="true">
     <defs>
       <linearGradient id="rocketBody" x1="0" x2="1">
         <stop offset="0" stop-color="#7e8187" /><stop offset=".3" stop-color="#e9eaec" /><stop offset=".48" stop-color="#fbfbfb" /><stop offset=".74" stop-color="#bcbec3" /><stop offset="1" stop-color="#6d7076" />
@@ -91,32 +122,15 @@ const { active = null } = Astro.props;
     <path d="M34 66a7 7 0 0 1 8-3" fill="none" stroke="#fff" stroke-opacity=".7" stroke-width="1.5" stroke-linecap="round" />
     <path d="M30 40Q28 80 30 126" fill="none" stroke="#fff" stroke-opacity=".6" stroke-width="2" stroke-linecap="round" />
   </svg>
+  </button>
 
-  <!-- The clock face is updated from the visitor's local system time. -->
-  <svg class="obj moonclock" viewBox="0 0 130 152" role="img" aria-label="Local time" data-clock>
-    <defs>
-      <radialGradient id="moonGlow"><stop stop-color="#ffe9a8" stop-opacity=".62" /><stop offset=".55" stop-color="#ffd36e" stop-opacity=".22" /><stop offset="1" stop-color="#ffc35a" stop-opacity="0" /></radialGradient>
-      <radialGradient id="moonBody" cx=".4" cy=".35" r=".75"><stop stop-color="#fff6d4" /><stop offset=".5" stop-color="#f2d487" /><stop offset="1" stop-color="#c79c48" /></radialGradient>
-      <linearGradient id="clockBody" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#4a3a2d" /><stop offset=".25" stop-color="#2b211a" /><stop offset="1" stop-color="#14100d" /></linearGradient>
-      <filter id="ledGlow" x="-20%" y="-40%" width="140%" height="180%"><feGaussianBlur stdDeviation="2.2" /></filter>
-    </defs>
-    <ellipse cx="65" cy="150" rx="62" ry="6" fill="#2a1408" opacity=".4" />
-    <circle cx="65" cy="46" r="62" fill="url(#moonGlow)" />
-    <path d="M52 86Q65 92 78 86L82 90H48z" fill="#1a1410" stroke="#0e0a07" stroke-width="1" />
-    <circle cx="65" cy="46" r="39" fill="url(#moonBody)" stroke="#b58c3e" stroke-width="1" />
-    <g fill="#b98f43" opacity=".45">
-      <ellipse cx="50" cy="36" rx="9" ry="7" /><ellipse cx="78" cy="30" rx="6" ry="5" /><ellipse cx="72" cy="58" rx="10" ry="8" /><ellipse cx="46" cy="60" rx="5" ry="4" />
-    </g>
-    <path d="M40 28a28 28 0 0 1 22-16" fill="none" stroke="#fff" stroke-opacity=".65" stroke-width="2.2" stroke-linecap="round" />
-    <rect x="4" y="88" width="122" height="60" rx="6" fill="url(#clockBody)" stroke="#0e0a07" stroke-width="1.4" />
-    <path d="M7 90H123" stroke="#c9a064" stroke-opacity=".6" stroke-width="1.2" />
-    <rect x="13" y="98" width="104" height="38" rx="3" fill="#0b0806" stroke="#5a4630" stroke-width="1" />
-    <g font-family="'Courier New', monospace" font-weight="700" font-size="31" text-anchor="middle">
-      <text x="65" y="127" fill="#ff8a24" filter="url(#ledGlow)" data-clock-digit>--:--</text>
-      <text x="65" y="127" fill="#ffb865" data-clock-digit>--:--</text>
-    </g>
-    <text x="110" y="143" fill="#ffca7d" font-size="8" font-family="Arial, sans-serif" text-anchor="end" data-clock-period></text>
-  </svg>
+  <!-- Digital desk clock: shows the visitor's local system time. -->
+  <div class="obj deskclock" role="img" aria-label="Local time" data-clock data-studio="clock">
+    <span class="deskclock__body" aria-hidden="true">
+      <span class="deskclock__digits" data-clock-digit>--:--</span>
+      <span class="deskclock__period" data-clock-period></span>
+    </span>
+  </div>
 
   <!-- SVG wisps are the no-WebGL fallback; the shader canvas replaces them when it runs. -->
   <div class="obj steam" aria-hidden="true">
@@ -199,11 +213,9 @@ const { active = null } = Astro.props;
     <path d="M244 117l1 19" stroke="#65635a" stroke-width=".8" opacity=".55" />
     <rect x="242" y="125" width="3" height="9" rx="1.5" fill="#0e100f" />
   </svg>
-  <div class="obj speaker-model" data-speaker-surface data-speaker-model aria-hidden="true">
-    <canvas data-speaker-canvas hidden></canvas>
-  </div>
+  <div class="obj speaker-model" data-speaker-surface data-speaker-model data-studio="speaker" aria-hidden="true"></div>
 
-  <svg class="obj mug" viewBox="0 0 146 134" aria-hidden="true" data-steam>
+  <div class="obj mug" data-steam data-studio="mug" aria-hidden="true"><svg viewBox="0 0 146 134">
     <defs>
       <radialGradient id="coffeeSurface" cx=".4" cy=".22" r=".8"><stop stop-color="#886145" /><stop offset=".4" stop-color="#503623" /><stop offset="1" stop-color="#261c14" /></radialGradient>
       <linearGradient id="mugHandle" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff4df" /><stop offset=".4" stop-color="#e3d6bc" /><stop offset=".72" stop-color="#a49073" /><stop offset="1" stop-color="#e9dbc1" /></linearGradient>
@@ -229,7 +241,7 @@ const { active = null } = Astro.props;
       <text x="60" y="81">LEARN •</text>
       <text x="60" y="100">REPEAT</text>
     </g>
-  </svg>
+  </svg></div>
 
   <div class="obj speaker-controls" data-speaker-controls>
     <button type="button" class="speaker-controls__play" data-speaker-play aria-label="Play desk music" aria-pressed="false">Play music</button>
@@ -237,6 +249,20 @@ const { active = null } = Astro.props;
     <span class="speaker-controls__status" role="status" data-speaker-status hidden></span>
     <audio preload="none" src="/media/desk-theme.wav" data-speaker-audio></audio>
   </div>
+
+  <!-- Potted plants frame the desk; they sway once when brushed. -->
+  <svg class="obj desk-plant desk-plant--left" viewBox="0 0 200 390" aria-hidden="true" data-sway>
+    <g class="sway sway--a" set:html={leftPlant.map((v) => vineMarkup(v, { stem: 3, shadow: true, drops: 0 })).join('')} />
+    <g set:html={POT(100, 296, 96, 84)} />
+  </svg>
+  <svg class="obj desk-plant desk-plant--right" viewBox="0 0 120 250" aria-hidden="true" data-sway>
+    <g stroke="#2a1a10" stroke-width="1">
+      <rect x="8" y="218" width="108" height="22" rx="2" fill="#5a3a22" /><rect x="12" y="222" width="100" height="12" fill="#efe3c8" />
+      <rect x="14" y="196" width="100" height="22" rx="2" fill="#2f3b33" /><rect x="18" y="200" width="92" height="12" fill="#f4ead2" />
+    </g>
+    <g class="sway sway--a" set:html={rightPlant.map((v) => vineMarkup(v, { stem: 2.4, shadow: true, drops: 0 })).join('')} />
+    <g set:html={POT(60, 146, 62, 50)} />
+  </svg>
 
   <!-- Inscription is cut into the wood, with its wording supplied by the owner. -->
   <p class="obj desk-script" aria-hidden="true">

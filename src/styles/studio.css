@@ -1,0 +1,1572 @@
+/* The Shelf — warm study-room art direction (D-45).
+   Materials, light and the corkboard. Geometry stays on the scene grid defined
+   in shelf.css; this file owns how surfaces look and how they answer the lamp. */
+:root {
+  --walnut: url('/textures/walnut.webp');
+  --walnut-dark: url('/textures/walnut-dark.webp');
+  --cork: url('/textures/cork.webp');
+  --wall-1: #efc79a;
+  --wall-2: #e2b083;
+  --wall-3: #c98f5f;
+  --amber: #ffcf8a;
+  --brass-1: #f3d896;
+  --brass-2: #b98a3e;
+  --brass-3: #5e4217;
+  --ease-settle: cubic-bezier(0.22, 1, 0.36, 1);
+  --t-light: 620ms;
+}
+
+body {
+  background-color: var(--wall-2);
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .42 0 0 0 0 .26 0 0 0 0 .14 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse 90% 60% at 50% 0%, #f6d7ae 0%, var(--wall-1) 40%, var(--wall-2) 75%, var(--wall-3) 100%);
+}
+
+/* ---------- Shared object states ---------- */
+.studio-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  z-index: 5;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 480ms ease-out;
+}
+.studio-canvas.is-live {
+  opacity: 1;
+}
+.room-dim,
+.pendant,
+.desk-plant {
+  display: none;
+}
+/* Once an object's mesh is drawn, its illustrated fallback steps aside but the
+   element keeps its role, focus ring and hit area. */
+[data-studio][data-studio-ready] > svg,
+.globe[data-studio-ready] > canvas,
+.deskclock[data-studio-ready] .deskclock__body {
+  opacity: 0;
+}
+.spine[data-studio-ready] {
+  background: none;
+  border-color: transparent;
+  box-shadow: none;
+}
+.spine[data-studio-ready]::before,
+.spine[data-studio-ready]::after {
+  display: none;
+}
+.spine[data-studio-ready] .spine__label {
+  opacity: 0;
+}
+.spine[data-studio-ready]:hover,
+.spine[data-studio-ready]:focus-visible,
+.notebook[data-studio-ready]:hover,
+.notebook[data-studio-ready]:focus-visible,
+.pen[data-studio-ready]:hover,
+.pen[data-studio-ready]:focus-visible {
+  transform: none;
+}
+.g-desk > .speaker[hidden] {
+  display: none;
+}
+
+/* Rocket: a real button. */
+.rocket {
+  display: block;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  border-radius: calc(10 * var(--u));
+  -webkit-tap-highlight-color: transparent;
+}
+.g-desk > .rocket {
+  pointer-events: auto;
+}
+
+/* Digital desk clock (HTML fallback; the mesh replaces its face when WebGL runs). */
+.deskclock__body {
+  position: absolute;
+  inset: 8% 0 6%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25em;
+  border-radius: calc(9 * var(--u));
+  border: calc(1.4 * var(--u)) solid #0b0705;
+  background: linear-gradient(#3a2c22, #17100b 22%, #0c0806);
+  box-shadow:
+    inset 0 calc(1.5 * var(--u)) 0 #7a644c88,
+    0 calc(5 * var(--u)) calc(7 * var(--u)) #1e0e0588;
+  font: 700 calc(34 * var(--u)) / 1 'Courier New', ui-monospace, monospace;
+  color: #ffb45a;
+  text-shadow: 0 0 calc(7 * var(--u)) #ff8a24cc;
+  letter-spacing: 0.04em;
+}
+.deskclock__period {
+  align-self: flex-end;
+  margin-bottom: 0.7em;
+  font-size: 0.36em;
+  letter-spacing: 0.06em;
+}
+
+/* Small brass tack. */
+.pin {
+  position: absolute;
+  left: 50%;
+  top: calc(-5 * var(--u));
+  width: calc(13 * var(--u));
+  height: calc(13 * var(--u));
+  margin-left: calc(-6.5 * var(--u));
+  border-radius: 50%;
+  background: radial-gradient(circle at 34% 30%, #fff2c4, #d9a648 38%, #8a5c1c 72%, #4a2f0c);
+  box-shadow:
+    calc(1.5 * var(--u)) calc(3 * var(--u)) calc(3 * var(--u)) rgba(40, 18, 4, 0.55),
+    inset 0 calc(-1 * var(--u)) calc(1 * var(--u)) #3d240866;
+  z-index: 2;
+}
+
+/* ---------- Corkboard (shared rules; placed on the desktop grid below) ---------- */
+.board {
+  position: absolute;
+  inset: 0;
+  border-radius: calc(5 * var(--u));
+  background:
+    linear-gradient(#ffdcae2e, transparent 6% 94%, #1205007a),
+    linear-gradient(90deg, #1205005c, transparent 4% 96%, #1205005c),
+    var(--walnut) 0 0 / calc(520 * var(--u)) calc(190 * var(--u));
+  box-shadow:
+    0 calc(22 * var(--u)) calc(30 * var(--u)) rgba(46, 20, 4, 0.42),
+    0 calc(4 * var(--u)) calc(6 * var(--u)) rgba(46, 20, 4, 0.45),
+    inset 0 calc(1.2 * var(--u)) 0 #f1c58f8c,
+    inset 0 0 0 calc(1 * var(--u)) #2a140766;
+}
+.board__cork {
+  position: absolute;
+  inset: calc(11 * var(--u));
+  border-radius: calc(2 * var(--u));
+  background:
+    radial-gradient(ellipse 70% 60% at 30% 12%, #ffd9a23d, transparent 70%),
+    linear-gradient(160deg, transparent 55%, #4a260c40),
+    var(--cork) 0 0 / calc(230 * var(--u)) calc(230 * var(--u));
+  box-shadow:
+    inset 0 calc(5 * var(--u)) calc(9 * var(--u)) rgba(40, 18, 4, 0.62),
+    inset calc(3 * var(--u)) 0 calc(6 * var(--u)) rgba(40, 18, 4, 0.34),
+    inset 0 0 0 calc(1.2 * var(--u)) #3c1f0b;
+}
+.board__planner {
+  position: absolute;
+  left: calc(26 * var(--u));
+  top: calc(26 * var(--u));
+  width: calc(178 * var(--u));
+  min-height: calc(196 * var(--u));
+  padding: calc(18 * var(--u)) calc(14 * var(--u)) calc(10 * var(--u));
+  transform: rotate(-2.2deg);
+  background: var(--paper-fibre), linear-gradient(172deg, #fffaf0, #f4e8d2 70%, #e9d8bb);
+  box-shadow:
+    calc(3 * var(--u)) calc(8 * var(--u)) calc(10 * var(--u)) rgba(50, 24, 6, 0.42),
+    inset 0 calc(1 * var(--u)) 0 #fffdf5;
+  border-radius: calc(1.5 * var(--u)) calc(1.5 * var(--u)) calc(10 * var(--u)) calc(1.5 * var(--u));
+  font-family: var(--hand);
+  color: var(--ink);
+}
+.planner__title {
+  margin: 0;
+  font-size: calc(19 * var(--u));
+  font-weight: 700;
+  line-height: 1.1;
+}
+.planner__title::after {
+  content: '';
+  display: block;
+  width: 62%;
+  height: calc(1.8 * var(--u));
+  margin-top: calc(4 * var(--u));
+  border-radius: 50%;
+  background: var(--ink);
+  transform: rotate(-1.4deg);
+  opacity: 0.75;
+}
+.planner__bulb {
+  position: absolute;
+  right: calc(12 * var(--u));
+  top: calc(13 * var(--u));
+  width: calc(25 * var(--u));
+  height: calc(29 * var(--u));
+}
+.planner__tasks {
+  list-style: none;
+  margin: calc(12 * var(--u)) 0 0;
+  padding: 0;
+  display: grid;
+  gap: calc(3 * var(--u));
+}
+.planner__tasks li {
+  display: flex;
+  align-items: center;
+  gap: calc(6 * var(--u));
+  min-height: calc(31 * var(--u));
+}
+.planner__tasks input[type='checkbox'] {
+  appearance: none;
+  flex: none;
+  position: relative;
+  width: calc(17 * var(--u));
+  height: calc(17 * var(--u));
+  margin: 0;
+  border: calc(1.6 * var(--u)) solid #3d3125;
+  border-radius: calc(2.5 * var(--u));
+  background: #fffdf6aa;
+  cursor: pointer;
+}
+/* Generous touch target without enlarging the drawn box. */
+.planner__tasks input[type='checkbox']::before {
+  content: '';
+  position: absolute;
+  inset: calc(-8 * var(--u));
+}
+.planner__tasks input[type='checkbox']:checked::after {
+  content: '';
+  position: absolute;
+  left: 26%;
+  top: -22%;
+  width: 42%;
+  height: 88%;
+  border: solid #2f7d32;
+  border-width: 0 calc(3 * var(--u)) calc(3 * var(--u)) 0;
+  transform: rotate(40deg);
+}
+.planner__tasks input[type='text'] {
+  min-width: 0;
+  width: 100%;
+  padding: calc(3 * var(--u)) calc(2 * var(--u));
+  border: 0;
+  border-radius: 2px;
+  background: transparent;
+  font: 700 calc(13 * var(--u)) var(--hand);
+  color: var(--ink);
+}
+.planner__tasks input[type='checkbox']:checked + input {
+  text-decoration: line-through;
+  opacity: 0.65;
+}
+.planner__tasks input:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 1px;
+}
+.planner__hint {
+  margin: calc(8 * var(--u)) 0 0;
+  font: 400 calc(8.5 * var(--u)) / 1.3 var(--sans);
+  color: var(--ink-mute);
+}
+
+.board-polaroid {
+  position: absolute;
+  left: calc(226 * var(--u));
+  top: calc(22 * var(--u));
+  width: calc(132 * var(--u));
+  height: calc(112 * var(--u));
+  display: flex;
+  flex-direction: column;
+  gap: calc(3 * var(--u));
+  padding: calc(7 * var(--u)) calc(7 * var(--u)) calc(4 * var(--u));
+  transform: rotate(4.5deg);
+  transform-origin: 50% 4%;
+  background: linear-gradient(#fffdf6, #f3ead8);
+  box-shadow: calc(3 * var(--u)) calc(7 * var(--u)) calc(9 * var(--u)) rgba(50, 24, 6, 0.48);
+  color: var(--ink);
+  text-align: center;
+  text-decoration: none;
+  transition:
+    transform 280ms var(--ease-settle),
+    box-shadow 280ms var(--ease-settle);
+}
+.board-polaroid::before {
+  content: '';
+  position: absolute;
+  left: calc(50% - 6 * var(--u));
+  top: calc(-5 * var(--u));
+  width: calc(12 * var(--u));
+  height: calc(12 * var(--u));
+  border-radius: 50%;
+  background: radial-gradient(circle at 34% 30%, #fff2c4, #d9a648 38%, #8a5c1c 72%, #4a2f0c);
+  box-shadow: calc(1 * var(--u)) calc(3 * var(--u)) calc(3 * var(--u)) rgba(40, 18, 4, 0.55);
+}
+.board-polaroid:hover,
+.board-polaroid:focus-visible {
+  transform: translateY(calc(-3 * var(--u))) rotate(2deg) scale(1.03);
+  box-shadow: calc(5 * var(--u)) calc(13 * var(--u)) calc(14 * var(--u)) rgba(50, 24, 6, 0.5);
+}
+.board-polaroid__image {
+  display: grid;
+  place-items: center;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  background: linear-gradient(145deg, #eadbc4, #b8a484);
+  box-shadow: inset 0 0 0 calc(1 * var(--u)) #7a644c55;
+}
+.board-polaroid__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.board-polaroid__placeholder {
+  padding: calc(4 * var(--u));
+  font: 700 calc(11 * var(--u)) / 1.15 var(--serif);
+}
+.board-polaroid__caption {
+  overflow: hidden;
+  font: 700 calc(10 * var(--u)) / 1.2 var(--hand);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.g-board .note {
+  position: absolute;
+  left: calc(214 * var(--u));
+  top: calc(150 * var(--u));
+  width: calc(168 * var(--u));
+  min-height: calc(150 * var(--u));
+  margin: 0;
+  padding: calc(22 * var(--u)) calc(14 * var(--u)) calc(16 * var(--u)) calc(16 * var(--u));
+  transform: rotate(2.4deg);
+  clip-path: none;
+  border: 0;
+  border-radius: 0 0 calc(16 * var(--u)) 0;
+  background: var(--paper-fibre), linear-gradient(168deg, #fff3b8, #f8e391 60%, #ecd177);
+  box-shadow:
+    calc(3 * var(--u)) calc(9 * var(--u)) calc(10 * var(--u)) rgba(50, 24, 6, 0.42),
+    inset 0 calc(1 * var(--u)) 0 #fffbe0;
+}
+.g-board .note::after {
+  width: 11%;
+  height: 12%;
+  border-radius: 0 0 calc(16 * var(--u)) 0;
+  background: linear-gradient(135deg, #e8cc6e 44%, #a8893a55 50%, transparent 56%);
+}
+.g-board .note__pin {
+  left: 50%;
+  top: calc(-5 * var(--u));
+  width: calc(13 * var(--u));
+  height: calc(13 * var(--u));
+  margin-left: calc(-6.5 * var(--u));
+  border: 0;
+  background: radial-gradient(circle at 34% 30%, #fff2c4, #d9a648 38%, #8a5c1c 72%, #4a2f0c);
+}
+.g-board .note__title {
+  margin: 0 0 calc(9 * var(--u));
+  font-size: calc(18 * var(--u));
+}
+.g-board .note__list {
+  gap: calc(4 * var(--u));
+  font-size: calc(13.5 * var(--u));
+}
+.g-board .note__list li {
+  position: relative;
+  min-height: calc(26 * var(--u));
+  padding-left: calc(16 * var(--u));
+  line-height: 1.25;
+}
+.g-board .note__list li::before {
+  content: '';
+  position: absolute;
+  left: calc(2 * var(--u));
+  top: 50%;
+  width: calc(6 * var(--u));
+  height: calc(6 * var(--u));
+  margin-top: calc(-3 * var(--u));
+  border-radius: 50%;
+  background: #5a4326;
+}
+.g-board .note__list li a {
+  display: block;
+  width: 100%;
+  padding: calc(5 * var(--u)) 0;
+  text-decoration: underline;
+  text-decoration-color: rgba(42, 31, 22, 0.3);
+  text-underline-offset: 3px;
+  transition: transform 200ms var(--ease-settle);
+}
+.g-board .note__list li a:hover,
+.g-board .note__list li a:focus-visible {
+  text-decoration-color: currentColor;
+  transform: translateX(calc(2 * var(--u)));
+}
+.g-board .note__empty {
+  margin: calc(6 * var(--u)) 0 0;
+  font: 700 calc(12 * var(--u)) / 1.3 var(--hand);
+}
+
+/* Status selector: dark walnut switch plate, one amber indicator lit. */
+.board-switch {
+  position: absolute;
+  right: calc(22 * var(--u));
+  top: calc(112 * var(--u));
+  width: calc(78 * var(--u));
+  margin: 0;
+  padding: calc(6 * var(--u)) calc(5 * var(--u));
+  display: grid;
+  gap: calc(2 * var(--u));
+  border: 0;
+  border-radius: calc(6 * var(--u));
+  background:
+    linear-gradient(#ffd9a81f, transparent 30%),
+    var(--walnut-dark) 0 0 / calc(260 * var(--u)) calc(130 * var(--u));
+  box-shadow:
+    calc(2 * var(--u)) calc(6 * var(--u)) calc(8 * var(--u)) rgba(40, 18, 4, 0.55),
+    inset 0 calc(1 * var(--u)) 0 #e6b47c66,
+    inset 0 0 0 calc(1 * var(--u)) #1a0c04;
+  font-family: var(--sans);
+}
+.board-switch label {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: calc(7 * var(--u));
+  min-height: calc(28 * var(--u));
+  padding: 0 calc(5 * var(--u));
+  border-radius: calc(4 * var(--u));
+  color: #f3dfc0;
+  cursor: pointer;
+  font: 700 max(9px, calc(11 * var(--u))) / 1.1 var(--sans);
+  transition: background-color 200ms;
+}
+.board-switch label:hover {
+  background: #ffd9a814;
+}
+.board-switch input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.board-switch i {
+  flex: none;
+  width: calc(11 * var(--u));
+  height: calc(11 * var(--u));
+  border-radius: calc(3 * var(--u));
+  background: #3a2414;
+  box-shadow:
+    inset 0 calc(1.5 * var(--u)) calc(2 * var(--u)) #0009,
+    0 calc(0.8 * var(--u)) 0 #e6b47c44;
+  transition:
+    background-color 260ms,
+    box-shadow 260ms;
+}
+.board-switch input:checked + i {
+  background: #ffb347;
+  box-shadow:
+    0 0 calc(8 * var(--u)) calc(1 * var(--u)) #ff9d2ecc,
+    inset 0 calc(-1 * var(--u)) calc(1 * var(--u)) #b3590066;
+}
+.board-switch label:has(input:focus-visible) {
+  outline: 3px solid var(--focus);
+  outline-offset: 1px;
+}
+.board-phones {
+  --x: 44;
+  --y: 232;
+  --w: 122;
+  --h: 146;
+  pointer-events: none;
+}
+.pin--phones {
+  left: calc(105 * var(--u));
+  top: calc(238 * var(--u));
+}
+
+/* ---------- Cabinet: a walnut carcass with eight fitted drawers (every layout mode) ---------- */
+.g-cabinet {
+  filter: drop-shadow(0 calc(18 * var(--u)) calc(16 * var(--u)) rgba(28, 10, 2, 0.5));
+}
+.g-cabinet::before {
+  /* Cast shadow on the wall, thrown left and right of the carcass. */
+  content: '';
+  position: absolute;
+  inset: calc(18 * var(--u)) calc(-26 * var(--u)) 0;
+  z-index: -1;
+  background: radial-gradient(ellipse 50% 50% at 50% 56%, rgba(52, 20, 2, 0.5), transparent 74%);
+}
+/* Top slab: overhangs the carcass, lit along its top arris, shaded below. */
+.cab-board {
+  height: calc(26 * var(--u));
+  border: 0;
+  border-radius: calc(4 * var(--u)) calc(4 * var(--u)) calc(3 * var(--u)) calc(3 * var(--u));
+  background:
+    linear-gradient(#ffe3b5b8 0, #f1bd8257 calc(2.5 * var(--u)), transparent calc(7 * var(--u)), transparent 62%, #0d040199),
+    linear-gradient(90deg, #0d040173, transparent 3% 97%, #0d040173),
+    var(--walnut) 0 0 / calc(760 * var(--u)) calc(118 * var(--u));
+  box-shadow:
+    0 calc(9 * var(--u)) calc(10 * var(--u)) rgba(14, 5, 1, 0.7),
+    inset 0 0 0 calc(1 * var(--u)) #1e0d0499;
+}
+.cab-board::before {
+  display: none;
+}
+.cab-body {
+  margin: 0 calc(12 * var(--u));
+  padding: calc(20 * var(--u)) calc(20 * var(--u)) calc(11 * var(--u));
+  border: 0;
+  background:
+    linear-gradient(90deg, #0a0300b8, #ffcf9c1f 2.4%, transparent 4.4% 95.6%, #ffcf9c14 97.6%, #0a0300b8),
+    var(--walnut-dark) 0 0 / calc(420 * var(--u)) calc(700 * var(--u));
+  box-shadow: inset 0 0 0 calc(1 * var(--u)) #120601;
+}
+/* Recess behind the drawers: nearly black, warmed from above by the strip lights. */
+.cab-body::before {
+  top: calc(6 * var(--u));
+  left: calc(14 * var(--u));
+  right: calc(14 * var(--u));
+  bottom: calc(6 * var(--u));
+  border: 0;
+  border-radius: calc(2 * var(--u));
+  background:
+    linear-gradient(180deg, #ffbf6e9e 0, #d98a3a4d calc(18 * var(--u)), transparent calc(74 * var(--u))),
+    #170a03;
+  box-shadow:
+    inset 0 0 0 calc(1 * var(--u)) #080200,
+    inset 0 calc(10 * var(--u)) calc(14 * var(--u)) #0000008c;
+  transition: filter var(--t-light) ease-in-out;
+}
+.cab-body::after {
+  display: none;
+}
+/* Under-slab LED strips. */
+.cab-lights {
+  top: calc(7 * var(--u));
+  height: calc(8 * var(--u));
+  transition: opacity var(--t-light) ease-in-out;
+}
+.cab-lights span {
+  width: calc(58 * var(--u));
+  height: calc(4.5 * var(--u));
+  margin-left: calc(-29 * var(--u));
+  border: 0;
+  border-radius: calc(3 * var(--u));
+  background: linear-gradient(#fff7da, #ffd58a);
+  box-shadow:
+    0 0 calc(10 * var(--u)) calc(2 * var(--u)) #ffc56ee6,
+    0 calc(6 * var(--u)) calc(22 * var(--u)) calc(6 * var(--u)) #ffb04f8c;
+}
+.cab-lights span::after {
+  top: 100%;
+  width: calc(170 * var(--u));
+  height: calc(62 * var(--u));
+  opacity: 0.5;
+  background: radial-gradient(ellipse 50% 100% at 50% 0%, #ffe2a8cc, #ffc67a40 55%, transparent 100%);
+}
+.cab-lights span:nth-child(1) { left: 14%; }
+.cab-lights span:nth-child(2) { left: 38%; }
+.cab-lights span:nth-child(3) { left: 62%; }
+.cab-lights span:nth-child(4) { left: 86%; }
+
+.cab-grid {
+  column-gap: calc(14 * var(--u));
+  row-gap: calc(9 * var(--u));
+  padding-top: calc(2 * var(--u));
+}
+@media (min-width: 600px) {
+  /* Centre stile between the two drawer columns. */
+  .cab-grid {
+    background: linear-gradient(90deg, #0a0300, #6b3d1f 30%, #8a5630 50%, #5c3219 72%, #0a0300) 50% 0 / calc(8 * var(--u)) 100% no-repeat;
+  }
+}
+.cab-grid .drawer-slot {
+  position: relative;
+  height: calc(70 * var(--u));
+  border-radius: calc(4 * var(--u));
+  background: #0d0502;
+  box-shadow:
+    inset 0 calc(4 * var(--u)) calc(6 * var(--u)) #000000b8,
+    0 calc(1 * var(--u)) 0 #a36a3a66;
+}
+.g-cabinet .drawer {
+  height: calc(70 * var(--u));
+  border: 0;
+  border-radius: calc(4 * var(--u));
+  color: #2b1a0f;
+  /* Walnut drawer front: bevelled edges catch the strip light on top. */
+  background:
+    linear-gradient(#ffd9a640 0, transparent calc(5 * var(--u)), transparent 78%, #0a030080),
+    linear-gradient(90deg, #ffcf9c2e, transparent 3% 97%, #0a03005c),
+    var(--walnut) calc(var(--grain-x, 0) * var(--u)) calc(var(--grain-y, 0) * var(--u)) / calc(620 * var(--u)) calc(140 * var(--u));
+  box-shadow:
+    inset 0 calc(1.2 * var(--u)) 0 #ffdcae8c,
+    inset 0 0 0 calc(1 * var(--u)) #1a0a03,
+    0 calc(2 * var(--u)) 0 #0a0300,
+    0 calc(5 * var(--u)) calc(7 * var(--u)) rgba(0, 0, 0, 0.6);
+  transform-origin: 50% 60%;
+  transition:
+    transform 320ms var(--ease-settle),
+    box-shadow 320ms var(--ease-settle),
+    filter 320ms var(--ease-settle);
+}
+.g-cabinet .drawer::before {
+  content: none;
+}
+/* Each front takes a different cut of the same board. */
+.drawer-slot:nth-child(2) .drawer { --grain-x: -210; --grain-y: -30; }
+.drawer-slot:nth-child(3) .drawer { --grain-x: -90; --grain-y: -64; }
+.drawer-slot:nth-child(4) .drawer { --grain-x: -330; --grain-y: -96; }
+.drawer-slot:nth-child(5) .drawer { --grain-x: -40; --grain-y: -18; }
+.drawer-slot:nth-child(6) .drawer { --grain-x: -260; --grain-y: -110; }
+.drawer-slot:nth-child(7) .drawer { --grain-x: -150; --grain-y: -48; }
+.drawer-slot:nth-child(8) .drawer { --grain-x: -380; --grain-y: -76; }
+
+/* Cream paper label plate set into the front. */
+.g-cabinet .drawer__face {
+  inset: calc(8 * var(--u)) calc(9 * var(--u));
+  justify-content: flex-start;
+  gap: calc(13 * var(--u));
+  padding: 0 calc(40 * var(--u)) 0 calc(26 * var(--u));
+  border-radius: calc(7 * var(--u));
+  background:
+    var(--paper-fibre),
+    linear-gradient(#fffdf6 0, #fbf1de 45%, #f0deC0 100%);
+  box-shadow:
+    inset 0 0 0 calc(1 * var(--u)) #b8966a,
+    inset 0 calc(2 * var(--u)) calc(2 * var(--u)) #ffffffb3,
+    inset 0 calc(-5 * var(--u)) calc(7 * var(--u)) #c29a6247,
+    0 calc(1.5 * var(--u)) calc(2.5 * var(--u)) #0a0300b3,
+    0 0 0 calc(1.2 * var(--u)) #2a1307;
+  transition: box-shadow 320ms var(--ease-settle), background-color 320ms;
+}
+.g-cabinet .drawer__icon {
+  width: max(22px, calc(30 * var(--u)));
+  height: max(22px, calc(30 * var(--u)));
+  stroke-width: 1.7;
+}
+.g-cabinet .drawer__label {
+  position: relative;
+  font-size: max(16px, calc(20 * var(--u)));
+  letter-spacing: calc(-0.2 * var(--u));
+}
+/* Ink stroke under each label, as on the reference plates. */
+.g-cabinet .drawer__label::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  width: 58%;
+  bottom: calc(-5 * var(--u));
+  height: calc(3 * var(--u));
+  border-top: calc(1.6 * var(--u)) solid currentColor;
+  border-radius: 50%;
+  opacity: 0.55;
+  transform: rotate(-0.8deg);
+  transform-origin: 0 50%;
+  transition: width 320ms var(--ease-settle), opacity 320ms;
+}
+.g-cabinet .drawer__arrow {
+  right: calc(26 * var(--u));
+  top: calc(50% - max(9px, 11 * var(--u)));
+  width: max(18px, calc(22 * var(--u)));
+  height: max(18px, calc(22 * var(--u)));
+  transition: transform 320ms var(--ease-settle);
+}
+.g-cabinet .drawer__handle {
+  display: none;
+}
+/* Pulling a drawer: it eases towards the viewer and its shadow deepens. */
+.g-cabinet .drawer:hover,
+.g-cabinet .drawer:focus-visible {
+  transform: translateY(calc(2.5 * var(--u))) scale(1.022);
+  filter: brightness(1.05);
+  box-shadow:
+    inset 0 calc(1.2 * var(--u)) 0 #ffe4bcb3,
+    inset 0 0 0 calc(1 * var(--u)) #1a0a03,
+    0 calc(3 * var(--u)) 0 #0a0300,
+    0 calc(14 * var(--u)) calc(16 * var(--u)) rgba(0, 0, 0, 0.7);
+  z-index: 3;
+}
+.g-cabinet .drawer:hover .drawer__arrow,
+.g-cabinet .drawer:focus-visible .drawer__arrow {
+  transform: translateX(calc(6 * var(--u)));
+}
+.g-cabinet .drawer:hover .drawer__label::after,
+.g-cabinet .drawer:focus-visible .drawer__label::after {
+  width: 100%;
+  opacity: 0.8;
+}
+.g-cabinet .drawer:active {
+  transform: translateY(calc(4 * var(--u))) scale(1.03);
+  transition-duration: 90ms;
+}
+.g-cabinet .drawer[aria-current='page'] {
+  transform: translateY(calc(5 * var(--u))) scale(1.03);
+  background-color: transparent;
+  box-shadow:
+    inset 0 calc(1.2 * var(--u)) 0 #ffe4bcb3,
+    inset 0 0 0 calc(1 * var(--u)) #1a0a03,
+    0 calc(4 * var(--u)) 0 #0a0300,
+    0 calc(18 * var(--u)) calc(20 * var(--u)) rgba(0, 0, 0, 0.72);
+}
+.g-cabinet .drawer[aria-current='page'] .drawer__label {
+  text-decoration: none;
+}
+
+/* Plinth: one plain base rail with a brass knob, then the foot. */
+.cab-plinth {
+  position: relative;
+  height: calc(34 * var(--u));
+  margin: 0 calc(4 * var(--u));
+  border: 0;
+  border-radius: 0 0 calc(4 * var(--u)) calc(4 * var(--u));
+  background:
+    linear-gradient(#ffd9a64d 0, transparent calc(4 * var(--u)), transparent 55%, #0a0300b3 62%, #ffcf9c1f 66%, transparent 72%, #0a0300a6),
+    linear-gradient(90deg, #0a030080, transparent 3% 97%, #0a030080),
+    var(--walnut) calc(-200 * var(--u)) calc(-60 * var(--u)) / calc(760 * var(--u)) calc(130 * var(--u));
+  box-shadow:
+    inset 0 0 0 calc(1 * var(--u)) #1a0a03,
+    0 calc(10 * var(--u)) calc(12 * var(--u)) rgba(12, 4, 0, 0.7);
+}
+.cab-plinth::before {
+  display: none;
+}
+.cab-plinth__knob {
+  position: absolute;
+  left: 50%;
+  top: 26%;
+  width: calc(9 * var(--u));
+  height: calc(9 * var(--u));
+  margin-left: calc(-4.5 * var(--u));
+  border-radius: 50%;
+  background: radial-gradient(circle at 36% 30%, var(--brass-1), var(--brass-2) 46%, var(--brass-3));
+  box-shadow: 0 calc(2 * var(--u)) calc(2 * var(--u)) #000000a6;
+}
+
+
+/* Desktop grid: the plate is sized in scene units so the longest label
+   ("Skills & Toolbox") always clears its arrow, at every fitted scale. */
+@media (min-width: 1000px) and (min-height: 560px) {
+  .g-cabinet .drawer__face {
+    gap: calc(10 * var(--u));
+    padding: 0 calc(40 * var(--u)) 0 calc(18 * var(--u));
+  }
+  .g-cabinet .drawer__icon {
+    width: calc(28 * var(--u));
+    height: calc(28 * var(--u));
+  }
+  .g-cabinet .drawer__label {
+    font-size: calc(18.5 * var(--u));
+  }
+  .g-cabinet .drawer__arrow {
+    right: calc(20 * var(--u));
+    top: calc(50% - 10 * var(--u));
+    width: calc(20 * var(--u));
+    height: calc(20 * var(--u));
+  }
+}
+
+/* ---------- Desktop composition ---------- */
+@media (min-width: 1000px) and (min-height: 560px) {
+  /* The wall and desk run past the viewport; clip (not hidden) so focusing an
+     object can never scroll the room sideways. */
+  html,
+  body {
+    overflow: clip;
+  }
+  body {
+    background-color: #2c1509;
+    background-image: linear-gradient(#d7a373 0 73.4%, #2c1509 73.4%);
+  }
+  .stage {
+    background: none;
+  }
+
+  /* Wall: one warm plaster plane. Its base tone is the room's ambient light;
+     the lamp pools are separate layers so the switch can fade them. */
+  .stage::before {
+    inset: calc(-320 * var(--u)) calc(-420 * var(--u)) 26.6%;
+    border-bottom: 0;
+    box-shadow: inset 0 calc(-40 * var(--u)) calc(60 * var(--u)) rgba(92, 44, 12, 0.28);
+    background:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .26 0 0 0 0 .12 0 0 0 .075 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='700'%3E%3Cfilter id='m'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.004 .006' numOctaves='3' seed='8' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .55 0 0 0 0 .3 0 0 0 0 .12 0 0 0 .5 -.16'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23m)'/%3E%3C/svg%3E"),
+      linear-gradient(90deg, rgba(112, 56, 18, 0.5), transparent 20% 80%, rgba(112, 56, 18, 0.46)),
+      linear-gradient(180deg, #e6b98c 0%, #e0ad7e 45%, #d39c6b 80%, #c0864f 100%);
+  }
+  .pendant-glow {
+    --x: -420; --y: -320; --w: 2376; --h: 954;
+    z-index: 0;
+    pointer-events: none;
+    -webkit-mask-image: none;
+    mask-image: none;
+    /* Pendant pool (left) and the desk lamp's bounce (right of centre), in wall units. */
+    background:
+      radial-gradient(calc(330 * var(--u)) calc(300 * var(--u)) at calc(766 * var(--u)) calc(450 * var(--u)), #fff0cfd9, #ffe2b170 45%, transparent 72%),
+      radial-gradient(calc(560 * var(--u)) calc(430 * var(--u)) at calc(700 * var(--u)) calc(560 * var(--u)), #ffe6bb80, transparent 70%),
+      radial-gradient(calc(420 * var(--u)) calc(360 * var(--u)) at calc(1262 * var(--u)) calc(462 * var(--u)), #fff1d2c7, #ffe0ad5c 50%, transparent 74%),
+      radial-gradient(calc(520 * var(--u)) calc(380 * var(--u)) at calc(1680 * var(--u)) calc(600 * var(--u)), #ffe3b56e, transparent 72%);
+    transition: opacity var(--t-light) ease-in-out;
+  }
+  .pendant-glow::before {
+    display: none;
+  }
+  .wall-shadow {
+    --x: 1016; --y: 138; --w: 560; --h: 460;
+    background: radial-gradient(ellipse 50% 50% at 52% 56%, rgba(74, 34, 8, 0.34), transparent 72%);
+  }
+  .wall-leaves {
+    opacity: 1;
+  }
+
+  /* Lamp halo over the cabinet top. */
+  .lamp-glow {
+    --x: 680; --y: 20; --w: 420; --h: 330;
+    background: radial-gradient(ellipse 46% 48% at 44% 40%, #fff3cf66, #ffdca02e 50%, transparent 76%);
+    mix-blend-mode: screen;
+    transition: opacity var(--t-light) ease-in-out;
+  }
+  .lamp-beam {
+    --x: 300; --y: 0; --w: 240; --h: 300;
+    background: radial-gradient(ellipse 50% 46% at 50% 40%, #fff0c95c, transparent 72%);
+    mix-blend-mode: screen;
+    transition: opacity var(--t-light) ease-in-out;
+  }
+
+  /* ----- Desk top: polished walnut planks running left to right ----- */
+  .desk-surface {
+    --x: -420; --y: 634; --w: 2376; --h: 560;
+    z-index: 1;
+    background:
+      linear-gradient(180deg, #0f0501d4 0, #1a0a0370 calc(5 * var(--u)), transparent calc(26 * var(--u))),
+      linear-gradient(90deg, #0d0401b8, transparent 17% 84%, #0d0401a6),
+      linear-gradient(180deg, transparent calc(70 * var(--u)), #12060194 calc(260 * var(--u)), #0a0300d9 calc(420 * var(--u))),
+      repeating-linear-gradient(180deg, transparent 0 calc(73 * var(--u)), #12060180 calc(73 * var(--u)) calc(74.2 * var(--u)), #ffd9a029 calc(74.2 * var(--u)) calc(75 * var(--u))),
+      var(--walnut) calc(140 * var(--u)) 0 / calc(1180 * var(--u)) calc(150 * var(--u));
+    box-shadow: inset 0 calc(1.5 * var(--u)) 0 #f4c58f5c;
+  }
+  /* Soft reflections of the two lamps in the polish. */
+  .desk-surface__sheen {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(calc(360 * var(--u)) calc(120 * var(--u)) at calc(1150 * var(--u)) calc(34 * var(--u)), #ffdba566, transparent 72%),
+      radial-gradient(calc(300 * var(--u)) calc(90 * var(--u)) at calc(760 * var(--u)) calc(30 * var(--u)), #ffd09447, transparent 72%),
+      radial-gradient(calc(420 * var(--u)) calc(150 * var(--u)) at calc(1640 * var(--u)) calc(60 * var(--u)), #ffc98857, transparent 72%),
+      linear-gradient(180deg, #ffe0b01f, transparent calc(60 * var(--u)));
+    mix-blend-mode: screen;
+    transition: opacity var(--t-light) ease-in-out;
+  }
+  .desk-light {
+    --x: -420; --y: 634; --w: 2376; --h: 292;
+    background: none;
+  }
+
+  /* ----- Identity column ----- */
+  .g-intro {
+    z-index: 7;
+    filter: none;
+  }
+  .wordmark {
+    font-size: calc(58 * var(--u));
+    line-height: 0.94;
+    letter-spacing: calc(0.4 * var(--u));
+    color: #2b1a0f;
+    text-shadow: 0 calc(1 * var(--u)) 0 #ffe9c75c;
+  }
+  .sparkle {
+    left: 2.42em;
+    top: -0.04em;
+    width: 0.3em;
+    height: 0.3em;
+  }
+  .sparkle path {
+    stroke: #c98a2e;
+  }
+  .byline {
+    margin-top: calc(18 * var(--u));
+    font-size: calc(16 * var(--u));
+    font-weight: 700;
+    color: #3a2616;
+  }
+  .byline strong {
+    position: relative;
+    width: fit-content;
+    font-size: calc(30 * var(--u));
+    line-height: 1.2;
+    color: #2b1a0f;
+  }
+  /* Hand-drawn stroke under the name. */
+  .byline strong::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 12%;
+    bottom: calc(-5 * var(--u));
+    height: calc(5 * var(--u));
+    border-top: calc(2 * var(--u)) solid #3a2616;
+    border-radius: 50%;
+    transform: rotate(-1.2deg);
+    opacity: 0.8;
+  }
+  .rule {
+    visibility: hidden;
+    margin: calc(9 * var(--u)) 0;
+  }
+  .role {
+    font: 700 calc(14.5 * var(--u)) / 1.35 var(--sans);
+    color: #2b1a0f;
+    white-space: nowrap;
+  }
+  .intro {
+    margin-top: calc(14 * var(--u));
+    font: 400 calc(13.5 * var(--u)) / 1.5 var(--sans);
+    color: #4a321f;
+  }
+  .chips {
+    margin-top: calc(18 * var(--u));
+    gap: calc(9 * var(--u)) calc(10 * var(--u));
+  }
+  .chip {
+    height: calc(32 * var(--u));
+    padding: 0 calc(10 * var(--u));
+    gap: calc(7 * var(--u));
+    justify-content: center;
+    border: calc(1 * var(--u)) solid #c9a67c;
+    background: linear-gradient(#fff6e6, #f6e3c6);
+    box-shadow:
+      0 calc(2 * var(--u)) calc(5 * var(--u)) rgba(92, 46, 12, 0.22),
+      inset 0 calc(1 * var(--u)) 0 #fffdf6;
+    font: 700 calc(12.5 * var(--u)) var(--sans);
+    color: #3a2616;
+    transition:
+      transform 240ms var(--ease-settle),
+      box-shadow 240ms var(--ease-settle),
+      background-color 240ms;
+  }
+  .chip:hover,
+  .chip:focus-visible {
+    background: #fffaf0;
+    transform: translateY(calc(-2 * var(--u)));
+    box-shadow:
+      0 calc(6 * var(--u)) calc(10 * var(--u)) rgba(92, 46, 12, 0.26),
+      inset 0 calc(1 * var(--u)) 0 #fffdf6;
+  }
+  .contact-cta {
+    min-height: calc(64 * var(--u));
+    margin-top: calc(18 * var(--u));
+    padding: calc(8 * var(--u)) calc(14 * var(--u)) calc(8 * var(--u)) calc(10 * var(--u));
+    gap: calc(12 * var(--u));
+    border: calc(1 * var(--u)) solid #cba678;
+    border-radius: calc(16 * var(--u));
+    background: linear-gradient(#fff8ea, #f7e4c4);
+    box-shadow:
+      0 calc(8 * var(--u)) calc(16 * var(--u)) rgba(92, 46, 12, 0.3),
+      0 calc(2 * var(--u)) 0 #d8b07c,
+      inset 0 calc(1.2 * var(--u)) 0 #fffdf6;
+    font-family: var(--sans);
+    font-size: calc(19 * var(--u));
+    color: #2b1a0f;
+    transition:
+      transform 260ms var(--ease-settle),
+      box-shadow 260ms var(--ease-settle);
+  }
+  .contact-cta .icon {
+    width: calc(42 * var(--u));
+    height: calc(42 * var(--u));
+    padding: calc(10 * var(--u));
+    border-radius: 50%;
+    border: calc(1.4 * var(--u)) solid #d9a441;
+    background: #fff3d6;
+    stroke-width: 1.8;
+  }
+  .contact-cta__copy small {
+    font-size: calc(9.6 * var(--u));
+    color: #5d432b;
+    white-space: nowrap;
+  }
+  .contact-cta__arrow {
+    font-size: 1.15em;
+    transition: transform 260ms var(--ease-settle);
+  }
+  .contact-cta:hover,
+  .contact-cta:focus-visible {
+    background: linear-gradient(#fffcf3, #fbeacb);
+    transform: translateY(calc(-3 * var(--u)));
+    box-shadow:
+      0 calc(14 * var(--u)) calc(22 * var(--u)) rgba(92, 46, 12, 0.32),
+      0 calc(2 * var(--u)) 0 #d8b07c,
+      inset 0 calc(1.2 * var(--u)) 0 #fffdf6;
+  }
+  .contact-cta:hover .contact-cta__arrow,
+  .contact-cta:focus-visible .contact-cta__arrow {
+    transform: translateX(calc(5 * var(--u)));
+  }
+  .profile-links {
+    justify-content: flex-start;
+    padding-left: calc(42 * var(--u));
+    gap: calc(16 * var(--u));
+    margin-top: calc(20 * var(--u));
+  }
+  .profile-link {
+    width: calc(40 * var(--u));
+    height: calc(40 * var(--u));
+    border: calc(1 * var(--u)) solid #d2b086;
+    background: linear-gradient(#fffaf0, #f5e3c6);
+    box-shadow: 0 calc(4 * var(--u)) calc(8 * var(--u)) rgba(92, 46, 12, 0.26);
+    transition:
+      transform 240ms var(--ease-settle),
+      box-shadow 240ms var(--ease-settle);
+  }
+  .profile-link:hover,
+  .profile-link:focus-visible {
+    transform: translateY(calc(-3 * var(--u)));
+    box-shadow: 0 calc(9 * var(--u)) calc(12 * var(--u)) rgba(92, 46, 12, 0.3);
+  }
+
+  /* ----- Shelf-top objects ----- */
+  .g-top {
+    z-index: 3;
+  }
+  .g-top > .frame {
+    z-index: 3;
+    padding: calc(7 * var(--u));
+    border: 0;
+    border-radius: calc(2 * var(--u));
+    background:
+      linear-gradient(135deg, #ffd9a640, transparent 40%, #0a030073),
+      var(--walnut) 0 0 / calc(300 * var(--u)) calc(120 * var(--u));
+    box-shadow:
+      inset 0 0 0 calc(1 * var(--u)) #1a0a03,
+      inset 0 calc(1.2 * var(--u)) 0 #ffdcae80,
+      calc(-5 * var(--u)) calc(7 * var(--u)) calc(9 * var(--u)) rgba(30, 12, 2, 0.5);
+    transition: transform 300ms var(--ease-settle);
+  }
+  .frame__mat {
+    padding: calc(5 * var(--u));
+    background: #fbf3e2;
+    border: 0;
+    box-shadow: inset 0 0 0 calc(1 * var(--u)) #6b4a2c, inset calc(2 * var(--u)) calc(3 * var(--u)) calc(4 * var(--u)) #51402c40;
+  }
+  .frame img,
+  .frame__empty {
+    border: 0;
+  }
+  .g-top > .lamp {
+    z-index: 2;
+  }
+  .stage > .pendant {
+    display: block;
+    --x: 298; --y: 0; --w: 104; --h: 120;
+    z-index: 3;
+    pointer-events: none;
+  }
+  .pendant svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* ----- Corkboard on the wall ----- */
+  .g-board {
+    --x: 1046; --y: 146; --w: 470; --h: 384;
+    z-index: 4;
+  }
+
+  /* ----- Desk objects -----
+     The desk group is not its own stacking context on the desktop grid, so its
+     live controls (speaker key, steam) can sit above the WebGL layer. */
+  .stage > .g-desk {
+    z-index: auto;
+  }
+  .g-desk > * {
+    z-index: 4;
+  }
+  .g-desk > .laptop {
+    z-index: 4;
+  }
+  .g-desk > .desk-plant {
+    display: block;
+    pointer-events: auto;
+    filter: drop-shadow(calc(-4 * var(--u)) calc(6 * var(--u)) calc(5 * var(--u)) rgba(24, 10, 2, 0.4));
+  }
+  .g-desk > .desk-mat {
+    filter: drop-shadow(0 calc(5 * var(--u)) calc(7 * var(--u)) rgba(10, 3, 0, 0.6));
+  }
+  .g-desk > .laptop {
+    filter: drop-shadow(0 calc(14 * var(--u)) calc(11 * var(--u)) rgba(8, 2, 0, 0.6));
+  }
+  /* Contact shadows under the meshes (the fallbacks draw their own). */
+  .g-desk > [data-studio-ready]::before,
+  .g-top > .globe[data-studio-ready]::before,
+  .g-top > .lamp[data-studio-ready]::before {
+    content: '';
+    position: absolute;
+    left: var(--sh-l, 4%);
+    right: var(--sh-r, 4%);
+    bottom: var(--sh-b, -5%);
+    height: var(--sh-h, 14%);
+    border-radius: 50%;
+    background: radial-gradient(closest-side, rgba(8, 2, 0, 0.72), rgba(8, 2, 0, 0.3) 55%, transparent);
+    pointer-events: none;
+  }
+  .g-desk > .notebook[data-studio-ready]::before { --sh-l: -1%; --sh-r: -3%; --sh-b: -9%; --sh-h: 60%; opacity: 0.75; }
+  .g-desk > .pen[data-studio-ready]::before { display: none; }
+  .g-desk > .rocket[data-studio-ready]::before { --sh-l: -2%; --sh-r: -8%; --sh-b: -3%; --sh-h: 9%; }
+  .g-desk > .mug[data-studio-ready]::before { --sh-l: -2%; --sh-r: -6%; --sh-b: -4%; --sh-h: 24%; }
+  .g-desk > .deskclock[data-studio-ready]::before { --sh-l: 0%; --sh-r: -3%; --sh-b: -9%; --sh-h: 34%; }
+  .g-desk > .speaker-model[data-studio-ready]::before { --sh-l: 4%; --sh-r: 2%; --sh-b: -2%; --sh-h: 16%; }
+  .g-top > .globe[data-studio-ready]::before { --sh-l: 18%; --sh-r: 14%; --sh-b: -3%; --sh-h: 7%; }
+  .g-top > .lamp[data-studio-ready]::before { --sh-l: 58%; --sh-r: 4%; --sh-b: -2.5%; --sh-h: 6%; }
+  .speaker-model.is-ready::before {
+    filter: none;
+  }
+  .speaker-model.is-ready::after {
+    display: none;
+  }
+  .g-desk > .steam {
+    z-index: 6;
+  }
+
+  /* Speaker transport: one brass play key on the grille, volume on approach. */
+  .g-desk > .speaker-controls {
+    z-index: 6;
+    display: grid;
+    justify-items: center;
+    align-content: center;
+    gap: calc(4 * var(--u));
+  }
+  .speaker-controls__play {
+    width: calc(38 * var(--u));
+    height: calc(38 * var(--u));
+    min-height: 0;
+    padding: 0;
+    overflow: hidden;
+    border: calc(1.6 * var(--u)) solid #e9c98a;
+    border-radius: 50%;
+    background: radial-gradient(circle at 36% 30%, #5a4632, #1d150e 70%);
+    box-shadow:
+      0 calc(3 * var(--u)) calc(6 * var(--u)) #000000a6,
+      inset 0 calc(1 * var(--u)) 0 #ffe7b866;
+    color: transparent;
+    font-size: 0;
+    cursor: pointer;
+    transition: transform 220ms var(--ease-settle), box-shadow 220ms;
+  }
+  .speaker-controls__play::before {
+    content: '';
+    display: block;
+    width: 0;
+    height: 0;
+    margin: 0 auto;
+    transform: translateX(calc(2 * var(--u)));
+    border-left: calc(12 * var(--u)) solid #ffcf7a;
+    border-top: calc(8 * var(--u)) solid transparent;
+    border-bottom: calc(8 * var(--u)) solid transparent;
+    filter: drop-shadow(0 0 calc(4 * var(--u)) #ffb347b3);
+  }
+  .speaker-controls__play[aria-pressed='true']::before {
+    width: calc(12 * var(--u));
+    height: calc(14 * var(--u));
+    transform: none;
+    border: 0;
+    border-left: calc(4 * var(--u)) solid #ffcf7a;
+    border-right: calc(4 * var(--u)) solid #ffcf7a;
+  }
+  .speaker-controls__play:hover {
+    transform: scale(1.08);
+  }
+  .speaker-controls__play:active {
+    transform: scale(0.95);
+  }
+  .speaker-controls__volume {
+    width: 100%;
+    padding: calc(2 * var(--u)) calc(8 * var(--u));
+    border-radius: 999px;
+    background: #1d150ee6;
+    opacity: 0;
+    transition: opacity 220ms;
+  }
+  .speaker-controls:hover .speaker-controls__volume,
+  .speaker-controls:focus-within .speaker-controls__volume {
+    opacity: 1;
+  }
+
+  /* Engraved inscription near the desk's front edge. */
+  .g-desk > .desk-script {
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 0.4em;
+    font: 700 calc(10 * var(--u)) / 1.3 var(--serif);
+    letter-spacing: 0.12em;
+    color: #1b0b03;
+    text-shadow: 0 calc(1 * var(--u)) 0 #c98f5a8c;
+    opacity: 0.8;
+  }
+  .desk-script span {
+    white-space: nowrap;
+  }
+
+  /* ----- Room light ----- */
+  .stage::after {
+    position: absolute;
+    inset: calc(-320 * var(--u)) calc(-420 * var(--u));
+    background: radial-gradient(ellipse 62% 60% at 50% 52%, transparent 52%, rgba(46, 18, 2, 0.4) 100%);
+  }
+  .room-dim {
+    display: block;
+    position: absolute;
+    inset: calc(-320 * var(--u)) calc(-420 * var(--u));
+    z-index: 6;
+    pointer-events: none;
+    background: #1b0c05;
+    mix-blend-mode: multiply;
+    opacity: 0;
+    transition: opacity var(--t-light) ease-in-out;
+  }
+  .stage[data-lamp='off'] .room-dim {
+    opacity: 0.46;
+  }
+  .stage[data-lamp='off'] .pendant-glow,
+  .stage[data-lamp='off'] .lamp-glow,
+  .stage[data-lamp='off'] .lamp-beam,
+  .stage[data-lamp='off'] .desk-surface__sheen {
+    opacity: 0.06;
+  }
+  .g-intro {
+    transition: filter var(--t-light) ease-in-out;
+  }
+  .stage[data-lamp='off'] .g-intro {
+    filter: brightness(0.78);
+  }
+  .stage[data-lamp='off'] .pendant__bulb {
+    opacity: 0.3;
+  }
+}
+
+/* ---------- Pulled drawer: the tray is cut from the cabinet's walnut ---------- */
+.is-mounted .drawer-bottom {
+  border-color: #1a0a03;
+  background:
+    linear-gradient(#0a0300b3, transparent 34%),
+    var(--walnut-dark) 0 0 / 520px 260px;
+  box-shadow:
+    inset 0 14px 20px rgba(0, 0, 0, 0.6),
+    inset 13px 0 16px rgba(0, 0, 0, 0.4),
+    inset -13px 0 16px rgba(0, 0, 0, 0.4),
+    0 20px 26px rgba(20, 8, 2, 0.42),
+    0 5px 5px rgba(20, 8, 2, 0.4);
+}
+.is-mounted .drawer-wall {
+  border-color: #1a0a03;
+  background:
+    linear-gradient(90deg, #0a0300a6, #ffd9a626 38%, #ffd9a64d 60%, #0a030099),
+    var(--walnut) 0 0 / 300px 520px;
+  box-shadow:
+    inset 2px 0 0 #ffdcae59,
+    inset -3px 0 0 #0a030066,
+    0 4px 8px rgba(20, 8, 2, 0.4);
+}
+.is-mounted .drawer-wall--back {
+  background:
+    linear-gradient(#ffdcae8c 0 14%, #0a0300b3 28%, #0a030040),
+    var(--walnut) 0 0 / 620px 140px;
+  box-shadow: inset 0 6px 8px rgba(0, 0, 0, 0.45), 0 3px 6px rgba(20, 8, 2, 0.4);
+}
+.is-mounted .panel__sheet {
+  border-color: #6b4a2c;
+}
+.is-mounted .drawer {
+  border: 0;
+  border-radius: 6px 6px 12px 12px;
+  color: #2b1a0f;
+  background:
+    linear-gradient(#ffd9a64d 0, transparent 6px, transparent 80%, #0a030099),
+    linear-gradient(90deg, #ffcf9c2e, transparent 3% 97%, #0a03005c),
+    var(--walnut) -120px -40px / 760px 170px;
+  box-shadow:
+    inset 0 1.5px 0 #ffdcae8c,
+    inset 0 0 0 1px #1a0a03,
+    0 6px 0 #0a0300,
+    0 18px 18px rgba(0, 0, 0, 0.5);
+}
+.is-mounted .drawer::after {
+  display: none;
+}
+.is-mounted .drawer__face {
+  inset: 10px 14px 32px;
+  padding: 0 52px;
+  border-radius: 9px;
+  background: var(--paper-fibre), linear-gradient(#fffdf6 0, #fbf1de 45%, #f0dec0 100%);
+  box-shadow:
+    inset 0 0 0 1px #b8966a,
+    inset 0 2px 2px #ffffffb3,
+    inset 0 -5px 7px #c29a6247,
+    0 2px 3px #0a0300b3,
+    0 0 0 1.5px #2a1307;
+}
+.is-mounted .drawer__label {
+  text-shadow: none;
+}
+.is-mounted .drawer__arrow {
+  top: calc(50% - 11px);
+  right: 34px;
+}
+.is-mounted .drawer__handle {
+  border-color: #3d2708;
+  background: linear-gradient(var(--brass-3), var(--brass-1) 40%, var(--brass-2) 68%, var(--brass-3));
+}
+@media (max-width: 599px) {
+  .is-mounted .drawer__face {
+    inset: 8px 10px 30px;
+    padding: 0 40px;
+  }
+  .is-mounted .drawer__arrow {
+    right: 24px;
+  }
+}
+
+/* ---------- Phones and tablets: the same room, restacked ----------
+   Identity, then the shelf-top strip, the cabinet as a drawer list, and a
+   compact desk strip. The corkboard stays a desktop wall piece. */
+@media (max-width: 999px), (max-height: 559px) {
+  .stage {
+    gap: 22px;
+    padding-bottom: 36px;
+  }
+  /* Corkboard: the same pinned sheets, scaled to the column. */
+  .stage > .g-board {
+    display: block;
+    position: relative;
+    width: 100%;
+    max-width: 520px;
+    margin: 6px auto 0;
+    aspect-ratio: 470 / 384;
+    container-type: inline-size;
+    --u: calc(100cqw / 470);
+  }
+  .wordmark {
+    color: #2b1a0f;
+    text-shadow: 0 1px 0 #ffe9c75c;
+  }
+  .sparkle path {
+    stroke: #c98a2e;
+  }
+  .byline {
+    font-weight: 700;
+    color: #3a2616;
+  }
+  .rule {
+    border-top-color: #3a2616;
+  }
+  .role {
+    font-family: var(--sans);
+    font-size: 15px;
+  }
+  .intro {
+    font-family: var(--sans);
+    font-size: 15.5px;
+    line-height: 1.5;
+    color: #4a321f;
+  }
+  .chip {
+    min-height: 44px;
+    border: 1px solid #c9a67c;
+    background: linear-gradient(#fff6e6, #f6e3c6);
+    box-shadow: 0 2px 5px rgba(92, 46, 12, 0.22), inset 0 1px 0 #fffdf6;
+    font: 700 15px var(--sans);
+    color: #3a2616;
+  }
+  .contact-cta {
+    min-height: 64px;
+    padding: 8px 16px 8px 10px;
+    gap: 12px;
+    border: 1px solid #cba678;
+    border-radius: 16px;
+    background: linear-gradient(#fff8ea, #f7e4c4);
+    box-shadow: 0 8px 16px rgba(92, 46, 12, 0.28), 0 2px 0 #d8b07c, inset 0 1px 0 #fffdf6;
+    font: 700 19px var(--sans);
+    color: #2b1a0f;
+  }
+  .contact-cta .icon {
+    flex: none;
+    width: 42px;
+    height: 42px;
+    padding: 10px;
+    border-radius: 50%;
+    border: 1.4px solid #d9a441;
+    background: #fff3d6;
+  }
+  .contact-cta__copy small {
+    font-size: 12px;
+    color: #5d432b;
+  }
+  .profile-links {
+    gap: 12px;
+    margin-top: 14px;
+  }
+  .profile-link {
+    border: 1px solid #d2b086;
+    background: linear-gradient(#fffaf0, #f5e3c6);
+    box-shadow: 0 4px 8px rgba(92, 46, 12, 0.24);
+  }
+
+  /* Shelf-top strip: the objects stand on a walnut board that meets the cabinet. */
+  .g-top {
+    margin-bottom: -22px;
+    z-index: 3;
+  }
+  .g-top::after {
+    left: -6px;
+    right: -6px;
+    top: calc(288 * var(--u));
+    height: calc(14 * var(--u) + 4px);
+    border: 0;
+    border-radius: 3px;
+    background:
+      linear-gradient(#ffe3b5b8 0, transparent 40%, #0d040199),
+      var(--walnut) 0 0 / 420px 70px;
+    box-shadow: 0 6px 8px rgba(14, 5, 1, 0.55);
+    z-index: 0;
+  }
+  .g-top .lamp {
+    --y: 26;
+    --h: 264;
+  }
+  .g-top > .frame {
+    padding: calc(8 * var(--u));
+    border: 0;
+    background: linear-gradient(135deg, #ffd9a640, transparent 40%, #0a030073), var(--walnut) 0 0 / 200px 80px;
+    box-shadow: inset 0 0 0 1px #1a0a03, -3px 5px 7px rgba(30, 12, 2, 0.45);
+  }
+  .g-cabinet .cab-board {
+    display: none; /* the strip's board is the cabinet top here */
+  }
+  .g-cabinet .cab-body {
+    padding-top: calc(26 * var(--u));
+  }
+
+  /* Desk strip. */
+  .g-desk {
+    --oy: 0px;
+    height: auto;
+    aspect-ratio: 760 / 330;
+    container-type: inline-size;
+    border: 0;
+    border-radius: 12px;
+    background:
+      linear-gradient(180deg, #0f0501b3 0, transparent 14%),
+      linear-gradient(90deg, #0d040173, transparent 14% 86%, #0d040173),
+      linear-gradient(180deg, #ffd9a01f, transparent 30%, #0a030080),
+      var(--walnut) 0 0 / 560px 120px;
+    box-shadow:
+      inset 0 1px 0 #f4c58f66,
+      0 14px 20px rgba(40, 16, 2, 0.4);
+  }
+  .g-desk > .notebook,
+  .g-desk > .pen,
+  .g-desk > .steam,
+  .g-desk > .mug,
+  .g-desk > .rocket,
+  .g-desk > .deskclock,
+  .g-desk > .laptop:not(.is-open) {
+    display: block;
+  }
+  .g-desk > .deskclock { --x: 30; --y: 34; --w: 176; --h: 84; }
+  .g-desk > .notebook { --x: 14; --y: 172; --w: 330; --h: 112; }
+  .g-desk > .pen { --x: 140; --y: 214; --w: 128; --h: 48; }
+  .g-desk > .laptop { --x: 330; --y: 150; --w: 290; --h: 124; }
+  .g-desk > .rocket { --x: 500; --y: 4; --w: 66; --h: 150; }
+  .g-desk > .steam { --x: 636; --y: 70; --w: 100; --h: 104; z-index: 6; }
+  .g-desk > .mug { --x: 626; --y: 166; --w: 122; --h: 122; }
+  /* Finger-sized targets around the small objects. */
+  .g-desk > .rocket::after {
+    content: '';
+    position: absolute;
+    inset: -6px -12px;
+  }
+  .g-desk > .pen::after {
+    content: '';
+    position: absolute;
+    inset: -8px -4px;
+  }
+  .g-desk > [data-studio-ready]::before {
+    content: '';
+    position: absolute;
+    left: 2%;
+    right: -4%;
+    bottom: -6%;
+    height: 22%;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, rgba(8, 2, 0, 0.6), transparent);
+    pointer-events: none;
+  }
+  .g-desk > .notebook[data-studio-ready]::before { height: 60%; bottom: -10%; opacity: 0.7; }
+  .g-desk > .pen[data-studio-ready]::before { display: none; }
+  .g-desk > .rocket[data-studio-ready]::before { height: 9%; bottom: -3%; }
+  .studio-canvas {
+    z-index: 5;
+  }
+  .g-desk > .laptop.is-open {
+    z-index: 25;
+  }
+}
+/* Short landscape phones: two columns, no desk strip (responsive-design.md §1, mode L). */
+@media (max-height: 559px) {
+  .g-desk {
+    aspect-ratio: auto;
+    height: 0;
+    background: none;
+    box-shadow: none;
+    container-type: normal;
+  }
+  .g-desk > .notebook,
+  .g-desk > .pen,
+  .g-desk > .steam,
+  .g-desk > .mug,
+  .g-desk > .rocket,
+  .g-desk > .deskclock,
+  .g-desk > .laptop:not(.is-open) {
+    display: none;
+  }
+}
+
+/* Phones: the board turns portrait so its handwriting stays readable. */
+@media (max-width: 599px) {
+  .stage > .g-board {
+    aspect-ratio: 330 / 430;
+    --u: calc(100cqw / 330);
+  }
+  .board__planner { left: calc(20 * var(--u)); top: calc(22 * var(--u)); }
+  .board-switch { right: calc(18 * var(--u)); top: calc(26 * var(--u)); }
+  .board-polaroid { left: calc(206 * var(--u)); top: calc(142 * var(--u)); width: calc(104 * var(--u)); height: calc(92 * var(--u)); }
+  .g-board .note { left: calc(146 * var(--u)); top: calc(250 * var(--u)); width: calc(164 * var(--u)); }
+  .board-phones { --x: 14; --y: 246; }
+  .pin--phones { left: calc(75 * var(--u)); top: calc(252 * var(--u)); }
+  .planner__tasks input[type='text'] { font-size: max(13px, calc(13 * var(--u))); }
+}
+/* Phones: the desk strip becomes two rows so every object stays finger-sized. */
+@media (max-width: 599px) and (min-height: 560px) {
+  .g-desk {
+    aspect-ratio: 600 / 380;
+    --u: calc(100cqw / 600);
+  }
+  .g-desk > .deskclock { --x: 22; --y: 36; --w: 172; --h: 82; }
+  .g-desk > .rocket { --x: 268; --y: 8; --w: 72; --h: 164; }
+  .g-desk > .steam { --x: 452; --y: 0; --w: 104; --h: 92; }
+  .g-desk > .mug { --x: 436; --y: 70; --w: 132; --h: 132; }
+  .g-desk > .notebook { --x: 16; --y: 244; --w: 294; --h: 100; }
+  .g-desk > .pen { --x: 132; --y: 282; --w: 112; --h: 42; }
+  .g-desk > .laptop { --x: 322; --y: 226; --w: 262; --h: 112; }
+}
+
+/* Phones: four wider volumes replace the decorative pair so each spine stays a
+   comfortable target (24 px or more at 320 px wide). */
+@media (max-width: 599px) {
+  .g-top > .bookend-left {
+    display: none;
+  }
+  .g-top > .spine--blogs { --x: 0; --w: 72; }
+  .g-top > .spine--notes { --x: 72; --w: 72; }
+  .g-top > .spine--ideas { --x: 144; --w: 72; }
+  .g-top > .spine--album { --x: 216; --w: 72; }
+}

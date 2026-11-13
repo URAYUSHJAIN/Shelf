@@ -3,6 +3,7 @@ import '../styles/shelf.css';
 import '../styles/board.css';
 import '../styles/panels.css';
 import '../styles/laptop.css';
+import '../styles/studio.css';
 import { site, REVIEW_MODE } from '../data/site';
 
 interface Props {
@@ -23,7 +24,7 @@ const canonical = site.origin ? new URL(Astro.url.pathname, site.origin).href : 
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="robots" content={robots} />
-    <meta name="theme-color" content="#f5dfc4" />
+    <meta name="theme-color" content="#e2b083" />
     <meta name="color-scheme" content="light" />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     {canonical && <link rel="canonical" href={canonical} />}

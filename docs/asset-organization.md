@@ -236,3 +236,9 @@ Layered HTML/CSS and inline SVG for the cabinet frame, shelf levels, drawer face
 ## Current preparation inputs (D-33 to D-35)
 
 Use `content/inventory/implementation-policy.json` for the exact eight drawers and gate contract. Local preview media lives in `assets/review/projects/`; it must not be copied wholesale to public. Five clean badge PNGs are in `public/media/certifications/`. Credentials are in their own Certifications drawer; the open desk book hosts approved writing and albums. Preview eligibility is not publication approval. Required schema release checks still apply.
+
+---
+
+## Scene textures (D-45)
+
+`public/textures/walnut.webp`, `public/textures/walnut-dark.webp` and `public/textures/cork.webp` are procedural, seamless textures produced by `scripts/make-textures.mjs` (no third-party source, safe to publish). They are used by `src/styles/studio.css` and by the studio layer's wood material. `public/textures/world.webp` remains the globe's land mask. Regenerate with `node scripts/make-textures.mjs`; never hand-edit the outputs.
