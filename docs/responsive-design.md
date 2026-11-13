@@ -137,3 +137,13 @@ Do not report a test as passed unless it was executed. Record the browser and de
 | T-RWD-10 | Performance in M on a throttled CPU (4×) and a mid-range Android                                                           | Manual + Lighthouse mobile                                                                   | LCP > 2.5 s or long tasks > 50 ms during interactions    |
 
 These replace the earlier T-RWD-01 to T-RWD-05 definitions, which [implementation-and-validation.md](implementation-and-validation.md) §6.9 now references.
+
+---
+
+## D-45 implementation notes (2026-11-12)
+
+- **Desktop (at least 1000 × 560):** the 16:9 stage follows the owner's warm study-room reference: identity at x 124, cabinet at x 392–1028, corkboard at x 1046–1516 (stage units, 1536 wide). The wall and desk extend past both stage edges; `html` and `body` use `overflow: clip` so focusing an object cannot scroll the room.
+- **Tablet (600–999 px wide):** identity, the shelf-top strip, the cabinet as 2 × 4 drawers, the corkboard at up to 520 px wide in its landscape arrangement, then the desk strip (760 × 330 units).
+- **Phone (under 600 px wide):** the cabinet is a single column of full-width drawers (never below 44 px tall). The corkboard switches to a portrait arrangement (330 × 430 units) so the planner's inputs stay readable. The desk strip uses two rows (600 × 380 units) so the rocket, clock, mug, notebook and laptop stay finger-sized; the rocket's hit area is padded.
+- **Short landscape (height under 560 px):** no desk strip; `/laptop/` still opens as an overlay.
+- The studio canvas covers the whole stage in every mode and re-reads its anchors on resize, so the meshes follow whichever arrangement CSS chooses.

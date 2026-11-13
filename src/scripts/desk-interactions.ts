@@ -3,10 +3,10 @@ const stage = document.querySelector<HTMLElement>('[data-scene]');
 
 // Browser-local time. Recalculate from Date on every tick so sleep and tab
 // suspension cannot leave the display a minute behind.
-const clock = document.querySelector<SVGSVGElement>('[data-clock]');
+const clock = document.querySelector<HTMLElement>('[data-clock]');
 if (clock) {
-  const digits = clock.querySelectorAll<SVGTextElement>('[data-clock-digit]');
-  const period = clock.querySelector<SVGTextElement>('[data-clock-period]');
+  const digits = clock.querySelectorAll<HTMLElement>('[data-clock-digit]');
+  const period = clock.querySelector<HTMLElement>('[data-clock-period]');
   const formatter = new Intl.DateTimeFormat(navigator.language, { hour: 'numeric', minute: '2-digit' });
   const update = () => {
     const now = new Date();
@@ -18,6 +18,9 @@ if (clock) {
     digits.forEach((digit) => { digit.textContent = value; });
     if (period) period.textContent = mark;
     clock.setAttribute('aria-label', `Local time ${formatter.format(now)}`);
+    clock.dataset.time = value;
+    clock.dataset.period = mark;
+    window.dispatchEvent(new CustomEvent('shelf:clock', { detail: { value, period: mark } }));
   };
   update();
   window.setInterval(update, 15000);
@@ -60,13 +63,6 @@ if (audio && play) {
   audio.addEventListener('pause', () => setPlaying(false));
   audio.addEventListener('ended', () => setPlaying(false));
   audio.addEventListener('error', () => { setPlaying(false); if (speakerStatus) { speakerStatus.textContent = 'Music could not load. Please try again later.'; speakerStatus.hidden = false; } });
-}
-
-// A desktop enhancement; the illustrated speaker stays visible until the GLB loads.
-if (document.querySelector('[data-speaker-canvas]') && matchMedia('(min-width: 1000px) and (min-height: 560px)').matches) {
-  const start = () => { void import('./speaker-model').then(({ mountSpeaker }) => mountSpeaker()).catch(() => {}); };
-  if ('requestIdleCallback' in window) window.requestIdleCallback(start);
-  else setTimeout(start, 500);
 }
 
 const planner = document.querySelector<HTMLElement>('[data-planner]');

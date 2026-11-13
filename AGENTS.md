@@ -7,7 +7,7 @@ Detailed rules live in `docs/`. This file summarizes them and links to them. It 
 ## 0. Phase boundary (read first)
 
 The owner authorized Phase 3 implementation on 2026-10-24 (D-33). The Astro application is now implemented (D-36); maintain it under the rules below. Deployment, public publication and Git mutations remain unauthorized.
-The 2026-10-28 spatial-studio brief authorizes the Three.js and live desk-object exceptions recorded in D-44; the full default 3D scene remains Phase 3 work.
+The 2026-10-28 spatial-studio brief authorizes the Three.js and live desk-object exceptions recorded in D-44. The 2026-11-12 redesign brief (D-45) sets the warm walnut study-room art direction and the default studio object layer.
 
 - Phase 1–2 preparation is historical. Do not rerun completed discovery or destructive generators.
 - Require a supported Node 22 >=22.23.4 or Node 24 LTS (system Node 24.22.1 verified 2026-10-24). Astro 7.4.2 is pinned in `package.json`. An optional, unused portable Node fallback remains in `.tools/node-v24.22.1-win-x64/`; never change system Node or PATH.
@@ -19,7 +19,7 @@ The 2026-10-28 spatial-studio brief authorizes the Three.js and live desk-object
 
 ## 1. Project
 
-**The Shelf** is the Astro-based personal portfolio of Ayush Jain. A single-page illustrated shelf is the navigation: drawers open into folders, and folders open into project, patent, experience, and other records. Desk objects are physical: a laptop that opens to the résumé and the original portfolio, a lamp that switches the scene's light, and a globe you can spin. Every record also has a stable, prerendered URL.
+**The Shelf** is the Astro-based personal portfolio of Ayush Jain. A single-page illustrated shelf is the navigation: drawers open into folders, and folders open into project, patent, experience, and other records. Desk objects are physical: a laptop that opens to the résumé and the original portfolio, a lamp that switches the scene's light, a globe you can turn, and a rocket with one short ignition. They are drawn as lit meshes by the studio layer (D-45) over ordinary HTML controls. Every record also has a stable, prerendered URL.
 
 ## 2. Non-negotiables
 
@@ -28,13 +28,13 @@ From [docs/design.md](docs/design.md) §0. Breaking one requires recorded owner 
 1. The shelf is the information architecture. No conventional navbar, hamburger menu, side nav, or dock.
 2. No counters ("30+ projects", "9 patents") on the home scene, in titles, meta, OG images, or structured data. An opened drawer's header may show a count computed from published records.
 3. The cabinet stays recognizable in every state. Never replace it with a dashboard or card grid.
-4. Warm-neutral monochrome UI, as on the concept board (D-22). Other colour comes only from real media (screenshots, video, the profile photo, real diagrams, cover art, organizations' own logos), the plants, the globe, the cube stickers, and the focus ring ([docs/design.md](docs/design.md) §3.2). Never recolour real media.
+4. The home scene follows the warm study-room direction of D-45: walnut, brass, cork, cream paper, amber light and green plants. Content surfaces (drawer sheets, records, the laptop UI) stay warm paper and ink; other colour there comes only from real media (screenshots, video, the profile photo, real diagrams, cover art, organizations' own logos) and the focus ring ([docs/design.md](docs/design.md) §3.2). Never recolour real media.
 5. One primary surface (drawer, record, booklet, or laptop panel) open at a time.
 6. All content is server-rendered HTML at stable URLs. It works without JavaScript.
 7. No autoplay, no looping or continuous animation. Full keyboard, touch, and reduced-motion parity. Physics is an enhancement; every functional object works with a plain click, tap, or Enter/Space.
 8. **Never fabricate** facts, links, dates, metrics, media, or statuses. Patent applications are never described as granted or "patented". Ayush is a "named inventor"; the applicant is ABES Engineering College.
 9. Render exactly the eight required drawers. If a release category has no approved entries, its content surface explains that no public entries are available; never fabricate records. Omit empty optional book categories and record sections.
-10. The latest approved reference ([docs/reference/refrance2.0.png](docs/reference/refrance2.0.png)) defines visual direction; the exact owner drawer labels and desk-book instruction in D-34 override its annotations. The original concept board supplies detailed component anatomy. **Its text is sample data. Never copy names, numbers, dates, or bullets from it.** Board-vs-text conflicts are settled in [docs/design.md](docs/design.md) §0.2.
+10. The owner's 2026-11-12 reference image (D-45) defines the home scene's composition, palette and lighting. The earlier reference ([docs/reference/refrance2.0.png](docs/reference/refrance2.0.png)) still informs content surfaces; the exact owner drawer labels and desk-book instruction in D-34 override its annotations. The original concept board supplies detailed component anatomy. **Its text is sample data. Never copy names, numbers, dates, or bullets from it.** Board-vs-text conflicts are settled in [docs/design.md](docs/design.md) §0.2.
 11. Never display age, identity-document data, marks or CGPA (unless approved, D-31), compensation, signatures, or third-party contact details.
 
 ## 3. Workspace
@@ -79,7 +79,8 @@ At minimum, read the docs that own the area you are changing (see [docs/document
 - Static output. Prerender every route.
 - Content collections with strict schemas. Internal fields (provenance and similar) never exist in public schemas.
 - One small UI controller (`src/scripts/shelf-controller.ts`) owns state, history, and focus. State is derived from the URL.
-- Physics: a custom 1-DOF integrator and scheduler plus raw-WebGL globe and steam shaders (D-43). Three.js is permitted for the spatial scene under D-44; no physics library ([docs/physics-and-interactions.md](docs/physics-and-interactions.md) §5).
+- Physics: a custom 1-DOF integrator and scheduler plus the raw-WebGL steam shader (D-43). Three.js is permitted for the spatial scene under D-44; no physics library ([docs/physics-and-interactions.md](docs/physics-and-interactions.md) §5).
+- Studio layer (D-45): `src/scripts/studio/` owns one on-demand WebGL renderer that draws the desk objects over their HTML anchors (`data-studio`). Anchors keep layout, semantics, focus and events; never move a control into the canvas. Each anchor keeps an illustrated fallback for no-WebGL. Scene materials and light live in `src/styles/studio.css`; scene geometry stays on the grid in `src/styles/shelf.css`.
 - CSS custom properties for every token. Motion uses `transform`/`opacity`.
 - Images through `astro:assets`. Videos, original audio and documents under `public/media/`. The original portfolio opens in the laptop iframe under D-39, with a direct-link fallback.
 - Verify Astro APIs against the installed version's documentation; do not rely on memory.

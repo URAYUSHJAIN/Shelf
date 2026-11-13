@@ -7,22 +7,15 @@ interface Props {
 const { active = null } = Astro.props;
 
 const spines = [
-  { id: 'blogs', label: 'Blogs', title: 'Blogs: articles' },
-  { id: 'notes', label: 'Notes', title: 'Notes: build walkthroughs' },
-  { id: 'ideas', label: 'Ideas', title: 'Ideas: invention applications' },
-  { id: 'album', label: 'Album', title: 'Album: photographs' },
+  { id: 'blogs', label: 'Blogs', title: 'Blogs: articles', tone: 'green' },
+  { id: 'notes', label: 'Notes', title: 'Notes: build walkthroughs', tone: 'oxblood' },
+  { id: 'ideas', label: 'Ideas', title: 'Ideas: invention applications', tone: 'tan' },
+  { id: 'album', label: 'Album', title: 'Album: photographs', tone: 'navy' },
 ];
 
 ---
 <div class="g-top" aria-label="Top shelf">
-  <!-- flat book under the frame and the lamp foot -->
-  <svg class="obj top-decor" viewBox="0 0 230 30" aria-hidden="true">
-    <path d="M6 8h214l6 6v10H4V12z" fill="#9b6a42" stroke="var(--ink)" stroke-width="2.2" stroke-linejoin="round" />
-    <path d="M10 8h206v8H10z" fill="#f4e6cd" stroke="var(--ink)" stroke-width="1.6" />
-    <path d="M14 12h196" stroke="#cdb38f" stroke-width="1" />
-  </svg>
-
-  <svg class="obj bookend-left" viewBox="0 0 92 168" aria-hidden="true">
+  <div class="obj bookend-left" data-studio="bookpair" aria-hidden="true"><svg viewBox="0 0 92 168">
     <path d="M3 167h44V33q0-4-4-4H7q-4 0-4 4z" fill="url(#bookNavy)" stroke="var(--ink)" stroke-width="2.2" stroke-linejoin="round" />
     <path d="M5 46h40M5 51h40M5 145h40M5 150h40" stroke="#c9a24a" stroke-width="1.8" />
     <path d="M25 84l8 12-8 12-8-12z" fill="none" stroke="#c9a24a" stroke-width="1.6" />
@@ -31,7 +24,7 @@ const spines = [
     <path d="M49 30h36M49 35h36M49 148h36M49 153h36" stroke="#d6ae5a" stroke-width="1.8" />
     <rect x="55" y="62" width="24" height="40" rx="2" fill="#4a120c" stroke="#d6ae5a" stroke-width="1.4" />
     <path d="M53 17v147" stroke="#fff" stroke-opacity=".14" stroke-width="3" />
-  </svg>
+  </svg></div>
 
   {spines.map((s) => (
     <a
@@ -39,18 +32,21 @@ const spines = [
       href={`/writing/?tab=${s.id}&book=1`}
       data-nav="writing"
       data-tab={s.id}
+      data-studio="book"
+      data-book-tone={s.tone}
+      data-book-title={s.label}
       aria-label={s.title}
     >
       <span class="spine__label">{s.label}</span>
     </a>
   ))}
 
-  <svg class="obj bookend-right" viewBox="0 0 44 136" aria-hidden="true">
+  <div class="obj bookend-right" data-studio="booklean" aria-hidden="true"><svg viewBox="0 0 44 136">
     <path d="M4 134h26l12-124-24-6z" fill="url(#bookDark)" stroke="var(--ink)" stroke-width="2.4" stroke-linejoin="round" />
     <path d="M8 112 34 114M12 30 38 32" stroke="#3a2416" stroke-width="2" />
-  </svg>
+  </svg></div>
 
-  <div class="obj globe" data-globe>
+  <div class="obj globe" data-globe data-studio="globe">
     <svg class="globe__stand" viewBox="0 0 163 224" aria-hidden="true">
       <path d="M80 168v38" stroke="var(--ink)" stroke-width="9" stroke-linecap="round" />
       <path d="M80 168v38" stroke="url(#brass)" stroke-width="5" stroke-linecap="round" />
@@ -78,7 +74,7 @@ const spines = [
         <circle cx="80" cy="12" r="4.5" fill="url(#brass)" stroke="var(--ink)" stroke-width="1.6" />
       </g>
     </svg>
-    <span class="sr-only" id="globe-hint">Use the arrow keys to rotate. Home returns to the starting position.</span>
+    <span class="sr-only" id="globe-hint">Drag to turn the globe, or use the arrow keys. Home returns to the starting position.</span>
   </div>
 
   <a class="obj frame" href="/about/" data-nav="about" aria-label="About Ayush Jain">
@@ -91,7 +87,7 @@ const spines = [
     </span>
   </a>
 
-  <button class="obj lamp" type="button" data-lamp-toggle aria-label="Turn desk lamp off" aria-pressed="true">
+  <button class="obj lamp" type="button" data-studio="lamp" data-lamp-toggle aria-label="Turn desk lamp off" aria-pressed="true">
     <svg viewBox="0 0 294 232" aria-hidden="true">
       <defs>
         <linearGradient id="lampMetal" x1="0" y1=".2" x2="1" y2=".75">

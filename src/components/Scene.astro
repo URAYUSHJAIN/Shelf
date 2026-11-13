@@ -31,8 +31,6 @@ const wallVines = [...wallCorners, ...wallSides];
 const SOCIAL_ICON: Record<string, string> = { github: 'github', linkedin: 'linkedin', x: 'x' };
 const SOCIAL_NAME: Record<string, string> = { github: 'GitHub', linkedin: 'LinkedIn', x: 'X' };
 const profiles = social.map((s) => ({ href: s.url, icon: SOCIAL_ICON[s.platform] ?? 'external', label: `${SOCIAL_NAME[s.platform] ?? s.platform} (opens in a new tab)` }));
-// Push-pin peg for the paper prints on the wall.
-const PEG = '<rect x="-6" y="-9" width="12" height="20" rx="2" fill="url(#pegWood)" stroke="#2a1f16" stroke-width="1.3" /><path d="M-6 1h12" stroke="#5a3415" stroke-width="1" />';
 const intro = 'I build web applications, AI-assisted tools, and turn ideas into useful products. Currently studying Computer Science at ABES Engineering College.';
 ---
 <div class="stage" data-scene>
@@ -64,89 +62,8 @@ const intro = 'I build web applications, AI-assisted tools, and turn ideas into 
     </defs>
   </svg>
 
-  <div class="wall-sun" aria-hidden="true"></div>
-
-  <svg class="wall-pins" viewBox="-420 0 2376 864" aria-hidden="true">
-    <!-- left: landscape print -->
-    <g transform="translate(78 340) rotate(-4)" filter="url(#pinShadow)">
-      <rect x="-41" y="-60" width="82" height="122" rx="2" fill="#fbf6ec" stroke="#5b4733" stroke-width="1.2" />
-      <rect x="-35" y="-53" width="70" height="84" fill="url(#dawnSky)" />
-      <path d="M-35 4-14-26 2-8 16-30 35-2V31h-70z" fill="#7d86a8" />
-      <path d="M-35 12-20-6-6 8 10-12 35 14V31h-70z" fill="#5d6b8e" />
-      <path d="M-35 18C-12 12 6 20 35 14V31h-70z" fill="#6f8f3a" />
-      <path d="M-10 31C-6 24 2 22 8 18 4 24 2 28 4 31z" fill="#a9c9d8" />
-      <path d="M-28 24v-9M-24 24v-12M24 22v-10M28 22v-7" stroke="#2f4a1c" stroke-width="2.4" stroke-linecap="round" />
-      <rect x="-35" y="-53" width="70" height="84" fill="none" stroke="#5b4733" stroke-width=".8" />
-    </g>
-    <g transform="translate(78 282) rotate(-4)" set:html={PEG} />
-
-    <!-- left: lightbulb sketch (kept left of the profile column at x 162) -->
-    <g transform="translate(100 458) rotate(5)" filter="url(#pinShadow)">
-      <rect x="-37" y="-48" width="74" height="98" rx="2" fill="#f8f1e3" stroke="#5b4733" stroke-width="1.2" />
-      <g fill="none" stroke="#2a1f16" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M-12-2a16 16 0 1 1 24 0c-4 4-5 7-5 12h-14c0-5-1-8-5-12z" />
-        <path d="M-6 16h12M-5 21h10M-2 26h4M-4 10l2-14 2 6 2-6 2 14" />
-        <path d="M0-36v-6M-20-26l-5-4M20-26l5-4M-26-10h-6M26-10h6" />
-      </g>
-    </g>
-    <g transform="translate(97 406) rotate(5)" set:html={PEG} />
-
-    <!-- right: wire grid with a sunset print, above the pinned note -->
-    <g transform="translate(20 -36)" filter="url(#pinShadow)">
-      <rect x="1267" y="106" width="160" height="190" rx="3" fill="none" stroke="#2f2925" stroke-width="3" />
-      <path d="M1287 106v190M1307 106v190M1327 106v190M1347 106v190M1367 106v190M1387 106v190M1407 106v190M1267 126h160M1267 146h160M1267 166h160M1267 186h160M1267 206h160M1267 226h160M1267 246h160M1267 266h160" stroke="#3b3430" stroke-width="1.5" />
-    </g>
-    <g transform="translate(1364 172) rotate(-4)" filter="url(#pinShadow)">
-      <rect x="-53" y="-56" width="106" height="112" rx="2" fill="#fbf6ec" stroke="#5b4733" stroke-width="1.2" />
-      <rect x="-46" y="-49" width="92" height="84" fill="url(#sunsetSky)" />
-      <circle cx="4" cy="2" r="11" fill="#fff4cf" />
-      <path d="M-46 6-22-14-6 0 12-18 46 8V35h-92z" fill="#8a6576" />
-      <path d="M-46 16-28 4-10 14 18 0 46 18V35h-92z" fill="#5d4560" />
-      <path d="M-46 24C-10 20 16 26 46 22V35h-92z" fill="#e9a978" />
-      <path d="M-8 26h24M-2 30h12" stroke="#fff1c8" stroke-width="1.6" stroke-linecap="round" />
-      <rect x="-46" y="-49" width="92" height="84" fill="none" stroke="#5b4733" stroke-width=".8" />
-    </g>
-    <g transform="translate(1366 112) rotate(-4)" set:html={PEG} />
-
-    <!-- right extension: building sketch -->
-    <g transform="translate(1626 440) rotate(6)" filter="url(#pinShadow)">
-      <rect x="-46" y="-48" width="92" height="98" rx="2" fill="#f8f1e3" stroke="#5b4733" stroke-width="1.2" />
-      <g fill="none" stroke="#3a2a1c" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M-12-14a12 12 0 0 1 24 0M-14-14h28M0-26v-6M-2-32h4" />
-        <path d="M-36 30V-2h72v32M-40-2 0-12 40-2" />
-        <path d="M-30 30V4M-22 30V4M-14 30V4M14 30V4M22 30V4M30 30V4M-6 30V10h12v20" />
-        <path d="M-40 30h80M-42 35h84M-44 40h88M-32 1h64" />
-      </g>
-    </g>
-    <g transform="translate(1622 392) rotate(6)" set:html={PEG} />
-
-    <!-- left extension: framed print and a polaroid -->
-    <g transform="translate(-96 236)" filter="url(#pinShadow)">
-      <rect x="-62" y="-78" width="124" height="156" rx="3" fill="url(#pegWood)" stroke="#2a1f16" stroke-width="2" />
-      <rect x="-50" y="-66" width="100" height="132" fill="#f8efdf" stroke="#2a1f16" stroke-width="1.4" />
-      <rect x="-40" y="-56" width="80" height="112" fill="url(#sunsetSky)" />
-      <circle cx="10" cy="-12" r="14" fill="#fff4cf" />
-      <path d="M-40 6-18-20 0 0 20-26 40 4V56h-80z" fill="#8a6576" />
-      <path d="M-40 26-20 12 0 24 22 8 40 28V56h-80z" fill="#5d4560" />
-    </g>
-    <g transform="translate(-82 430) rotate(-6)" filter="url(#pinShadow)">
-      <rect x="-40" y="-48" width="80" height="98" rx="2" fill="#fbf6ec" stroke="#5b4733" stroke-width="1.2" />
-      <rect x="-34" y="-42" width="68" height="70" fill="url(#dawnSky)" />
-      <path d="M-34 8-12-20 4-4 16-24 34 2V28h-68z" fill="#7d86a8" />
-      <path d="M-34 20C-10 14 10 22 34 16V28h-68z" fill="#6f8f3a" />
-    </g>
-    <g transform="translate(-82 374) rotate(-6)" set:html={PEG} />
-
-    <!-- right extension: cork board with blank notes -->
-    <g transform="translate(1636 236)" filter="url(#pinShadow)">
-      <rect x="-86" y="-100" width="172" height="200" rx="4" fill="url(#cork)" stroke="#5a3415" stroke-width="5" />
-      <g fill="#6b4422" opacity=".35"><circle cx="-60" cy="-70" r="1.6"/><circle cx="-20" cy="-30" r="1.4"/><circle cx="40" cy="-60" r="1.6"/><circle cx="60" cy="10" r="1.4"/><circle cx="-50" cy="40" r="1.6"/><circle cx="10" cy="70" r="1.4"/><circle cx="-10" cy="-80" r="1.2"/><circle cx="30" cy="30" r="1.2"/></g>
-      <g transform="translate(-30 -34) rotate(-5)"><rect x="-38" y="-32" width="76" height="64" fill="#f8e58f" stroke="#a88a2a" stroke-width="1" /><path d="M-26-12h52M-26 0h40M-26 12h46" stroke="#9a7d28" stroke-width="1.4" stroke-linecap="round" /></g>
-      <g transform="translate(34 30) rotate(6)"><rect x="-32" y="-30" width="64" height="58" fill="#f6b6a0" stroke="#a8604a" stroke-width="1" /><path d="M-22-10h44M-22 2h34" stroke="#a8604a" stroke-width="1.4" stroke-linecap="round" /></g>
-      <g transform="translate(-34 -34) rotate(-5)" set:html={PEG} />
-      <g transform="translate(34 4) rotate(6)" set:html={PEG} />
-    </g>
-  </svg>
+  <!-- Warm pools thrown on the wall by the pendant and the desk lamp (D-45). -->
+  <div class="pendant-glow" aria-hidden="true"></div>
 
   <svg class="wall-leaves" viewBox="-420 0 2376 864" preserveAspectRatio="none" aria-hidden="true">
     <g transform="translate(34 46)" filter="url(#leafBlur)" opacity=".16">
@@ -159,54 +76,7 @@ const intro = 'I build web applications, AI-assisted tools, and turn ideas into 
     ))}
   </svg>
   <div class="wall-shadow" aria-hidden="true"></div>
-  <svg class="desk-surface" viewBox="-420 0 2376 284" preserveAspectRatio="none" aria-hidden="true">
-    <defs>
-      <filter id="deskGrain" x="0" y="0" width="100%" height="100%">
-        <feTurbulence type="fractalNoise" baseFrequency=".0018 .055" numOctaves="4" seed="7" />
-        <feColorMatrix values="0 0 0 0 .36  0 0 0 0 .17  0 0 0 0 .05  1.5 0 0 0 -.62" />
-      </filter>
-      <!-- Lighter, long streaks over the dark grain read as figured walnut. -->
-      <filter id="deskGrainHi" x="0" y="0" width="100%" height="100%">
-        <feTurbulence type="fractalNoise" baseFrequency=".0022 .085" numOctaves="4" seed="21" />
-        <feColorMatrix values="0 0 0 0 .86  0 0 0 0 .55  0 0 0 0 .3  1.7 0 0 0 -.9" />
-      </filter>
-      <linearGradient id="deskEdge" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d0ac81" /><stop offset=".12" stop-color="#8d6643" /><stop offset=".4" stop-color="#785337" /><stop offset=".85" stop-color="#503823" /><stop offset="1" stop-color="#a17a51" /></linearGradient>
-      <radialGradient id="deskReflection" cx=".5" cy="0" r=".6"><stop stop-color="#ffebc5" stop-opacity=".2" /><stop offset="1" stop-color="#ffebc5" stop-opacity="0" /></radialGradient>
-    </defs>
-    <path d="M-420 10H1956V284H-420Z" fill="url(#deskWood)" />
-    <rect x="-420" y="12" width="2376" height="258" filter="url(#deskGrain)" opacity=".8" />
-    <rect x="-420" y="12" width="2376" height="258" filter="url(#deskGrainHi)" opacity=".5" />
-    <!-- Irregular long fibres follow each board; joints and edge share perspective. -->
-    <g fill="none" stroke="#593c28" stroke-width=".55" opacity=".27">
-      {Array.from({ length: 33 }, (_, i) => {
-        const y = 20 + i * 7.3;
-        const bend = Math.sin(i * 1.72) * 10;
-        return <path d={`M-420 ${y}C-60 ${y + bend} 150 ${y - bend} 480 ${y + 2}S960 ${y + bend} 1250 ${y - 2}S1680 ${y + bend} 1956 ${y}`} />;
-      })}
-      <path d="M-420 89 1956 76M-420 183 1956 170" stroke-width="1.2" opacity=".65" />
-    </g>
-    <path d="M-420 90 1956 77M-420 184 1956 171" fill="none" stroke="#edcf9f" stroke-width=".7" opacity=".35" />
-    <path d="M-420 12H1956V268H-420Z" fill="url(#deskReflection)" />
-    <path d="M-420 10H1956" stroke="#6e3a14" stroke-width="3" />
-    <path d="M-420 14H1956" stroke="#f6c98c" stroke-width="2.4" opacity=".75" />
-    <g fill="none" stroke="#8a4a1c" stroke-width="1.6" opacity=".35">
-      <path d="M-420 52C-100 46 500 58 1100 50S1700 44 1956 48" />
-      <path d="M-420 96C-60 90 640 102 1200 94S1760 90 1956 92" />
-      <path d="M-420 146C0 138 900 152 1260 142S1800 140 1956 142" />
-      <path d="M-420 200C-20 192 940 206 1300 196S1800 194 1956 196" />
-      <path d="M-420 252C20 244 980 258 1340 248S1850 246 1956 248" />
-    </g>
-    <g fill="none" stroke="#a3602a" stroke-width="1.1" opacity=".4">
-      <path d="M-380 34c120-6 240 6 360 0M60 34c120-6 240 6 360 0M520 74c140-8 300 4 420-4M980 30c140-6 280 6 400-2M1560 44c120-6 240 6 340 0M-260 120c160-6 300 4 440-2M140 120c160-6 300 4 440-2M760 170c160-8 320 4 480-4M1500 150c140-6 280 6 400-2M-340 226c180-6 340 6 500-2M60 226c180-6 340 6 500-2M900 236c160-6 300 4 520-4M1560 220c100-6 240 6 340-2" />
-      <path d="M-300 60c30 6 40 14 70 16M300 60c30 6 40 14 70 16M1180 118c-30 8-40 16-70 18M1640 70c-30 8-40 16-70 18M640 210c30 6 44 14 74 14" />
-      <!-- knots -->
-      <ellipse cx="-180" cy="150" rx="18" ry="6" /><ellipse cx="1710" cy="120" rx="16" ry="5" /><ellipse cx="380" cy="238" rx="14" ry="4" />
-    </g>
-    <ellipse cx="618" cy="18" rx="350" ry="20" fill="#2e1606" opacity=".42" />
-    <!-- front edge of the desk top -->
-    <path d="M-420 268H1956V284H-420Z" fill="url(#deskEdge)" />
-    <path d="M-420 268H1956" stroke="#5a2e10" stroke-width="1.4" opacity=".7" />
-  </svg>
+  <div class="desk-surface" aria-hidden="true"><span class="desk-surface__sheen"></span><span class="desk-surface__edge"></span></div>
   <div class="desk-light" aria-hidden="true"></div>
 
   <header class="g-intro">
@@ -252,6 +122,17 @@ const intro = 'I build web applications, AI-assisted tools, and turn ideas into 
     )}
   </header>
 
+  <!-- Pendant lamp: decorative; it follows the desk-lamp switch. -->
+  <div class="obj pendant" data-studio="pendant" aria-hidden="true">
+    <svg viewBox="0 0 100 120">
+      <path d="M50 0v52" stroke="#2a1f16" stroke-width="2" />
+      <path d="M40 52h20l4 10H36z" fill="#3a2a1c" />
+      <path d="M12 96C14 74 30 62 50 62s36 12 38 34z" fill="url(#shade)" stroke="#2a160a" stroke-width="1.4" />
+      <ellipse cx="50" cy="96" rx="38" ry="7" fill="#2a1a0e" stroke="#c9a064" stroke-width="1.6" />
+      <ellipse class="pendant__bulb" cx="50" cy="99" rx="15" ry="9" fill="#fff3c0" />
+    </svg>
+  </div>
+
   <TopShelf active={active} />
 
   <Cabinet active={active} />
@@ -261,4 +142,9 @@ const intro = 'I build web applications, AI-assisted tools, and turn ideas into 
   <!-- Fixed indirect wall light; the shade contains its own directional cone. -->
   <div class="lamp-glow" aria-hidden="true"></div>
   <div class="lamp-beam" aria-hidden="true"></div>
+
+  <!-- One WebGL layer draws the physical objects over their HTML anchors (D-45).
+       It never takes pointer events; every control stays a real element. -->
+  <canvas class="studio-canvas" data-studio-canvas aria-hidden="true" hidden></canvas>
+  <div class="room-dim" aria-hidden="true"></div>
 </div>

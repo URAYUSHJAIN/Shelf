@@ -603,8 +603,23 @@ for (const img of $$<HTMLImageElement>('.folder__art img')) if (img.complete && 
 
 /* ---------------- Boot ---------------- */
 
+// The studio layer (D-45) draws the desk objects as lit meshes. It loads after
+// first paint; without WebGL the illustrated objects and the 2D globe remain.
 const globeEl = $('[data-globe]');
-if (globeEl) initGlobe(globeEl, reduceMQ.matches);
+const startStudio = () => {
+  let flatGlobe = false;
+  const fallback = () => {
+    if (globeEl && !flatGlobe) initGlobe(globeEl, reduceMQ.matches);
+    flatGlobe = true;
+  };
+  globeEl?.addEventListener('studio:fallback', fallback, { once: true });
+  import('./studio/index')
+    .then(({ mountStudio }) => mountStudio({ reduced: () => reduceMQ.matches }))
+    .then((ok) => { if (!ok) fallback(); })
+    .catch(fallback);
+};
+if ('requestIdleCallback' in window) window.requestIdleCallback(startStudio, { timeout: 1200 });
+else setTimeout(startStudio, 200);
 
 if (laptopEl) {
   laptop = initLaptop(laptopEl, {

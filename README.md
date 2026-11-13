@@ -1,8 +1,8 @@
 # The Shelf — Ayush Jain's Portfolio (portfolio2.0)
 
-**The Shelf** is an Astro-based personal portfolio presented as a physical workspace. Instead of pages and a navbar, visitors explore an illustrated shelf: drawers open into folders, and folders open into detailed project, patent, experience, and credential records. Every record also has its own stable, crawlable URL. Desk objects behave physically: a laptop opens to the résumé and the original portfolio, a decorative lamp supplies permanent warm light (D-27), and a globe spins as a real sphere. The interface is monochrome; real project screenshots and video supply the colour.
+**The Shelf** is an Astro-based personal portfolio presented as a physical workspace. Instead of pages and a navbar, visitors explore an illustrated shelf: drawers open into folders, and folders open into detailed project, patent, experience, and credential records. Every record also has its own stable, crawlable URL. Desk objects behave physically: a laptop opens to the résumé and the original portfolio, a desk lamp switches the room's warm light, a globe turns as a real sphere, and a rocket fires one short ignition. The room is a warm, amber-lit walnut study (D-45); content surfaces stay paper and ink, and real project screenshots and video supply their colour.
 
-**Current state (2026-10-28):** The Phase 3 Astro 7.4.2 application is implemented (D-33, D-36). The profile layout, contact entry point, responsive scene positioning, and desk-object placement have been refined. Publication decisions and factual verification gaps remain; see [phase-2-report.md](docs/reports/phase-2-report.md) and [docs/open-decisions.md](docs/open-decisions.md). Nothing is deployed, and deployment remains outside the current implementation scope.
+**Current state (2026-11-12):** The Phase 3 Astro 7.4.2 application is implemented (D-33, D-36). The home scene follows the owner's warm study-room reference (D-45): procedural walnut and cork materials, a walnut cabinet with eight fitted drawers, a framed corkboard, and a studio layer that draws the desk objects as lit WebGL meshes over their HTML controls. Publication decisions and factual verification gaps remain; see [phase-2-report.md](docs/reports/phase-2-report.md) and [docs/open-decisions.md](docs/open-decisions.md). Nothing is deployed, and deployment remains outside the current implementation scope.
 
 **Run (Node 22 >=22.23.4 or Node 24 LTS):** `npm install`, then `npm run dev` for the loopback review preview at http://127.0.0.1:4321/ (shows `needs-owner-review` records with a review notice and noindex). `npm run build` is the release build: `scripts/release-gate.mjs` runs first and `scripts/check-dist.mjs` scans `dist/` afterwards; only ids in `src/data/release-allowlist.json` with approved visibility are rendered. The current release gate reports 135 approved allowlisted records. `node scripts/release-gate.mjs --selftest` proves review-only fixtures are rejected. After inventory changes, re-run `npm run export:content` to regenerate `src/data/records.json` (explicit public-field allowlist) and the review-only WebP derivatives in `assets/review/derived/`.
 
@@ -19,7 +19,9 @@ The application is an HTML-first, statically rendered portfolio with progressive
 - The `Contact Me` link routes to the existing notebook/contact experience at `/contact/`; it does not pretend to send a message.
 - The cabinet exposes exactly eight drawer categories. Drawer and record routes are stable, prerendered URLs and remain usable without client-side JavaScript.
 - The laptop is a CSS 3D desk object. Its résumé and original-portfolio actions are handled by the existing laptop interaction.
-- The mug, rocket, clock, speaker, lamp, globe, notebook, pen, cabinet, and other desk objects remain part of the existing scene. The former separate “Rotate workspace” control has been removed.
+- The studio layer (`src/scripts/studio/`) draws the books, globe, desk lamp, pendant lamp, rocket, mug, digital clock, open notebook, pen, headphones and speaker as lit meshes in one on-demand WebGL canvas. Each object is anchored to a real HTML element that keeps its role, focus and events, and keeps an illustrated fallback when WebGL is unavailable.
+- Interactions: drag the globe (arrow keys, Home), press the rocket for one ignition, switch the lamp to dim the room, hover or focus a book spine, the pen or the headphones. Reduced-motion visitors get the same functions without travel.
+- The corkboard holds the editable sample planner, the gated project photo, the pinned-builds note and the Ideas/Building/Done selector.
 - Desktop scene coordinates are controlled by CSS custom properties in `src/styles/shelf.css`. The current desktop placement keeps the laptop near the foreground center and places the mug to its right without covering the clock, speaker, or rocket.
 - Responsive layouts reinterpret the scene at smaller widths instead of exposing a conventional navigation bar or replacing the cabinet with a card grid.
 
@@ -46,6 +48,8 @@ The loopback development server may show public-safe `needs-owner-review` record
 | Laptop             | `src/components/Laptop.astro` and `src/styles/laptop.css`   | Accessible laptop controls and CSS 3D laptop geometry                                  |
 | Cabinet and panels | `src/components/Shelf.astro`, `src/components/Panels.astro` | Shelf navigation, drawers, record surfaces, and contact notebook                       |
 | Scene layout       | `src/styles/shelf.css`                                      | Tokens, responsive layout, object coordinates, drawers, profile panel, and CTA styling |
+| Scene materials    | `src/styles/studio.css`, `public/textures/`                 | Walnut, cork, light layers, corkboard, phone and tablet desk strip (D-45)              |
+| Studio layer       | `src/scripts/studio/`                                       | On-demand WebGL renderer, procedural object meshes and their interactions              |
 | Interaction state  | `src/scripts/shelf-controller.ts`                           | URL-derived state, drawer navigation, contact routing, focus handling, and history     |
 | Content data       | `src/data/`                                                 | Schemas, exported records, social links, drawer data, and release allowlist            |
 | Validation         | `scripts/`                                                  | Content export, release gate, link check, drawer check, and distribution scan          |
@@ -73,6 +77,8 @@ Useful commands:
 | `npm run check:gate`     | Run the release gate without building                         |
 | `npm run check:links`    | Check local Markdown links and referenced paths               |
 | `npm run export:content` | Regenerate public-field-only content after inventory changes  |
+
+`node scripts/make-textures.mjs` regenerates the procedural walnut and cork textures in `public/textures/`; run it only when the materials change.
 
 Do not run source projects from `portfolio/`, `BuildLog/`, `placement/`, or `context/`. They are read-only source material, and `placement/` also contains restricted personal documents.
 
@@ -104,7 +110,7 @@ Do not commit, push, deploy, or publish from an agent session unless the owner e
 The full contract is [docs/design.md](docs/design.md) (invariants in §0).
 
 - A single-page shelf experience; the shelf **is** the navigation. No conventional navbar.
-- Monochrome (warm ink on paper, per the concept board). Colour only from real media and a few natural objects.
+- A warm walnut study room (D-45): amber light, brass, cork and cream paper. Content surfaces stay ink on paper, with other colour only from real media.
 - Physical believability: layered depth, contact shadows, one consistent light source, simulated motion where it matters ([docs/physics-and-interactions.md](docs/physics-and-interactions.md)).
 - Truth first: no fabricated facts, no counters on the home scene, exact patent wording ("named inventor", "application published").
 - Accessible and usable with animation reduced or disabled; every functional object works with a plain click or key.
