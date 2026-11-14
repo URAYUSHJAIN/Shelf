@@ -47,7 +47,7 @@ if (audio && play) {
   const setPlaying = (playing: boolean) => {
     play.textContent = playing ? 'Pause music' : 'Play music';
     play.setAttribute('aria-pressed', String(playing));
-    play.setAttribute('aria-label', playing ? 'Pause desk music' : 'Play desk music');
+    play.setAttribute('aria-label', playing ? 'Pause music on the desk speaker' : 'Play music on the desk speaker');
     surfaces.forEach((surface) => surface.classList.toggle('is-playing', playing));
     if (speakerStatus) { speakerStatus.textContent = playing ? 'Desk music playing.' : 'Desk music paused.'; speakerStatus.hidden = true; }
   };

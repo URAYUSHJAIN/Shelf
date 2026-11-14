@@ -234,3 +234,21 @@ If a credential or private document is found:
 5. Recommend revocation or rotation if it may have been exposed (including in public Git history of the source repos).
 6. If it reached `portfolio2.0/` Git history, rewriting history is the owner's decision. Report it; do not force-push.
 7. Do not claim it is resolved until the relevant scan has been re-run clean.
+
+---
+
+## Implemented headers and CSP exceptions (D-46, 2026-11-14)
+
+Headers are set in `vercel.json` for every route. Each CSP allowance and its reason, as §8.1 requires:
+
+| Directive | Value | Reason |
+| --------- | ----- | ------ |
+| `script-src` | `'self'` plus one `sha256` hash | The inline bootstrap in `src/layouts/Base.astro` adds the `js` class before first paint. `scripts/check-dist.mjs` fails the build if any inline script is not covered. JSON-LD blocks are data and are not executed. |
+| `style-src` | `'self' 'unsafe-inline'` | Scene geometry is passed through `style` attributes (CSS custom properties) and GSAP writes inline transforms. No inline `<style>` element or remote stylesheet is used. |
+| `img-src` | `'self' data: blob:` | Small SVG data URIs in the stylesheet; the speaker model's embedded textures are decoded from `blob:` URLs. |
+| `connect-src` | `'self' blob:` | Drawer pages are fetched from the same origin; the model loader reads its embedded textures through `blob:`. |
+| `frame-src` | the original portfolio's origin | D-39. The build check fails if the iframe's origin is not listed. |
+| `form-action` | `'self' mailto:` | The contact form's no-JavaScript fallback opens the visitor's mail app. |
+| `worker-src`, `object-src` | `'none'` | Not used. |
+
+Also sent: `Strict-Transport-Security: max-age=31536000; includeSubDomains`, `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY` with `frame-ancestors 'none'`, `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy` (camera, microphone, geolocation, payment and usb disabled) and `Cross-Origin-Opener-Policy: same-origin`. The 3D layer, the lazy drawer fetches and the speaker model were exercised locally under this policy with no violations. RB-08 still requires checking the headers on the deployed preview.

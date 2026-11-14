@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
-import { createReadStream, statSync, readdirSync, readFileSync, rmSync } from 'node:fs';
+import { createReadStream, statSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import { resolve, sep, extname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -111,15 +112,65 @@ function pruneUnreferencedMedia() {
   };
 }
 
-// canonicalOrigin is null until the owner decides the domain (D-02/D-23).
-// A guessed host is forbidden, so `site` stays unset and no sitemap is emitted.
+// Sitemap (seo-optimization.md §6). Written only when the canonical origin is
+// configured through SITE_ORIGIN and the build is not a preview deployment.
+// It lists exactly the built pages whose own robots tag allows indexing, so the
+// sitemap can never disagree with the pages. <lastmod> is the commit date of
+// the content records, never the build time; it is omitted when git is absent.
+/** @returns {import('astro').AstroIntegration} */
+function sitemap() {
+  return {
+    name: 'shelf-sitemap',
+    hooks: {
+      'astro:build:done': ({ dir, pages, logger }) => {
+        const origin = (process.env.SITE_ORIGIN ?? '').trim().replace(/\/+$/, '');
+        const preview = !!process.env.VERCEL_ENV && process.env.VERCEL_ENV !== 'production';
+        if (!origin || preview) {
+          logger.info('no sitemap written (SITE_ORIGIN is not set, or this is a preview deployment)');
+          return;
+        }
+        const out = fileURLToPath(dir);
+        let lastmod = '';
+        try {
+          lastmod = execFileSync('git', ['log', '-1', '--format=%cs', '--', 'src/data/records.json'], { cwd: root, encoding: 'utf8' }).trim();
+        } catch {
+          lastmod = '';
+        }
+        const urls = [];
+        for (const { pathname } of pages) {
+          if (pathname.startsWith('404')) continue;
+          const file = join(out, pathname, 'index.html');
+          let html = '';
+          try {
+            html = readFileSync(file, 'utf8');
+          } catch {
+            continue;
+          }
+          const robots = /<meta name="robots" content="([^"]*)"/.exec(html)?.[1] ?? '';
+          if (robots.includes('noindex')) continue;
+          urls.push(new URL('/' + pathname, origin).href);
+        }
+        urls.sort();
+        const body =
+          '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
+          urls.map((loc) => `  <url><loc>${loc}</loc>${/^\d{4}-\d{2}-\d{2}$/.test(lastmod) ? `<lastmod>${lastmod}</lastmod>` : ''}</url>`).join('\n') +
+          '\n</urlset>\n';
+        writeFileSync(join(out, 'sitemap.xml'), body);
+        logger.info(`sitemap.xml written with ${urls.length} URL(s)`);
+      },
+    },
+  };
+}
+
+// The canonical origin comes from SITE_ORIGIN (D-02/D-23); a host is never
+// guessed, so without it no canonical link, sitemap or JSON-LD is emitted.
 export default defineConfig({
   output: 'static',
   trailingSlash: 'always',
   server: { host: '127.0.0.1', port: 4321 },
   devToolbar: { enabled: false },
   build: { inlineStylesheets: 'auto' },
-  integrations: [pruneUnreferencedMedia()],
+  integrations: [pruneUnreferencedMedia(), sitemap()],
   vite: {
     plugins: [reviewMedia()],
     // Keep the dev server's native tooling in Node, including CommonJS deps.

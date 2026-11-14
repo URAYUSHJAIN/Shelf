@@ -225,3 +225,18 @@ Each item maps to a test in [implementation-and-validation.md](implementation-an
 - [ ] Redirects, the 404 status, and the canonical host verified on the deployed site (T-SEO-07)
 - [ ] Preview deployments are `noindex` (T-SEO-09)
 - [ ] Search Console and Bing steps recorded as done or pending in the launch log
+
+---
+
+## Implementation status (D-46, 2026-11-14)
+
+| Area | Where | Notes |
+| ---- | ----- | ----- |
+| Canonical origin | `src/data/site.ts` (`SITE_ORIGIN`) | Unset by default (D-02). Canonical, `og:url`, JSON-LD and sitemap appear only when it is set. |
+| Titles and descriptions | `src/pages/index.astro`, `src/pages/[surface].astro`, `src/pages/projects/[slug].astro` | Patterns from §5.2. Uniqueness and a single `h1` are enforced by `scripts/check-dist.mjs`. The controller sets the same titles on in-place navigation. |
+| One drawer per page | `src/components/Panels.astro`, `src/scripts/shelf-controller.ts` | Pages no longer embed every record (§4); other drawers load from their URLs on demand. |
+| Structured data | `src/lib/seo/jsonld.ts`, `src/lib/seo/faq.ts` | §8 types. `Article` is not emitted for Medium-hosted writing. |
+| robots.txt | `src/pages/robots.txt.ts` | From the crawler policy; disallow-all in review mode and on preview deployments. |
+| Sitemap | `astro.config.mjs` (`shelf-sitemap`) | Indexable pages only; `lastmod` from the records file's commit date. |
+| Preview noindex | `vercel.json`, `src/layouts/Base.astro` | `X-Robots-Tag` on `*.vercel.app`; meta robots when `VERCEL_ENV` is not `production`. |
+| Old-site redirects (§9) | not configured | They depend on D-02; add them to `vercel.json` once the host is chosen. |

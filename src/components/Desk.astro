@@ -26,7 +26,6 @@ const POT = (cx: number, top: number, w: number, h: number) => {
   const b = top + h;
   return `<ellipse cx="${cx}" cy="${b + 2}" rx="${w * 0.62}" ry="${h * 0.09}" fill="#1e0e05" opacity=".45"/>`
     + `<path d="M${l} ${top}L${l + w * 0.1} ${b - 6}Q${l + w * 0.12} ${b} ${l + w * 0.2} ${b}H${r - w * 0.2}Q${r - w * 0.12} ${b} ${r - w * 0.1} ${b - 6}L${r} ${top}Z" fill="url(#pot)" stroke="#8b7a64" stroke-width="1"/>`
-    + `<path d="M${l} ${top}L${l + w * 0.1} ${b - 6}Q${l + w * 0.12} ${b} ${l + w * 0.2} ${b}H${r - w * 0.2}Q${r - w * 0.12} ${b} ${r - w * 0.1} ${b - 6}L${r} ${top}Z" fill="url(#ceramicSpeckle)"/>`
     + `<ellipse cx="${cx}" cy="${top}" rx="${w / 2}" ry="${w * 0.09}" fill="#3a2414" stroke="#d9cdb8" stroke-width="2.4"/>`;
 };
 ---
@@ -40,15 +39,10 @@ const POT = (cx: number, top: number, w: number, h: number) => {
       <radialGradient id="matSheen" cx=".52" cy="0" r=".75">
         <stop stop-color="#ffd9a0" stop-opacity=".26" /><stop offset="1" stop-color="#ffd9a0" stop-opacity="0" />
       </radialGradient>
-      <filter id="matGrain" x="0" y="0" width="100%" height="100%">
-        <feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="2" seed="5" />
-        <feColorMatrix values="0 0 0 0 .95  0 0 0 0 .75  0 0 0 0 .55  0 0 0 .13 0" />
-      </filter>
       <clipPath id="matShape"><path d="M46 0H1104Q1112 0 1114 6L1148 138Q1150 144 1142 144H8Q0 144 2 138L36 6Q38 0 46 0Z" /></clipPath>
     </defs>
     <path d="M46 0H1104Q1112 0 1114 6L1148 138Q1150 144 1142 144H8Q0 144 2 138L36 6Q38 0 46 0Z" fill="url(#matLeather)" stroke="#120a06" stroke-width="2" />
     <g clip-path="url(#matShape)">
-      <rect width="1150" height="144" filter="url(#matGrain)" />
       <rect width="1150" height="144" fill="url(#matSheen)" />
       <path d="M0 2H1150" stroke="#b98a5c" stroke-opacity=".4" stroke-width="2" />
     </g>
@@ -165,21 +159,10 @@ const POT = (cx: number, top: number, w: number, h: number) => {
       <radialGradient id="speakerFaceShade" cx=".4" cy=".3" r=".85">
         <stop stop-color="#d6d3c0" stop-opacity=".13" /><stop offset=".7" stop-color="#111715" stop-opacity="0" /><stop offset="1" stop-color="#050807" stop-opacity=".48" />
       </radialGradient>
-      <pattern id="speakerWeave" width="7" height="6" patternUnits="userSpaceOnUse">
-        <path d="M0 1.5h4M3.5 4.5H7" stroke="#aaa99b" stroke-opacity=".57" stroke-width="1.2" stroke-linecap="round" />
-        <path d="M0 2.5h4M3.5 5.5H7" stroke="#0e1412" stroke-opacity=".82" stroke-width=".7" />
-        <path d="M1 0v1M5 3v1" stroke="#66706a" stroke-opacity=".48" stroke-width=".6" />
-      </pattern>
-      <pattern id="speakerGrain" width="17" height="14" patternUnits="userSpaceOnUse">
-        <circle cx="3" cy="4" r=".45" fill="#b9b1a0" opacity=".17" />
-        <circle cx="11" cy="9" r=".4" fill="#8b8376" opacity=".13" />
-        <path d="M5 11h2M13 2h1" stroke="#c6bca9" stroke-opacity=".1" stroke-width=".5" />
-      </pattern>
       <clipPath id="speakerGrilleClip"><path d="M36 36Q87 32 206 39L210 144Q130 135 39 132Z" /></clipPath>
-      <filter id="speakerContact" x="-25%" y="-100%" width="150%" height="300%"><feGaussianBlur stdDeviation="5" /></filter>
     </defs>
     <!-- The low contact shadow and two feet locate the cabinet on the desk. -->
-    <ellipse cx="129" cy="173" rx="113" ry="8" fill="#201710" opacity=".39" filter="url(#speakerContact)" />
+    <ellipse cx="129" cy="173" rx="113" ry="8" fill="#201710" opacity=".39" />
     <ellipse cx="132" cy="170" rx="92" ry="3.5" fill="#352418" opacity=".23" />
     <path d="M45 156h16v10q-8 4-15 0zM207 163h18v9q-9 4-16 0z" fill="#101211" />
     <path d="M48 164h11M210 170h14" stroke="#6b665d" stroke-width="1" opacity=".65" />
@@ -187,14 +170,12 @@ const POT = (cx: number, top: number, w: number, h: number) => {
     <path d="M207 17Q242 17 248 30Q253 41 253 58L250 145Q249 166 220 169L205 150Z" fill="url(#speakerSide)" stroke="#171918" stroke-width="1.5" />
     <path d="M212 19Q241 21 245 38L244 145Q243 157 231 163" fill="none" stroke="#928e80" stroke-width="1.2" opacity=".23" />
     <path d="M29 18Q44 10 203 16Q221 17 226 32L228 149Q227 167 214 168Q126 154 35 153Q25 152 23 140L21 40Q20 23 29 18Z" fill="url(#speakerLeather)" stroke="#0d100f" stroke-width="1.7" />
-    <path d="M29 18Q44 10 203 16Q221 17 226 32L228 149Q227 167 214 168Q126 154 35 153Q25 152 23 140L21 40Q20 23 29 18Z" fill="url(#speakerGrain)" />
     <path d="M31 22Q89 17 204 21" fill="none" stroke="#a8a293" stroke-width="1.3" opacity=".38" />
     <path d="M27 36Q26 23 33 21M25 46l2 85Q27 145 35 148" fill="none" stroke="#b0a99c" stroke-width="1" opacity=".23" />
     <!-- Fine woven speaker fabric sits inside the thick soft surround. -->
     <path d="M33 31Q90 25 211 34L215 149Q122 137 36 136Z" fill="#101412" stroke="#77756e" stroke-width="1" />
     <g clip-path="url(#speakerGrilleClip)">
       <path d="M33 33h180v115H33z" fill="url(#speakerGrille)" />
-      <path d="M33 33h180v115H33z" fill="url(#speakerWeave)" />
       <path d="M33 33h180v115H33z" fill="url(#speakerFaceShade)" />
       <path d="M37 45Q42 90 39 128" fill="none" stroke="#f2edd6" stroke-width="1.4" opacity=".12" />
     </g>
@@ -227,7 +208,6 @@ const POT = (cx: number, top: number, w: number, h: number) => {
     <path d="M109 43c35-5 36 60 0 57" fill="none" stroke="url(#mugHandle)" stroke-width="9" stroke-linecap="round" />
     <path d="M116 45c18 1 22 29 11 43" fill="none" stroke="#fff9eb" stroke-width="1.5" stroke-linecap="round" opacity=".7" />
     <path d="M10 24l3 85q0 18 20 19h56q20-1 20-19l3-85" fill="url(#mug)" stroke="#89765d" stroke-width="1.4" stroke-linejoin="round" />
-    <path d="M10 24l3 85q0 18 20 19h56q20-1 20-19l3-85" fill="url(#ceramicSpeckle)" />
     <path d="M19 39l2 67q1 9 7 11" fill="none" stroke="#fffaf0" stroke-width="3" stroke-linecap="round" opacity=".46" />
     <path d="M26 121q35 10 70-1" fill="none" stroke="#95836b" stroke-width="1.3" opacity=".6" />
     <ellipse cx="61" cy="24" rx="51" ry="11" fill="url(#mugHandle)" stroke="#97846b" stroke-width="1.2" />
@@ -244,7 +224,7 @@ const POT = (cx: number, top: number, w: number, h: number) => {
   </svg></div>
 
   <div class="obj speaker-controls" data-speaker-controls>
-    <button type="button" class="speaker-controls__play" data-speaker-play aria-label="Play desk music" aria-pressed="false">Play music</button>
+    <button type="button" class="speaker-controls__play" data-speaker-play aria-label="Play music on the desk speaker" aria-pressed="false">Play music</button>
     <label class="speaker-controls__volume">Volume <input type="range" min="0" max="100" value="35" data-speaker-volume aria-label="Music volume" /></label>
     <span class="speaker-controls__status" role="status" data-speaker-status hidden></span>
     <audio preload="none" src="/media/desk-theme.wav" data-speaker-audio></audio>
@@ -252,7 +232,7 @@ const POT = (cx: number, top: number, w: number, h: number) => {
 
   <!-- Potted plants frame the desk; they sway once when brushed. -->
   <svg class="obj desk-plant desk-plant--left" viewBox="0 0 200 390" aria-hidden="true" data-sway>
-    <g class="sway sway--a" set:html={leftPlant.map((v) => vineMarkup(v, { stem: 3, shadow: true, drops: 0 })).join('')} />
+    <g class="sway sway--a" set:html={leftPlant.map((v) => vineMarkup(v, { stem: 3 })).join('')} />
     <g set:html={POT(100, 296, 96, 84)} />
   </svg>
   <svg class="obj desk-plant desk-plant--right" viewBox="0 0 120 250" aria-hidden="true" data-sway>
@@ -260,7 +240,7 @@ const POT = (cx: number, top: number, w: number, h: number) => {
       <rect x="8" y="218" width="108" height="22" rx="2" fill="#5a3a22" /><rect x="12" y="222" width="100" height="12" fill="#efe3c8" />
       <rect x="14" y="196" width="100" height="22" rx="2" fill="#2f3b33" /><rect x="18" y="200" width="92" height="12" fill="#f4ead2" />
     </g>
-    <g class="sway sway--a" set:html={rightPlant.map((v) => vineMarkup(v, { stem: 2.4, shadow: true, drops: 0 })).join('')} />
+    <g class="sway sway--a" set:html={rightPlant.map((v) => vineMarkup(v, { stem: 2.4 })).join('')} />
     <g set:html={POT(60, 146, 62, 50)} />
   </svg>
 

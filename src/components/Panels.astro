@@ -3,8 +3,9 @@ import Icon from './Icon.astro';
 import Panel from './Panel.astro';
 import {
   projects, patents, experience, education, achievements, credentials, skills, articles, social,
-  copy, portrait, groups, site, fmtDate, fmtMonth, REVIEW_MODE,
+  copy, portrait, groups, site, featured, fmtDate, fmtMonth, REVIEW_MODE,
 } from '../data/site';
+import { faq } from '../lib/seo/faq';
 
 interface Props {
   active: string | null;
@@ -60,10 +61,23 @@ const toolSkills = skills.filter((s) => s.category !== 'language');
 const blogPosts = articles.filter((a) => a.category === 'articles' && a.canonicalUrl);
 const walkthroughs = projects.filter((p) => p.videos.length > 0);
 const SOCIAL_NAME: Record<string, string> = { github: 'GitHub', linkedin: 'LinkedIn', x: 'X' };
+
+// About: the profile is assembled from the same records as the drawers, so it
+// cannot drift from them (ai-optimization.md §4).
+const currentStudy = education.find((e) => e.endYearKind === 'expected') ?? education[0];
+const workAreas = groupOrder.filter((g) => g !== 'early-work' && projects.some((p) => p.group === g)).map((g) => groups[g]);
+const topSkills = skills
+  .filter((sk) => projBySkill(sk) > 0)
+  .sort((a, b) => projBySkill(b) - projBySkill(a))
+  .slice(0, 12);
+const applicants = [...new Set(patents.flatMap((p) => p.applicants ?? []))];
+const questions = active === 'about' ? faq() : [];
 ---
+<!-- Each page carries only its own drawer content; the controller fetches the
+     others from their stable URLs on demand (docs/seo-optimization.md §4). -->
 <div data-panels>
   <!-- About -->
-  <Panel id="about" title="About Me" icon="person" open={active === 'about'}>
+  <Panel id="about" lazy={active !== 'about'} title="About Me" icon="person" open={active === 'about'}>
     <div class="about">
       {portrait && (
         <img class="about__photo" src={portrait.src} width={portrait.width} height={portrait.height} alt={copy.photoAlt} loading="lazy" decoding="async" />
@@ -71,9 +85,97 @@ const SOCIAL_NAME: Record<string, string> = { github: 'GitHub', linkedin: 'Linke
       <div>
         <p class="lead">{copy.statement}</p>
         <p>{copy.about}</p>
-        {REVIEW_MODE && education[0] && <p class="muted">{education[0].summary}</p>}
       </div>
     </div>
+
+    <h3 class="sub">Key facts</h3>
+    <dl class="facts facts--profile">
+      <dt>Role</dt>
+      <dd>{copy.role}</dd>
+      {currentStudy && (
+        <>
+          <dt>Education</dt>
+          <dd>{currentStudy.summary} <a href="/education/" data-nav="education">Education records</a></dd>
+        </>
+      )}
+      {work.length > 0 && (
+        <>
+          <dt>Experience</dt>
+          <dd>{work.map((e) => `${e.role}, ${e.organization}`).join(' · ')}. <a href="/experience/" data-nav="experience">Experience records</a></dd>
+        </>
+      )}
+      {workAreas.length > 0 && (
+        <>
+          <dt>Areas of work</dt>
+          <dd>{workAreas.join(' · ')}. <a href="/projects/" data-nav="projects">All projects</a></dd>
+        </>
+      )}
+      {patents.length > 0 && (
+        <>
+          <dt>Patent work</dt>
+          <dd>
+            Named inventor on Indian patent applications{applicants.length > 0 && ` (applicant: ${applicants.join(', ')})`}. They are application records; none is presented as a grant.
+            {' '}<a href="/patents/" data-nav="patents">Patent application records</a>
+          </dd>
+        </>
+      )}
+      {achievements.length > 0 && (
+        <>
+          <dt>Achievements</dt>
+          <dd>{achievements.map((a) => a.title).join(' · ')}. <a href="/achievements/" data-nav="achievements">Achievement records</a></dd>
+        </>
+      )}
+      {leadership.length > 0 && (
+        <>
+          <dt>Community</dt>
+          <dd>{leadership.map((e) => `${e.role}, ${e.organization}`).join(' · ')}. <a href="/experience/" data-nav="experience">Clubs and leadership</a></dd>
+        </>
+      )}
+      {blogPosts.length > 0 && (
+        <>
+          <dt>Writing</dt>
+          <dd>Articles on patents, presentations and open source. <a href="/writing/" data-nav="writing">Articles and notes</a></dd>
+        </>
+      )}
+    </dl>
+
+    {topSkills.length > 0 && (
+      <>
+        <h3 class="sub">Technical skills</h3>
+        <ul class="tags" role="list" aria-label="Most-used tools">
+          {topSkills.map((sk) => <li>{sk.name}</li>)}
+        </ul>
+        <p class="small muted">The tools used most often across the projects here. <a href="/toolbox/" data-nav="toolbox">Open the full toolbox</a></p>
+      </>
+    )}
+
+    {featured.length > 0 && (
+      <>
+        <h3 class="sub">Selected projects</h3>
+        <ul class="linklist" role="list">
+          {featured.map((p) => (
+            <li><a href={`/projects/${p.slug}/`} data-nav="projects" data-record={p.slug}>{p.title}</a> — {p.summary}</li>
+          ))}
+        </ul>
+      </>
+    )}
+
+    {questions.length > 0 && (
+      <section class="faq" aria-labelledby="faq-title">
+        <h3 class="sub" id="faq-title">Questions and answers</h3>
+        {questions.map((q) => (
+          <div class="faq__item">
+            <h4>{q.question}</h4>
+            <p>
+              {q.answer}
+              {q.href && q.href.startsWith('/') && q.href !== '/about/' && (
+                <> <a href={q.href} data-nav={q.href.split('/')[1]}>{q.linkLabel}</a></>
+              )}
+            </p>
+          </div>
+        ))}
+      </section>
+    )}
     <h3 class="sub">Contact</h3>
     <p>{copy.contact}</p>
     <div class="actions">
@@ -95,7 +197,7 @@ const SOCIAL_NAME: Record<string, string> = { github: 'GitHub', linkedin: 'Linke
   </Panel>
 
   <!-- Projects -->
-  <Panel id="projects" title="Projects" icon="code" open={active === 'projects'} meta={plural(projects.length, 'folder', 'folders')} search={projects.length > 0} wide>
+  <Panel id="projects" lazy={active !== 'projects'} title="Projects" icon="code" open={active === 'projects'} meta={plural(projects.length, 'folder', 'folders')} search={projects.length > 0} wide>
     {projects.length === 0 ? (
       <p class="empty">No public project entries are approved yet. Project folders appear here once the owner approves them.</p>
     ) : (
@@ -139,7 +241,7 @@ const SOCIAL_NAME: Record<string, string> = { github: 'GitHub', linkedin: 'Linke
           <p class="empty" hidden data-project-empty>No matching folders. Try a different search or clear the filters.</p>
         </div>
 
-        {projects.map((p) => (
+        {projects.filter((p) => p.slug === record).map((p) => (
           <article class="record" id={`record-${p.slug}`} data-record-view={p.slug} hidden={record !== p.slug} aria-labelledby={`record-${p.slug}-title`}>
             <a class="back" href="/projects/" data-nav="projects"><Icon name="back" size={18} /> Projects</a>
             <h3 class="record__title" id={`record-${p.slug}-title`} tabindex="-1">{p.title}</h3>
@@ -208,13 +310,16 @@ const SOCIAL_NAME: Record<string, string> = { github: 'GitHub', linkedin: 'Linke
   </Panel>
 
   <!-- Patents -->
-  <Panel id="patents" title="Patents" icon="doc" open={active === 'patents'} meta={patents.length ? plural(patents.length, 'application record', 'application records') : undefined} wide>
+  <Panel id="patents" lazy={active !== 'patents'} title="Patents" icon="doc" open={active === 'patents'} meta={patents.length ? plural(patents.length, 'application record', 'application records') : undefined} wide>
     {patents.length === 0 ? (
       <p class="empty">No public invention-application records are approved yet.</p>
     ) : (
       <>
         <p class="muted">
           Invention applications on which Ayush Jain is a named inventor. Statuses come from dated official snapshots; current legal status has not been verified, and no application is presented as a grant.
+        </p>
+        <p class="muted small">
+          How to read a status: an application is first filed, then published in the Patent Office journal, then examined, and only then decided. Each record below shows the latest stage that a dated official source documents, with its application number and dates. Open a record for the technical summary and the official search link.
         </p>
         <ul class="files" role="list">
           {patents.map((p) => (
@@ -255,7 +360,7 @@ const SOCIAL_NAME: Record<string, string> = { github: 'GitHub', linkedin: 'Linke
   </Panel>
 
   <!-- Experience -->
-  <Panel id="experience" title="Experience" icon="briefcase" open={active === 'experience'} meta={experience.length ? plural(experience.length, 'entry', 'entries') : undefined}>
+  <Panel id="experience" lazy={active !== 'experience'} title="Experience" icon="briefcase" open={active === 'experience'} meta={experience.length ? plural(experience.length, 'entry', 'entries') : undefined}>
     {experience.length === 0 ? (
       <p class="empty">No public experience entries are approved yet.</p>
     ) : (
@@ -280,7 +385,7 @@ const SOCIAL_NAME: Record<string, string> = { github: 'GitHub', linkedin: 'Linke
   </Panel>
 
   <!-- Education -->
-  <Panel id="education" title="Education" icon="cap" open={active === 'education'}>
+  <Panel id="education" lazy={active !== 'education'} title="Education" icon="cap" open={active === 'education'}>
     {education.length === 0 ? (
       <p class="empty">No public education entries are approved yet.</p>
     ) : (
@@ -302,7 +407,7 @@ const SOCIAL_NAME: Record<string, string> = { github: 'GitHub', linkedin: 'Linke
   </Panel>
 
   <!-- Achievements -->
-  <Panel id="achievements" title="Achievements" icon="trophy" open={active === 'achievements'}>
+  <Panel id="achievements" lazy={active !== 'achievements'} title="Achievements" icon="trophy" open={active === 'achievements'}>
     {achievements.length === 0 ? (
       <p class="empty">No public achievement entries are approved yet.</p>
     ) : (
@@ -320,7 +425,7 @@ const SOCIAL_NAME: Record<string, string> = { github: 'GitHub', linkedin: 'Linke
   </Panel>
 
   <!-- Skills & Toolbox -->
-  <Panel id="toolbox" title="Skills & Toolbox" icon="layers" open={active === 'toolbox'} meta={skills.length ? plural(skills.length, 'tool', 'tools') : undefined}>
+  <Panel id="toolbox" lazy={active !== 'toolbox'} title="Skills & Toolbox" icon="layers" open={active === 'toolbox'} meta={skills.length ? plural(skills.length, 'tool', 'tools') : undefined}>
     {skills.length === 0 ? (
       <p class="empty">No public toolbox entries are approved yet.</p>
     ) : (
@@ -348,7 +453,7 @@ const SOCIAL_NAME: Record<string, string> = { github: 'GitHub', linkedin: 'Linke
   </Panel>
 
   <!-- Certifications -->
-  <Panel id="certifications" title="Certifications" icon="badge" open={active === 'certifications'} meta={credentials.length ? plural(credentials.length, 'credential', 'credentials') : undefined} wide>
+  <Panel id="certifications" lazy={active !== 'certifications'} title="Certifications" icon="badge" open={active === 'certifications'} meta={credentials.length ? plural(credentials.length, 'credential', 'credentials') : undefined} wide>
     {credentials.length === 0 ? (
       <p class="empty">No public credential entries are approved yet.</p>
     ) : (
@@ -376,7 +481,7 @@ const SOCIAL_NAME: Record<string, string> = { github: 'GitHub', linkedin: 'Linke
   </Panel>
 
   <!-- Open book: writing, notes, ideas, album -->
-  <Panel id="writing" title="My Writings" icon="book" open={active === 'writing'} wide>
+  <Panel id="writing" lazy={active !== 'writing'} title="My Writings" icon="book" open={active === 'writing'} wide>
     <div class="book">
       <section class="book__page" id="sec-blogs" role="region" aria-label="Blogs" data-tabpanel="blogs">
         <h3 class="sub">Blogs</h3>
@@ -434,7 +539,7 @@ const SOCIAL_NAME: Record<string, string> = { github: 'GitHub', linkedin: 'Linke
   </Panel>
 
   <!-- Pen: contact -->
-  <Panel id="contact" title="The desk notebook" icon="mail" open={active === 'contact'} wide review={false}>
+  <Panel id="contact" lazy={active !== 'contact'} title="The desk notebook" icon="mail" open={active === 'contact'} wide review={false}>
     <nav class="contact-book__tabs needs-js" aria-label="Notebook pages">
       <a href="/contact/?page=intro" data-nav="contact" data-contact-go="intro">Introduction</a>
       <a href="/contact/?page=notes" data-nav="contact" data-contact-go="notes">Project notes</a>

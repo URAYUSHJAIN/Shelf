@@ -1,10 +1,23 @@
 import type { APIRoute } from 'astro';
-import { REVIEW_MODE, site } from '../data/site';
+import { crawlers, site } from '../data/site';
 
-// No sitemap line until the owner sets a canonical origin (no guessed host).
+// Generated from the crawler policy in src/data/site.ts (D-10). Review mode and
+// preview deployments disallow everything. No path is blocked on the released
+// site: utility pages carry a noindex tag, which crawlers must be able to read.
+// The sitemap line appears only once the canonical origin is configured.
 export const GET: APIRoute = () => {
-  const body = REVIEW_MODE
-    ? 'User-agent: *\nDisallow: /\n'
-    : `User-agent: *\nAllow: /\nDisallow: /laptop/\nDisallow: /contact/\n${site.origin ? `Sitemap: ${new URL('/sitemap.xml', site.origin).href}\n` : ''}`;
-  return new Response(body, { headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
+  const lines: string[] = [];
+  if (!site.indexable) {
+    lines.push('User-agent: *', 'Disallow: /');
+  } else {
+    for (const agent of crawlers.allowed) lines.push(`User-agent: ${agent}`);
+    lines.push('User-agent: *', 'Allow: /');
+    if (crawlers.blocked.length) {
+      lines.push('');
+      for (const agent of crawlers.blocked) lines.push(`User-agent: ${agent}`);
+      lines.push('Disallow: /');
+    }
+    if (site.origin) lines.push('', `Sitemap: ${new URL('/sitemap.xml', site.origin).href}`);
+  }
+  return new Response(lines.join('\n') + '\n', { headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
 };

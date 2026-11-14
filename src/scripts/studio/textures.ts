@@ -36,81 +36,14 @@ export function loadImage(src: string) {
   });
 }
 
-/** Antique globe: parchment land, ochre sea, inked coasts and a 15° graticule. */
+/** Antique globe map, prebuilt by scripts/make-textures.mjs (no runtime pixel work). */
 export async function globeTexture(anisotropy: number) {
-  const W = 1536;
-  const H = 768;
-  const img = await loadImage('/textures/world.webp');
-  const [c, ctx] = canvas(W, H);
-  ctx.drawImage(img, 0, 0, W, H);
-  const src = ctx.getImageData(0, 0, W, H);
-  const d = src.data;
-  const land = new Uint8Array(W * H);
-  for (let i = 0; i < W * H; i++) land[i] = 0.3 * d[i * 4] + 0.59 * d[i * 4 + 1] + 0.11 * d[i * 4 + 2] < 200 ? 1 : 0;
-  let s = 11;
-  const rand = () => ((s = (s * 16807) % 2147483647) - 1) / 2147483646;
-  for (let y = 0; y < H; y++) {
-    const lat = Math.abs(y / H - 0.5) * 2;
-    for (let x = 0; x < W; x++) {
-      const i = y * W + x;
-      const k = i * 4;
-      const isLand = land[i];
-      // Coast: land pixel beside sea (wrapping in longitude).
-      let coast = 0;
-      if (isLand) {
-        const l = land[y * W + ((x + W - 1) % W)];
-        const r = land[y * W + ((x + 1) % W)];
-        const u = y > 0 ? land[i - W] : 1;
-        const b = y < H - 1 ? land[i + W] : 1;
-        coast = l && r && u && b ? 0 : 1;
-      }
-      // Shallow-water band two pixels off the coast reads as a printed halo.
-      let halo = 0;
-      if (!isLand) {
-        const n = (dx: number, dy: number) => land[Math.min(H - 1, Math.max(0, y + dy)) * W + ((x + dx + W) % W)];
-        halo = n(3, 0) || n(-3, 0) || n(0, 3) || n(0, -3) ? 1 : 0;
-      }
-      const g = (rand() - 0.5) * 9;
-      let R: number;
-      let G: number;
-      let B: number;
-      if (coast) [R, G, B] = [96, 62, 28];
-      else if (isLand) [R, G, B] = [236 - lat * 16 + g, 214 - lat * 18 + g, 166 - lat * 14 + g];
-      else if (halo) [R, G, B] = [196 + g, 150 + g, 88 + g];
-      else [R, G, B] = [168 - lat * 22 + g, 118 - lat * 18 + g, 60 - lat * 10 + g];
-      d[k] = R;
-      d[k + 1] = G;
-      d[k + 2] = B;
-      d[k + 3] = 255;
-    }
-  }
-  ctx.putImageData(src, 0, 0);
-  ctx.strokeStyle = 'rgba(70,40,14,.3)';
-  ctx.lineWidth = 1.3;
-  ctx.beginPath();
-  for (let lon = 0; lon <= 360; lon += 15) {
-    const x = (lon / 360) * W;
-    ctx.moveTo(x, 0);
-    ctx.lineTo(x, H);
-  }
-  for (let la = 15; la < 180; la += 15) {
-    const y = (la / 180) * H;
-    ctx.moveTo(0, y);
-    ctx.lineTo(W, y);
-  }
-  ctx.stroke();
-  // Equator and tropics in a heavier, dashed rule.
-  ctx.strokeStyle = 'rgba(70,40,14,.5)';
-  ctx.lineWidth = 2;
-  ctx.setLineDash([10, 7]);
-  ctx.beginPath();
-  for (const la of [90, 66.5, 113.5]) {
-    ctx.moveTo(0, (la / 180) * H);
-    ctx.lineTo(W, (la / 180) * H);
-  }
-  ctx.stroke();
-  const t = toTexture(c, anisotropy);
+  const img = await loadImage('/textures/globe.webp');
+  const t = new THREE.Texture(img);
+  t.colorSpace = THREE.SRGBColorSpace;
+  t.anisotropy = anisotropy;
   t.wrapS = THREE.RepeatWrapping;
+  t.needsUpdate = true;
   return t;
 }
 

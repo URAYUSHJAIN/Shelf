@@ -5,14 +5,20 @@ import '../styles/panels.css';
 import '../styles/laptop.css';
 import '../styles/studio.css';
 import { site, REVIEW_MODE } from '../data/site';
+import { serialize } from '../lib/seo/jsonld';
 
 interface Props {
   title?: string;
   description?: string;
   noindex?: boolean;
+  /** Open Graph type: `profile` on home and about, `website` elsewhere. */
+  ogType?: 'website' | 'profile';
+  /** A JSON-LD graph built from the page's own records (src/lib/seo/jsonld.ts). */
+  jsonld?: Record<string, unknown> | null;
 }
-const { title = site.title, description = site.description, noindex = false } = Astro.props;
-const robots = REVIEW_MODE || noindex ? 'noindex, nofollow' : 'index, follow';
+const { title = site.title, description = site.description, noindex = false, ogType = 'website', jsonld = null } = Astro.props;
+const hidden = REVIEW_MODE || noindex || !site.indexable;
+const robots = hidden ? 'noindex, nofollow' : 'index, follow, max-image-preview:large';
 const ogImage = site.origin ? new URL('/og/the-shelf-preview.png', site.origin).href : null;
 const canonical = site.origin ? new URL(Astro.url.pathname, site.origin).href : null;
 ---
@@ -28,7 +34,9 @@ const canonical = site.origin ? new URL(Astro.url.pathname, site.origin).href : 
     <meta name="color-scheme" content="light" />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     {canonical && <link rel="canonical" href={canonical} />}
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
+    {canonical && <meta property="og:url" content={canonical} />}
+    <meta property="og:locale" content="en_IN" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:site_name" content="The Shelf" />
@@ -38,6 +46,8 @@ const canonical = site.origin ? new URL(Astro.url.pathname, site.origin).href : 
     {ogImage && <meta property="og:image:alt" content="The Shelf — a personal archive by Ayush Jain." />}
     <meta name="twitter:card" content={ogImage ? 'summary_large_image' : 'summary'} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <slot name="head" />
+    {jsonld && !hidden && <script type="application/ld+json" set:html={serialize(jsonld)} />}
     <script is:inline>
       (function () {
         var d = document.documentElement;

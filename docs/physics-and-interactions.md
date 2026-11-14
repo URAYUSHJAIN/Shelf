@@ -327,3 +327,7 @@ This section records the implemented studio layer. Where it differs from earlier
 - **Books.** Hover or focus tips a book out by its head (5 units, 0.2 rad, `power3.out`) and returns it on leave. The spine links keep their `/writing/` destinations.
 - **Lamp, pen, headphones, notebook.** The lamp head nods a few degrees when switched. The pen rolls a quarter turn and settles on an elastic ease. The headphones take one push and swing to rest as a damped pendulum. The notebook lifts 5 units on hover. Each motion is finite and user-started.
 - **Clock.** The LED face is a canvas texture redrawn only when `desk-interactions.ts` reports a new minute (`shelf:clock`); the HTML element keeps the accessible label.
+
+### Start-up changes (D-46, 2026-11-14)
+
+Nothing animates on arrival. The mug's steam shader is created on the first pointer contact with the mug and plays one puff; the plants sway only when brushed. The studio layer starts after `load`, when the browser is idle and one of its anchors is within 240 px of the viewport. Objects that are not laid out in the current layout mode are not built. The globe map is the prebuilt `public/textures/globe.webp`; shaders compile through `compileAsync` before the first frame.

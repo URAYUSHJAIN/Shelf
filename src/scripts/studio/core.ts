@@ -3,7 +3,6 @@
 // this layer only supplies pixels. Frames are drawn on demand: an idle scene
 // costs nothing.
 import * as THREE from 'three';
-import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 import { gsap } from 'gsap';
 
 export interface Built {
@@ -33,6 +32,8 @@ export interface Studio {
   reduced: () => boolean;
   invalidate: () => void;
   add: (el: HTMLElement, built: Built) => void;
+  /** Compile every shader off the main thread, then draw the first frame. */
+  start: () => Promise<void>;
   relayout: () => void;
   /** Track a resource for disposal on page hide. */
   own: <T extends { dispose: () => void }>(resource: T) => T;
@@ -58,13 +59,11 @@ export function createStudio(canvas: HTMLCanvasElement, stage: HTMLElement, redu
   };
 
   const scene = new THREE.Scene();
-  const pmrem = new THREE.PMREMGenerator(renderer);
-  const room = new RoomEnvironment();
-  const env = own(pmrem.fromScene(room, 0.04));
-  scene.environment = env.texture;
+  // Reflections for brass and lacquer: a six-face, 32 px sketch of the room
+  // (bright ceiling, amber lamp to the right, dark desk below). Small enough
+  // that prefiltering it costs almost nothing.
+  scene.environment = own(roomEnvironment());
   scene.environmentIntensity = 0.5;
-  room.dispose();
-  pmrem.dispose();
 
   // Warm room light: a soft sky/ground wash, the pendant as key from the upper
   // left, and the desk lamp as a lower amber rim from the right.
@@ -85,6 +84,7 @@ export function createStudio(canvas: HTMLCanvasElement, stage: HTMLElement, redu
   const entries: Entry[] = [];
   let frame = 0;
   let lost = false;
+  let started = false;
   let width = 0;
   let height = 0;
 
@@ -98,7 +98,18 @@ export function createStudio(canvas: HTMLCanvasElement, stage: HTMLElement, redu
     }
   };
   const invalidate = () => {
-    if (!frame) frame = requestAnimationFrame(render);
+    if (started && !frame) frame = requestAnimationFrame(render);
+  };
+  const start = async () => {
+    // Shaders compile in parallel where the driver allows it, so the first
+    // frame does not stall the page.
+    try {
+      await renderer.compileAsync(scene, camera);
+    } catch {
+      /* fall through to a normal synchronous first frame */
+    }
+    started = true;
+    invalidate();
   };
 
   const place = (e: Entry, stageRect: DOMRect) => {
@@ -125,7 +136,8 @@ export function createStudio(canvas: HTMLCanvasElement, stage: HTMLElement, redu
       height = h;
       // Cap the backing store: sharp on desktop, bounded on long phone pages.
       let ratio = Math.min(window.devicePixelRatio || 1, 2);
-      const budget = 5_200_000;
+      // Long phone pages get a smaller budget than a fitted desktop scene.
+      const budget = window.matchMedia('(min-width: 1000px) and (min-height: 560px)').matches ? 5_200_000 : 2_600_000;
       if (w * h * ratio * ratio > budget) ratio = Math.max(1, Math.sqrt(budget / (w * h)));
       renderer.setPixelRatio(ratio);
       renderer.setSize(w, h, false);
@@ -135,7 +147,7 @@ export function createStudio(canvas: HTMLCanvasElement, stage: HTMLElement, redu
     }
     const rect = stage.getBoundingClientRect();
     for (const e of entries) place(e, rect);
-    if (resized) {
+    if (resized && started) {
       // Draw before the browser paints the resized canvas, so a stale frame is
       // never shown stretched.
       cancelAnimationFrame(frame);
@@ -154,8 +166,14 @@ export function createStudio(canvas: HTMLCanvasElement, stage: HTMLElement, redu
     entries.push(entry);
     place(entry, stage.getBoundingClientRect());
     built.lamp?.(stage.dataset.lamp !== 'off', true);
-    if (canvas.classList.contains('is-live')) el.setAttribute('data-studio-ready', '');
-    invalidate();
+    if (canvas.classList.contains('is-live')) {
+      // A late arrival (globe map, speaker model): compile it, then show it.
+      const reveal = () => {
+        el.setAttribute('data-studio-ready', '');
+        invalidate();
+      };
+      renderer.compileAsync(holder, camera, scene).then(reveal, reveal);
+    }
   };
 
   // The lamp switch re-lights every mesh in step with the CSS light layers.
@@ -222,5 +240,41 @@ export function createStudio(canvas: HTMLCanvasElement, stage: HTMLElement, redu
 
   canvas.hidden = false;
   relayout();
-  return { scene, reduced, invalidate, add, relayout, own, maxAnisotropy: renderer.capabilities.getMaxAnisotropy() };
+  return { scene, reduced, invalidate, add, start, relayout, own, maxAnisotropy: renderer.capabilities.getMaxAnisotropy() };
+}
+
+function roomEnvironment() {
+  const face = (paint: (ctx: CanvasRenderingContext2D) => void) => {
+    const c = document.createElement('canvas');
+    c.width = c.height = 32;
+    paint(c.getContext('2d')!);
+    return c;
+  };
+  const wash = (top: string, bottom: string, spot?: [number, number, number, string]) => (ctx: CanvasRenderingContext2D) => {
+    const g = ctx.createLinearGradient(0, 0, 0, 32);
+    g.addColorStop(0, top);
+    g.addColorStop(1, bottom);
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, 32, 32);
+    if (spot) {
+      const [x, y, radius, colour] = spot;
+      const glow = ctx.createRadialGradient(x, y, 0, x, y, radius);
+      glow.addColorStop(0, colour);
+      glow.addColorStop(1, 'rgba(255,255,255,0)');
+      ctx.fillStyle = glow;
+      ctx.fillRect(0, 0, 32, 32);
+    }
+  };
+  // Order: +x, -x, +y, -y, +z, -z.
+  const texture = new THREE.CubeTexture([
+    face(wash('#e8c79c', '#6b4526', [10, 9, 12, '#fff1cf'])),
+    face(wash('#d9b48a', '#5a3a20', [22, 7, 9, '#ffe9c4'])),
+    face(wash('#fff3da', '#f0d2a4', [16, 16, 14, '#ffffff'])),
+    face(wash('#3a2313', '#1c0f07')),
+    face(wash('#f2d9b4', '#7a5230', [16, 6, 14, '#fff6e0'])),
+    face(wash('#d2a878', '#4a2d18')),
+  ]);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.needsUpdate = true;
+  return texture;
 }

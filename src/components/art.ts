@@ -65,47 +65,50 @@ interface VineLook {
   stem?: number;
   /** Scale applied to every leaf. */
   scale?: number;
-  /** Soft drop shadow under each leaf (needs #leafShadow). */
-  shadow?: boolean;
-  /** Water droplets on every nth leaf (0 disables). */
-  drops?: number;
   /** Which gradient the first leaf uses. */
   first?: 'A' | 'B';
 }
 
 /**
- * A believable trailing stem: shaded cylindrical vine, curved stalks, leaves with a
- * darker half, veins, a wet gloss and a few water droplets. Returns SVG markup.
+ * One leaf drawn at 100 units, shared by every vine through <use>. Scene.astro
+ * places this once in the shared <defs>; strokes do not scale with the leaf.
+ */
+export function leafSymbols() {
+  const s = 100;
+  const leaf = (id: string, grad: string) =>
+    `<g id="${id}">` +
+    `<path d="${leafPath(s)}" fill="url(#${grad})" stroke="#3e5426" stroke-width=".65" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>` +
+    `<path d="M0 0C${r(-0.51 * s)} ${r(0.1 * s)} ${r(-0.55 * s)} ${r(-0.53 * s)} 0 ${r(-s)}Z" fill="#0d2205" fill-opacity=".2"/>` +
+    `<path d="${ribPath(s)}" fill="none" stroke="#c4cf8a" stroke-opacity=".38" stroke-width=".5" stroke-linecap="round" vector-effect="non-scaling-stroke"/>` +
+    `<path d="M${r(0.08 * s)} ${r(-0.2 * s)}Q${r(0.38 * s)} ${r(-0.5 * s)} ${r(0.04 * s)} ${r(-0.86 * s)}Q${r(0.22 * s)} ${r(-0.44 * s)} ${r(0.08 * s)} ${r(-0.2 * s)}Z" fill="#e4e6af" fill-opacity=".13"/>` +
+    '</g>';
+  return leaf('leaf-a', 'leafA') + leaf('leaf-b', 'leafB');
+}
+
+/**
+ * A believable trailing stem: shaded cylindrical vine, curved stalks and leaves
+ * with a darker half, veins and a soft gloss. Returns SVG markup. Leaves are
+ * instances of the shared symbols above.
  */
 export function vineMarkup(v: Vine, o: VineLook = {}) {
   const w = o.stem ?? 2.6;
   const k = o.scale ?? 1;
-  const drops = o.drops ?? 0;
   let out = `<path d="${v.d}" fill="none" stroke="#25340f" stroke-width="${r(w + 1.8)}" stroke-linecap="round"/>`;
   out += `<path d="${v.d}" fill="none" stroke="#5f7c2b" stroke-width="${w}" stroke-linecap="round"/>`;
   out += `<path d="${v.d}" fill="none" stroke="#b9d065" stroke-opacity=".6" stroke-width="${r(w * 0.32)}" stroke-linecap="round" transform="translate(-.5 -.7)"/>`;
+  let stalks = '';
+  let leaves = '';
   v.leaves.forEach((l, i) => {
     const s = l.s * k;
-    const grad = (i + (o.first === 'A' ? 1 : 0)) % 2 ? 'url(#leafA)' : 'url(#leafB)';
-    const nodeR = r(w * 0.9);
-    out += `<path d="M${l.px} ${l.py}L${l.x} ${l.y}" stroke="#3f5a1b" stroke-width="${r(w * 0.7)}" stroke-linecap="round"/>`;
-    out += `<circle cx="${l.px}" cy="${l.py}" r="${nodeR}" fill="#6f8c34" stroke="#25340f" stroke-width=".7"/>`;
-    const width = r(.66 + .3 * (1 + Math.sin(i * 2.4 + l.x * .08)) / 2);
-    const curl = r(Math.sin(i * 1.9 + l.y * .04) * 12);
-    out += `<g transform="translate(${l.x} ${l.y}) rotate(${l.a}) skewX(${curl}) scale(${width} 1)"${o.shadow ? ' filter="url(#leafShadow)"' : ''}>`;
-    out += `<path d="${leafPath(s)}" fill="${grad}" stroke="#3e5426" stroke-width=".65" stroke-linejoin="round"/>`;
-    out += `<path d="M0 0C${r(-0.51 * s)} ${r(0.1 * s)} ${r(-0.55 * s)} ${r(-0.53 * s)} 0 ${r(-s)}Z" fill="#0d2205" fill-opacity=".2"/>`;
-    out += `<path d="${ribPath(s)}" fill="none" stroke="#c4cf8a" stroke-opacity=".38" stroke-width="${r(Math.max(0.4, s * 0.014))}" stroke-linecap="round"/>`;
-    out += `<path d="M${r(.08 * s)} ${r(-.2 * s)}Q${r(.38 * s)} ${r(-.5 * s)} ${r(.04 * s)} ${r(-.86 * s)}Q${r(.22 * s)} ${r(-.44 * s)} ${r(.08 * s)} ${r(-.2 * s)}Z" fill="#e4e6af" fill-opacity=".13"/>`;
-    if (drops && s > 18 && i % drops === 0) {
-      const dx = r(0.14 * s);
-      const dy = r(-0.52 * s);
-      const rx = r(Math.max(1.3, s * 0.05));
-      out += `<ellipse cx="${dx}" cy="${dy}" rx="${rx}" ry="${r(rx * 1.3)}" fill="#e4f6ff" fill-opacity=".5" stroke="#fff" stroke-opacity=".75" stroke-width=".5"/>`;
-      out += `<circle cx="${r(dx - rx * 0.3)}" cy="${r(dy - rx * 0.4)}" r="${r(rx * 0.32)}" fill="#fff"/>`;
-      out += `<ellipse cx="${r(-0.16 * s)}" cy="${r(-0.3 * s)}" rx="${r(rx * 0.75)}" ry="${r(rx * 0.95)}" fill="#e4f6ff" fill-opacity=".45" stroke="#fff" stroke-opacity=".6" stroke-width=".4"/>`;
-    }
-    out += '</g>';
+    const id = (i + (o.first === 'A' ? 1 : 0)) % 2 ? 'leaf-a' : 'leaf-b';
+    stalks += `M${l.px} ${l.py}L${l.x} ${l.y}`;
+    const width = 0.66 + (0.3 * (1 + Math.sin(i * 2.4 + l.x * 0.08))) / 2;
+    const curl = r(Math.sin(i * 1.9 + l.y * 0.04) * 12);
+    const sy = Math.round(s) / 100;
+    const sx = Math.round(width * s) / 100;
+    leaves += `<use href="#${id}" transform="translate(${l.x} ${l.y}) rotate(${l.a}) skewX(${curl}) scale(${sx} ${sy})"/>`;
   });
+  out += `<path d="${stalks}" fill="none" stroke="#3f5a1b" stroke-width="${r(w * 0.7)}" stroke-linecap="round"/>`;
+  out += leaves;
   return out;
 }

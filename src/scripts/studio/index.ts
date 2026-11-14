@@ -1,11 +1,17 @@
 // Mounts the studio layer after first paint. Returns false when WebGL is not
 // available so the caller can start the illustrated fallbacks instead.
 import * as THREE from 'three';
-import { createStudio } from './core';
+import { createStudio, type Built } from './core';
 import { buildBook, buildBookLean, buildBookPair, buildClock, buildGlobe, buildHeadphones, buildLamp, buildMug, buildNotebook, buildPen, buildPendant, buildRocket, makeKit } from './objects';
 import { globeTexture } from './textures';
 
-const nextFrame = () => new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+/** Hands the main thread back between objects so input is never blocked. */
+const breathe = () =>
+  new Promise<void>((resolve) => {
+    const scheduler = (globalThis as { scheduler?: { yield?: () => Promise<void> } }).scheduler;
+    if (scheduler?.yield) void scheduler.yield().then(resolve);
+    else setTimeout(resolve, 0);
+  });
 
 export async function mountStudio(options: { reduced: () => boolean }): Promise<boolean> {
   const stage = document.querySelector<HTMLElement>('[data-scene]');
@@ -13,35 +19,33 @@ export async function mountStudio(options: { reduced: () => boolean }): Promise<
   if (!stage || !canvas) return false;
   const studio = createStudio(canvas, stage, options.reduced);
   if (!studio) return false;
+  await breathe();
   const kit = makeKit(studio);
   const each = (kind: string) => [...stage.querySelectorAll<HTMLElement>(`[data-studio="${kind}"]`)];
+  // Objects that are not laid out in this layout mode (for example the pendant
+  // on phones) are not built at all.
+  const shown = (el: HTMLElement) => el.getClientRects().length > 0;
 
-  // Built in small batches so no single task blocks input.
-  const batches: (() => void)[] = [
-    () => {
-      for (const el of each('book')) studio.add(el, buildBook(kit, el));
-      for (const el of each('bookpair')) studio.add(el, buildBookPair(kit));
-      for (const el of each('booklean')) studio.add(el, buildBookLean(kit));
-    },
-    () => {
-      for (const el of each('lamp')) studio.add(el, buildLamp(kit, el));
-      for (const el of each('pendant')) studio.add(el, buildPendant(kit));
-      for (const el of each('headphones')) studio.add(el, buildHeadphones(kit, el));
-    },
-    () => {
-      for (const el of each('rocket')) studio.add(el, buildRocket(kit, el));
-      for (const el of each('mug')) studio.add(el, buildMug(kit));
-      for (const el of each('clock')) studio.add(el, buildClock(kit, el));
-    },
-    () => {
-      for (const el of each('notebook')) studio.add(el, buildNotebook(kit, el));
-      for (const el of each('pen')) studio.add(el, buildPen(kit, el));
-    },
+  const builders: [string, (el: HTMLElement) => Built][] = [
+    ['book', (el) => buildBook(kit, el)],
+    ['bookpair', () => buildBookPair(kit)],
+    ['booklean', () => buildBookLean(kit)],
+    ['lamp', (el) => buildLamp(kit, el)],
+    ['pendant', () => buildPendant(kit)],
+    ['headphones', (el) => buildHeadphones(kit, el)],
+    ['rocket', (el) => buildRocket(kit, el)],
+    ['mug', () => buildMug(kit)],
+    ['clock', (el) => buildClock(kit, el)],
+    ['notebook', (el) => buildNotebook(kit, el)],
+    ['pen', (el) => buildPen(kit, el)],
   ];
-  for (const batch of batches) {
-    batch();
-    await nextFrame();
+  for (const [kind, build] of builders) {
+    for (const el of each(kind).filter(shown)) {
+      studio.add(el, build(el));
+      await breathe(); // one object per task
+    }
   }
+  await studio.start();
 
   // Secondary assets: the globe map and the CC0 speaker model (D-44).
   const globe = each('globe')[0];

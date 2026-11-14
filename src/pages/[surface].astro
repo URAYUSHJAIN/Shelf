@@ -1,27 +1,35 @@
 ---
 import Shelf from '../components/Shelf.astro';
-import { SURFACE_TITLES, type SurfaceId } from '../data/site';
+import { NOINDEX_SURFACES, SURFACE_TITLES, type SurfaceId } from '../data/site';
+import { pageGraph } from '../lib/seo/jsonld';
 
 export function getStaticPaths() {
   return (Object.keys(SURFACE_TITLES) as SurfaceId[]).map((surface) => ({ params: { surface } }));
 }
 
 const surface = Astro.params.surface as SurfaceId;
-const DESCRIPTIONS: Partial<Record<SurfaceId, string>> = {
-  about: 'About Ayush Jain: a Computer Science student who builds web applications and AI-assisted tools.',
-  projects: 'Software projects, experiments and early work by Ayush Jain.',
-  patents: 'Invention application records on which Ayush Jain is a named inventor.',
-  experience: 'Software-development roles, internships and student leadership.',
-  education: 'Education and study timelines.',
-  achievements: 'Results and open-source activity.',
-  toolbox: 'Tools and technologies, linked to the projects that use them.',
-  certifications: 'Courses, training badges and participation records.',
-  writing: 'Articles, build notes and ideas from Ayush Jain.',
+// One factual sentence per page; no counts (seo-optimization.md §5.2).
+const DESCRIPTIONS: Record<SurfaceId, string> = {
+  about: 'About Ayush Jain: a Computer Science student at ABES Engineering College who builds full-stack web applications and AI-assisted tools.',
+  projects: 'Software projects by Ayush Jain: AI and data tools, full-stack web applications, Web3 interfaces, healthcare prototypes and early work.',
+  patents: 'Indian patent application records on which Ayush Jain is a named inventor, with application numbers, dates and documented status.',
+  experience: 'Software-development internships, a trainee programme and student leadership roles held by Ayush Jain.',
+  education: 'The education and study timeline of Ayush Jain, including B.Tech in Computer Science at ABES Engineering College.',
+  achievements: 'Hackathon results and open-source activity recorded for Ayush Jain, each with its source.',
+  toolbox: 'The languages, frameworks and tools Ayush Jain has used, each linked to the projects that use it.',
+  certifications: 'Course certificates, training badges and participation records earned by Ayush Jain, each labelled by kind.',
+  writing: 'Articles, build walkthroughs and ideas written by Ayush Jain, linked to where they were published.',
+  laptop: 'The desk laptop: search The Shelf and open the original portfolio of Ayush Jain.',
+  contact: 'Write to Ayush Jain: prepare a message in your own email app from the desk notebook.',
 };
+const TITLES: Partial<Record<SurfaceId, string>> = { about: 'About Ayush Jain' };
+const description = DESCRIPTIONS[surface];
 ---
 <Shelf
   active={surface}
-  title={`${SURFACE_TITLES[surface]} — The Shelf · Ayush Jain`}
-  description={DESCRIPTIONS[surface]}
-  noindex={surface === 'laptop' || surface === 'contact'}
+  title={TITLES[surface] ?? `${SURFACE_TITLES[surface]} — Ayush Jain`}
+  description={description}
+  noindex={NOINDEX_SURFACES.has(surface)}
+  ogType={surface === 'about' ? 'profile' : 'website'}
+  jsonld={pageGraph({ type: 'surface', surface, description })}
 />
