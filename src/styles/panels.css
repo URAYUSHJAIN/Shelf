@@ -1257,3 +1257,19 @@ html:not(.js) .book__tabs {
 .panel.is-mounted {
   height: calc(var(--tray-depth) + var(--front-height-visual) + 18px) !important;
 }
+
+/* About: profile facts and plain questions with direct answers. */
+.facts--profile dd a,
+.faq__item a {
+  white-space: nowrap;
+}
+.faq__item {
+  padding: 10px 0;
+  border-top: 1px solid rgba(135, 94, 53, 0.25);
+}
+.faq__item h4 {
+  margin: 0 0 4px;
+}
+.faq__item p {
+  margin: 0;
+}

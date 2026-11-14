@@ -21,13 +21,7 @@
   --metal-dark: #5a3f17;
   --metal-mid: #b48a3e;
   --metal-light: #f1d68f;
-  /* Walnut: lighter figure streaks that sit over the dark grain on the cabinet and desk. */
-  --grain-hi: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='480' height='240'%3E%3Cfilter id='h'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.004 .09' numOctaves='3' seed='11' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .95 0 0 0 0 .62 0 0 0 0 .34 1.6 0 0 0 -.82'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23h)'/%3E%3C/svg%3E");
-  --grain-upright-hi: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='480'%3E%3Cfilter id='h'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.09 .004' numOctaves='3' seed='17' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .95 0 0 0 0 .62 0 0 0 0 .34 1.6 0 0 0 -.82'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23h)'/%3E%3C/svg%3E");
-  --paper-fibre: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='p'%3E%3CfeTurbulence baseFrequency='.72' numOctaves='3' seed='12' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .36 0 0 0 0 .29 0 0 0 0 .2 0 0 0 .09 0'/%3E%3C/filter%3E%3Cpath d='M0 0h160v160H0z' filter='url(%23p)'/%3E%3C/svg%3E");
-  --grain-upright: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='480'%3E%3Cfilter id='v'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.065 .003' numOctaves='3' seed='9' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .25 0 0 0 0 .16 0 0 0 0 .08 1.1 0 0 0 -.4'/%3E%3C/filter%3E%3Cpath d='M0 0h160v480H0z' filter='url(%23v)'/%3E%3C/svg%3E");
-  /* Long, streaky wood grain (fractal noise stretched along the board). */
-  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='480' height='240'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.004 .07' numOctaves='3' seed='4' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .3 0 0 0 0 .14 0 0 0 0 .04 1.5 0 0 0 -.6'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  --paper-fibre: url('/textures/grain.webp');
   --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
   --ease-grow: cubic-bezier(0.34, 1.56, 0.64, 1);
   --t-fast: 140ms;
@@ -58,7 +52,7 @@ body {
   font-family: var(--serif);
   background-color: var(--paper);
   background-image:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .42 0 0 0 0 .3 0 0 0 0 .18 0 0 0 .08 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    url('/textures/grain.webp'),
     radial-gradient(ellipse 75% 65% at 58% 38%, #f5e0c2 0%, #efd4ad 50%, #e4bf8e 100%);
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
@@ -433,7 +427,6 @@ svg.obj {
   border: calc(1.4 * var(--u)) solid var(--material-dark);
   border-radius: calc(3 * var(--u));
   background:
-    var(--grain-upright),
     conic-gradient(from 45deg, #826141 0 25%, #4b3524 0 50%, #8f6e4b 0 75%, #b18f62 0);
   box-shadow:
     inset 0 0 0 calc(2 * var(--u)) #c4a57a,
@@ -1005,7 +998,7 @@ svg.obj {
     /* Refined warm-beige plaster: one smooth tone, a fine tooth, and two light pools
        (the lamp over the cabinet and the window at the upper left). No cloud mottling. */
     background:
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .38 0 0 0 0 .25 0 0 0 .05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+      url('/textures/grain.webp'),
       linear-gradient(90deg, rgba(120, 82, 48, 0.2), transparent 14% 86%, rgba(120, 82, 48, 0.22)),
       radial-gradient(calc(700 * var(--u)) calc(430 * var(--u)) at calc(780 * var(--u)) calc(190 * var(--u)), rgba(255, 244, 220, 0.62), transparent 68%),
       radial-gradient(calc(520 * var(--u)) calc(420 * var(--u)) at calc(60 * var(--u)) calc(130 * var(--u)), rgba(255, 242, 214, 0.4), transparent 66%),
@@ -1118,7 +1111,6 @@ svg.obj {
       radial-gradient(ellipse 31% 68% at 50% 0%, rgba(255, 220, 145, 0.32), transparent 65%),
       linear-gradient(90deg, rgba(60, 24, 4, 0.3), transparent 16% 84%, rgba(60, 24, 4, 0.3)),
       linear-gradient(transparent 45%, rgba(48, 18, 2, 0.36));
-    mix-blend-mode: multiply;
   }
 
   /* Identity stays in the clear wall strip to the left of the cabinet. */
@@ -1240,7 +1232,6 @@ svg.obj {
     --x: 392; --y: 250; --w: 636; --h: 410;
     z-index: 2;
     display: flex;
-    filter: drop-shadow(0 calc(16 * var(--u)) calc(18 * var(--u)) rgba(44, 20, 4, 0.35));
   }
   .cab-board {
     flex: none;
@@ -1404,7 +1395,6 @@ svg.obj {
     pointer-events: none;
     background:
       radial-gradient(ellipse 45% 48% at 56% 40%, #fff0c72b, #f5d59b12 48%, transparent 75%);
-    mix-blend-mode: screen;
   }
   /* Low ambient spill on the right side of the desk. */
   .lamp-beam {
@@ -1421,7 +1411,6 @@ svg.obj {
       ellipse 55% 65% at 58% 38%,
       rgba(255, 198, 105, 0.09),
       transparent 68%);
-    mix-blend-mode: screen;
   }
   /* Viewport-wide layers so a pillarboxed stage shows no seams. */
   .stage::after {

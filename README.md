@@ -52,6 +52,7 @@ The loopback development server may show public-safe `needs-owner-review` record
 | Studio layer       | `src/scripts/studio/`                                       | On-demand WebGL renderer, procedural object meshes and their interactions              |
 | Interaction state  | `src/scripts/shelf-controller.ts`                           | URL-derived state, drawer navigation, contact routing, focus handling, and history     |
 | Content data       | `src/data/`                                                 | Schemas, exported records, social links, drawer data, and release allowlist            |
+| Search and AI data | `src/lib/seo/`, `src/pages/robots.txt.ts`, `src/pages/llms.txt.ts` | JSON-LD graph, FAQ answers, crawler policy and `llms.txt`, all generated from records |
 | Validation         | `scripts/`                                                  | Content export, release gate, link check, drawer check, and distribution scan          |
 | Contracts          | `docs/`                                                     | Design, accessibility, responsive, content, security, and release requirements         |
 
@@ -77,6 +78,8 @@ Useful commands:
 | `npm run check:gate`     | Run the release gate without building                         |
 | `npm run check:links`    | Check local Markdown links and referenced paths               |
 | `npm run export:content` | Regenerate public-field-only content after inventory changes  |
+
+**Canonical host.** Set `SITE_ORIGIN` (an https origin, no path) in the production environment once the owner chooses the domain (D-02). Until then the build emits no canonical links, JSON-LD or `sitemap.xml`. `robots.txt` and `llms.txt` are always generated; preview deployments are `noindex`. Security headers and the Content-Security-Policy are in `vercel.json` (D-46).
 
 `node scripts/make-textures.mjs` regenerates the procedural walnut and cork textures in `public/textures/`; run it only when the materials change.
 

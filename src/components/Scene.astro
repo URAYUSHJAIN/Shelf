@@ -4,7 +4,7 @@ import TopShelf from './TopShelf.astro';
 import Cabinet from './Cabinet.astro';
 import Desk from './Desk.astro';
 import Board from './Board.astro';
-import { leafPath, vine, vineMarkup } from './art';
+import { leafPath, leafSymbols, vine, vineMarkup } from './art';
 import { chips, social } from '../data/site';
 
 interface Props {
@@ -43,7 +43,7 @@ const intro = 'I build web applications, AI-assisted tools, and turn ideas into 
       <radialGradient id="bulbHalo"><stop offset="0" stop-color="#fff3c0" stop-opacity=".95" /><stop offset=".5" stop-color="#ffd27a" stop-opacity=".45" /><stop offset="1" stop-color="#ffc35a" stop-opacity="0" /></radialGradient>
       <linearGradient id="leafA" x1="0" y1="1" x2=".8" y2="0"><stop offset="0" stop-color="#263b20" /><stop offset=".28" stop-color="#536b32" /><stop offset=".48" stop-color="#8b9b50" /><stop offset=".52" stop-color="#5c7538" /><stop offset=".8" stop-color="#a4b66c" /><stop offset="1" stop-color="#76894b" /></linearGradient>
       <linearGradient id="leafB" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#203720" /><stop offset=".32" stop-color="#3c5930" /><stop offset=".48" stop-color="#69844c" /><stop offset=".53" stop-color="#3c5b31" /><stop offset=".84" stop-color="#7c9658" /><stop offset="1" stop-color="#536f3b" /></linearGradient>
-      <filter id="leafShadow" x="-35%" y="-35%" width="175%" height="175%"><feDropShadow dx="1.5" dy="3" stdDeviation="1.4" flood-color="#273014" flood-opacity=".32" /></filter>
+      <Fragment set:html={leafSymbols()} />
       <linearGradient id="pot" x1="0" x2="1"><stop offset="0" stop-color="#8f806c" /><stop offset=".12" stop-color="#c8bba5" /><stop offset=".28" stop-color="#f5ecdb" /><stop offset=".36" stop-color="#fff9ed" /><stop offset=".54" stop-color="#eee3ce" /><stop offset=".83" stop-color="#b9aa91" /><stop offset="1" stop-color="#847562" /></linearGradient>
       <linearGradient id="mug" x1="0" x2="1"><stop offset="0" stop-color="#a79881" /><stop offset=".12" stop-color="#ded2bb" /><stop offset=".25" stop-color="#faf3e5" /><stop offset=".33" stop-color="#fffaf0" /><stop offset=".54" stop-color="#f2e8d5" /><stop offset=".8" stop-color="#d5c7ad" /><stop offset="1" stop-color="#92816b" /></linearGradient>
       <linearGradient id="alu" x1="0" y1="0" x2=".2" y2="1"><stop offset="0" stop-color="#e6e7ea" /><stop offset=".6" stop-color="#cfd1d5" /><stop offset="1" stop-color="#b3b6bc" /></linearGradient>
@@ -55,10 +55,6 @@ const intro = 'I build web applications, AI-assisted tools, and turn ideas into 
       <linearGradient id="pegWood" x1="0" x2="1"><stop offset="0" stop-color="#8a5526" /><stop offset=".5" stop-color="#c8904f" /><stop offset="1" stop-color="#7a4a20" /></linearGradient>
       <linearGradient id="sunsetSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e98f62" /><stop offset=".45" stop-color="#f6c27c" /><stop offset=".8" stop-color="#fbe2a8" /></linearGradient>
       <linearGradient id="dawnSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9fb7cf" /><stop offset=".6" stop-color="#f3d3a6" /><stop offset="1" stop-color="#f7e3bf" /></linearGradient>
-      <filter id="pinShadow" x="-30%" y="-30%" width="160%" height="170%"><feDropShadow dx="3" dy="6" stdDeviation="3.5" flood-color="#5a3415" flood-opacity=".32" /></filter>
-      <filter id="leafBlur" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="5" /></filter>
-      <pattern id="ceramicSpeckle" width="23" height="19" patternUnits="userSpaceOnUse"><g fill="#6c5a43" opacity=".15"><circle cx="3" cy="7" r=".45" /><circle cx="17" cy="14" r=".3" /><circle cx="11" cy="2" r=".35" /></g></pattern>
-      <pattern id="paperEdges" width="12" height="3" patternUnits="userSpaceOnUse"><path d="M0 .5h12" stroke="#79674e" stroke-opacity=".25" stroke-width=".45" /></pattern>
     </defs>
   </svg>
 
@@ -66,13 +62,8 @@ const intro = 'I build web applications, AI-assisted tools, and turn ideas into 
   <div class="pendant-glow" aria-hidden="true"></div>
 
   <svg class="wall-leaves" viewBox="-420 0 2376 864" preserveAspectRatio="none" aria-hidden="true">
-    <g transform="translate(34 46)" filter="url(#leafBlur)" opacity=".16">
-      {wallVines.map((v) => v.leaves.map((l) => (
-        <path transform={`translate(${l.x} ${l.y}) rotate(${l.a})`} d={leafPath(l.s * 1.3)} fill="#5a3010" />
-      )))}
-    </g>
     {wallVines.map((v) => (
-      <g><Fragment set:html={vineMarkup(v, { stem: 2.2, scale: 1.08, shadow: true, drops: 0 })} /></g>
+      <g><Fragment set:html={vineMarkup(v, { stem: 2.2, scale: 1.08 })} /></g>
     ))}
   </svg>
   <div class="wall-shadow" aria-hidden="true"></div>

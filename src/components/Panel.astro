@@ -12,8 +12,10 @@ interface Props {
   small?: boolean;
   review?: boolean;
   search?: boolean;
+  /** The body is omitted on this page and fetched from the drawer's own URL when opened. */
+  lazy?: boolean;
 }
-const { id, title, icon, open, meta, wide = false, small = false, review = true, search = false } = Astro.props;
+const { id, title, icon, open, meta, wide = false, small = false, review = true, search = false, lazy = false } = Astro.props;
 const drawer = DRAWERS.some((d) => d.id === id);
 ---
 <section
@@ -48,8 +50,8 @@ const drawer = DRAWERS.some((d) => d.id === id);
         Local review preview · entries await owner approval and are excluded from release builds.
       </p>
     )}
-    <div class="panel__body">
-      <slot />
+    <div class="panel__body" data-lazy={lazy ? '' : undefined}>
+      {!lazy && <slot />}
     </div>
   </div>
   {drawer && <div class="drawer-front-mount"></div>}

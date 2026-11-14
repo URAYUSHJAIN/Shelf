@@ -147,7 +147,83 @@ function cork(seed) {
   };
 }
 
+/**
+ * Antique globe map for the studio layer: parchment land, ochre sea, an inked
+ * coastline with a printed shallow-water halo, and a 15° graticule. Built from
+ * the land mask in world.webp so the browser does no pixel work at runtime.
+ */
+async function globe() {
+  const W = 1536;
+  const H = 768;
+  const file = (name) => new URL(name, OUT).pathname.replace(/^\/([A-Za-z]:)/, '$1');
+  const mask = await sharp(file('world.webp')).resize(W, H, { fit: 'fill' }).removeAlpha().raw().toBuffer();
+  const land = new Uint8Array(W * H);
+  for (let i = 0; i < W * H; i++) land[i] = 0.3 * mask[i * 3] + 0.59 * mask[i * 3 + 1] + 0.11 * mask[i * 3 + 2] < 200 ? 1 : 0;
+  const at = (x, y) => land[Math.min(H - 1, Math.max(0, y)) * W + ((x + W) % W)];
+  const grain = rng(11);
+  const buf = Buffer.alloc(W * H * 3);
+  const line = (v, step, width) => {
+    const m = v % step;
+    return m < width || step - m < width;
+  };
+  for (let y = 0; y < H; y++) {
+    const lat = Math.abs(y / H - 0.5) * 2;
+    const latDeg = (y / H) * 180;
+    for (let x = 0; x < W; x++) {
+      const i = y * W + x;
+      const isLand = land[i];
+      const coast = isLand && !(at(x - 1, y) && at(x + 1, y) && at(x, y - 1) && at(x, y + 1));
+      const halo = !isLand && (at(x + 3, y) || at(x - 3, y) || at(x, y + 3) || at(x, y - 3));
+      const g = (grain() - 0.5) * 9;
+      let c;
+      if (coast) c = [96, 62, 28];
+      else if (isLand) c = [236 - lat * 16 + g, 214 - lat * 18 + g, 166 - lat * 14 + g];
+      else if (halo) c = [196 + g, 150 + g, 88 + g];
+      else c = [168 - lat * 22 + g, 118 - lat * 18 + g, 60 - lat * 10 + g];
+      // Graticule every 15°, with a heavier dashed equator and tropics.
+      const lonDeg = (x / W) * 360;
+      let ink = 0;
+      if (line(lonDeg, 15, 0.16) || line(latDeg, 15, 0.16)) ink = 0.3;
+      const dashed = Math.floor(x / 9) % 2 === 0;
+      for (const special of [90, 66.5, 113.5]) if (Math.abs(latDeg - special) < 0.24 && dashed) ink = 0.5;
+      const k = i * 3;
+      buf[k] = Math.round(clamp01((c[0] * (1 - ink) + 70 * ink) / 255) * 255);
+      buf[k + 1] = Math.round(clamp01((c[1] * (1 - ink) + 40 * ink) / 255) * 255);
+      buf[k + 2] = Math.round(clamp01((c[2] * (1 - ink) + 14 * ink) / 255) * 255);
+    }
+  }
+  await sharp(buf, { raw: { width: W, height: H, channels: 3 } }).webp({ quality: 80, effort: 6 }).toFile(file('globe.webp'));
+  console.log('wrote', 'globe.webp');
+}
+
+/**
+ * Fine paper/plaster grain as a small transparent tile. CSS used to build this
+ * with an SVG feTurbulence filter, which the browser re-ran over every painted
+ * area; a bitmap tile is decoded once.
+ */
+async function grain() {
+  const N = 128;
+  const noise = makeNoise(31, N, N);
+  const soft = makeNoise(57, 16, 16);
+  const buf = Buffer.alloc(N * N * 4);
+  for (let y = 0; y < N; y++) {
+    for (let x = 0; x < N; x++) {
+      const v = 0.75 * noise(x, y) + 0.25 * soft((x / N) * 16, (y / N) * 16);
+      const k = (y * N + x) * 4;
+      buf[k] = 96;
+      buf[k + 1] = 66;
+      buf[k + 2] = 38;
+      buf[k + 3] = Math.round(clamp01((v - 0.35) * 0.42) * 255);
+    }
+  }
+  const path = new URL('grain.webp', OUT).pathname.replace(/^\/([A-Za-z]:)/, '$1');
+  await sharp(buf, { raw: { width: N, height: N, channels: 4 } }).webp({ lossless: true, effort: 6 }).toFile(path);
+  console.log('wrote', 'grain.webp');
+}
+
 await mkdir(OUT, { recursive: true });
 await write('walnut.webp', 1024, 512, walnut(11, WALNUT));
 await write('walnut-dark.webp', 1024, 512, walnut(23, WALNUT_DARK));
 await write('cork.webp', 512, 512, cork(5), 80);
+await globe();
+await grain();

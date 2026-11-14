@@ -15,7 +15,7 @@ const $ = <T extends Element = HTMLElement>(sel: string, root: ParentNode = docu
 const $$ = <T extends Element = HTMLElement>(sel: string, root: ParentNode = document) => Array.from(root.querySelectorAll<T>(sel));
 
 const stage = $('[data-scene]')!;
-const baseTitle = 'The Shelf — Ayush Jain';
+const baseTitle = 'Ayush Jain — The Shelf';
 let lastTrigger: HTMLElement | null = null;
 const laptopEl = $('[data-laptop]');
 let laptop: ReturnType<typeof initLaptop> | null = null;
@@ -27,12 +27,70 @@ function parse(href: string): State {
   const parts = url.pathname.split('/').filter(Boolean);
   let surface: string | null = parts[0] && SURFACES.has(parts[0]) ? parts[0] : null;
   let record: string | null = null;
-  if (surface === 'projects' && parts[1]) {
-    record = $(`[data-record-view="${CSS.escape(parts[1])}"]`) ? parts[1] : null;
-  }
+  if (surface === 'projects' && parts[1] && /^[a-z0-9-]+$/.test(parts[1])) record = parts[1];
   if (!surface) record = null;
   return { surface, record, params: url.searchParams, hash: url.hash };
 }
+
+/* ---------------- Lazy surfaces ----------------
+   Every page is prerendered with only its own drawer content (and, on a
+   project page, its own record). Other drawers are fetched from their stable
+   URLs the first time they are opened, then kept. Without JavaScript the same
+   links simply navigate. */
+
+const pages = new Map<string, Promise<Document | null>>();
+function fetchPage(path: string) {
+  let page = pages.get(path);
+  if (!page) {
+    page = fetch(path, { headers: { Accept: 'text/html' } })
+      .then((r) => (r.ok ? r.text() : null))
+      .then((html) => (html ? new DOMParser().parseFromString(html, 'text/html') : null))
+      .catch(() => null);
+    pages.set(path, page);
+    // A failed request may be retried on the next attempt.
+    page.then((doc) => { if (!doc) pages.delete(path); });
+  }
+  return page;
+}
+
+/** Makes sure the state's drawer body (and record) exist in the document. */
+async function ensure(state: State): Promise<boolean> {
+  const { surface } = state;
+  if (!surface || surface === 'laptop') return true;
+  const body = $(`#panel-${surface} .panel__body`);
+  if (!body) return true;
+  if (body.hasAttribute('data-lazy')) {
+    const doc = await fetchPage(`/${surface}/`);
+    const source = doc?.querySelector(`#panel-${surface} .panel__body`);
+    if (!source || source.hasAttribute('data-lazy')) return false;
+    if (body.hasAttribute('data-lazy')) {
+      body.replaceChildren(...Array.from(source.childNodes, (n) => document.importNode(n, true)));
+      body.removeAttribute('data-lazy');
+      bindSurface(surface);
+    }
+  }
+  if (surface === 'projects' && state.record && !$(`[data-record-view="${CSS.escape(state.record)}"]`)) {
+    const doc = await fetchPage(`/projects/${state.record}/`);
+    const article = doc?.querySelector(`[data-record-view="${CSS.escape(state.record)}"]`);
+    if (!doc) return false;
+    if (!article) state.record = null; // unknown slug: show the folder list
+    else if (!$(`[data-record-view="${CSS.escape(state.record)}"]`)) body.append(document.importNode(article, true));
+  }
+  return true;
+}
+
+/** Warm the cache as soon as a visitor reaches for a drawer or folder. */
+function prefetch(e: Event) {
+  const a = (e.target as Element | null)?.closest?.<HTMLAnchorElement>('a[data-nav]');
+  if (!a || a.target === '_blank') return;
+  const next = parse(a.href);
+  if (!next.surface || next.surface === 'laptop') return;
+  if ($(`#panel-${next.surface} .panel__body`)?.hasAttribute('data-lazy')) void fetchPage(`/${next.surface}/`);
+  if (next.record && !$(`[data-record-view="${CSS.escape(next.record)}"]`)) void fetchPage(`/projects/${next.record}/`);
+}
+document.addEventListener('pointerenter', prefetch, { capture: true, passive: true });
+document.addEventListener('focusin', prefetch, { passive: true });
+document.addEventListener('touchstart', prefetch, { capture: true, passive: true });
 
 /* ---------------- Rendering ---------------- */
 
@@ -40,6 +98,7 @@ function parse(href: string): State {
 // in the cabinet, preserving layout and exposing the recessed cavity.
 let mounted: HTMLElement | null = null;
 let renderVersion = 0;
+let lastHardLoad = '';
 // One paused timeline per mounted drawer runs closed (0) → open (1). Opening
 // and closing both tween its progress with the same ease, so a push is the
 // exact mirror of a pull and a mid-motion press reverses from where it is.
@@ -143,7 +202,7 @@ function animateDrawer(panel: HTMLElement, open: boolean, instant = false) {
 // Folders settle in: 2px rise, 30 ms stagger, capped at six (micro-interactions §5).
 function settleFolders() {
   if (reduceMQ.matches) return;
-  const shown = items.filter((li) => !li.hidden).slice(0, 6);
+  const shown = items().filter((li) => !li.hidden).slice(0, 6);
   gsap.fromTo(shown, { opacity: 0, y: 2 }, { opacity: 1, y: 0, duration: 0.24, stagger: 0.03, ease: 'power2.out', clearProps: 'opacity,transform' });
 }
 
@@ -165,6 +224,15 @@ function restoreDrawer(panel: HTMLElement) {
 
 async function render(state: State, focus: 'move' | 'none' = 'move', instant = false) {
   const version = ++renderVersion;
+  if (!(await ensure(state))) {
+    // Offline or a failed fetch: fall back to an ordinary page load.
+    if (version === renderVersion && location.href !== lastHardLoad) {
+      lastHardLoad = location.href;
+      location.reload();
+    }
+    return;
+  }
+  if (version !== renderVersion) return;
   const prev = current;
   current = state;
   laptop?.sync(state.surface === 'laptop', instant);
@@ -258,9 +326,11 @@ function renderContent(state: State, focus: 'move' | 'none', prev: State) {
   const panel = state.surface ? surfaceEl(state.surface) : null;
   const recordTitle = state.record ? $(`#record-${CSS.escape(state.record)}-title`) : null;
   const heading = laptopOpen ? laptop?.title() ?? null : $('.panel__title', panel ?? document);
-  document.title = state.surface
-    ? `${laptopOpen ? 'Laptop' : recordTitle?.textContent ?? heading?.textContent ?? ''} — The Shelf · Ayush Jain`
-    : baseTitle;
+  // Same patterns as the prerendered pages (seo-optimization.md §5.2).
+  if (!state.surface) document.title = baseTitle;
+  else if (recordTitle) document.title = `${recordTitle.textContent} — Project by Ayush Jain`;
+  else if (state.surface === 'about') document.title = 'About Ayush Jain';
+  else document.title = `${laptopOpen ? 'Laptop' : heading?.textContent ?? ''} — Ayush Jain`;
 
   if (focus === 'none') return;
   if (state.surface && panel) {
@@ -305,17 +375,19 @@ function navigate(href: string, trigger?: HTMLElement | null, replace = false) {
 
 /* ---------------- Projects: filters, search, records ---------------- */
 
-const listEl = $('[data-project-list]');
-const searchEl = $<HTMLInputElement>('[data-project-search]');
-const items = $$('.folders li');
+const listEl = () => $('[data-project-list]');
+const searchEl = () => $<HTMLInputElement>('[data-project-search]');
+const items = () => $$('.folders li');
 
 function renderProjects(state: State) {
   for (const art of $$('[data-record-view]')) art.hidden = art.dataset.recordView !== state.record;
-  if (listEl) listEl.hidden = !!state.record;
+  const list = listEl();
+  if (list) list.hidden = !!state.record;
   if (!state.record) {
     const q = state.params.get('q') ?? '';
     const group = state.params.get('group') ?? 'all';
-    if (searchEl && document.activeElement !== searchEl) searchEl.value = q;
+    const search = searchEl();
+    if (search && document.activeElement !== search) search.value = q;
     if (q) $('#panel-projects')?.classList.add('is-searching');
     applyFilter(q, group);
   }
@@ -324,7 +396,7 @@ function renderProjects(state: State) {
 function applyFilter(q: string, group: string) {
   const needle = q.trim().toLowerCase();
   let shown = 0;
-  for (const li of items) {
+  for (const li of items()) {
     const ok = (group === 'all' || li.dataset.group === group) && (!needle || (li.dataset.search ?? '').includes(needle));
     li.hidden = !ok;
     if (ok) shown++;
@@ -345,13 +417,19 @@ function updateProjectQuery(q: string | null, group: string | null) {
   applyFilter(url.searchParams.get('q') ?? '', url.searchParams.get('group') ?? 'all');
 }
 
-searchEl?.addEventListener('input', () => updateProjectQuery(searchEl.value, null));
+// Delegated: the search field and filters exist only once the drawer has loaded.
+document.addEventListener('input', (e) => {
+  const field = e.target as HTMLInputElement;
+  if (field.matches?.('[data-project-search]')) updateProjectQuery(field.value, null);
+});
 $('[data-focus-search]')?.addEventListener('click', () => {
   if (current.record) navigate(`/projects/${location.search}`);
   $('#panel-projects')?.classList.add('is-searching');
-  searchEl?.focus();
+  searchEl()?.focus();
 });
-for (const b of $$('.filter')) b.addEventListener('click', () => {
+document.addEventListener('click', (e) => {
+  const b = (e.target as Element).closest<HTMLElement>('.filter');
+  if (!b) return;
   updateProjectQuery(null, b.dataset.group ?? 'all');
   settleFolders();
 });
@@ -457,27 +535,29 @@ function sway(plant: Element) {
     gsap.to(g, { keyframes: a ? swayA : swayB, duration: a ? 3.4 : 4, ease: 'none', easeEach: 'sine.inOut', transformOrigin: origin });
   }
 }
-for (const p of $$('[data-sway]')) {
-  p.addEventListener('pointerenter', () => sway(p));
-  sway(p);
-}
-// Mug steam: one shader puff (SVG wisps without WebGL) on load and on hover; never continuous.
+for (const p of $$('[data-sway]')) p.addEventListener('pointerenter', () => sway(p));
+// Mug steam: one puff when the visitor brushes the mug; never on arrival and
+// never continuous. The small shader (SVG wisps without WebGL) is created on
+// first use, so the page starts with no WebGL work at all.
 const waves = $$('.steam__w');
-const steamCanvas = $<HTMLCanvasElement>('.steam__gl');
-if (steamCanvas) steamCanvas.hidden = false; // visible first so the rest frame can be measured
-const puff = steamCanvas ? initSteam(steamCanvas, () => reduceMQ.matches) : null;
-if (puff) $('.steam > svg')?.setAttribute('hidden', '');
-else if (steamCanvas) steamCanvas.hidden = true;
+let puff: (() => void) | null | undefined;
 function steam() {
+  if (reduceMQ.matches) return;
+  if (puff === undefined) {
+    const steamCanvas = $<HTMLCanvasElement>('.steam__gl');
+    if (steamCanvas) steamCanvas.hidden = false; // visible first so the rest frame can be measured
+    puff = steamCanvas ? initSteam(steamCanvas, () => reduceMQ.matches) : null;
+    if (puff) $('.steam > svg')?.setAttribute('hidden', '');
+    else if (steamCanvas) steamCanvas.hidden = true;
+  }
   if (puff) return puff();
-  if (reduceMQ.matches || !waves.length || gsap.isTweening(waves)) return;
+  if (!waves.length || gsap.isTweening(waves)) return;
   gsap.to(waves, {
     keyframes: { '0%': { y: 6, opacity: 0.2 }, '40%': { opacity: 0.85 }, '100%': { y: -10, opacity: 0.15 } },
     duration: 2.6, ease: 'none', easeEach: 'sine.inOut', repeat: 1, stagger: 0.4, clearProps: 'transform,opacity',
   });
 }
 $('[data-steam]')?.addEventListener('pointerenter', steam);
-steam();
 
 // A portrait that fails to load leaves the plain mat, never a broken-image icon.
 for (const img of $$<HTMLImageElement>('.frame img')) {
@@ -512,11 +592,14 @@ async function copyText(text: string, statusEl: Element | null, ok: string) {
     if (statusEl) statusEl.textContent = 'Copy didn’t work. Select the text to copy it.';
   }
 }
-for (const b of $$('[data-copy]')) {
-  b.addEventListener('click', () => copyText(b.dataset.copy!, $('[data-copy-status]'), 'Email address copied.'));
-}
-const form = $<HTMLFormElement>('[data-contact]');
-if (form) {
+document.addEventListener('click', (e) => {
+  const b = (e.target as Element).closest<HTMLElement>('[data-copy]');
+  if (b) copyText(b.dataset.copy!, $('[data-copy-status]'), 'Email address copied.');
+});
+function bindContact() {
+  const form = $<HTMLFormElement>('[data-contact]');
+  if (!form || form.dataset.bound) return;
+  form.dataset.bound = 'true';
   const status = $('[data-contact-status]');
   const preview = $('[data-contact-preview]');
   const writing = $<HTMLElement>('.contact__writing', form);
@@ -574,6 +657,13 @@ if (form) {
     copyText(`To: ${to}\nSubject: ${m.subject}\n\n${m.body}`, status, 'Message and address copied. Paste them into any email app.');
   });
 }
+bindContact();
+
+/** Wiring for a drawer body that has just been fetched into the page. */
+function bindSurface(surface: string) {
+  if (surface === 'contact') bindContact();
+  if (surface === 'projects') dropFailedThumbs();
+}
 
 /* ---------------- Media failures (ui-copy feedback strings) ---------------- */
 
@@ -599,7 +689,10 @@ document.addEventListener(
   true,
 );
 // Thumbnails that already failed before this module ran never reach the listener.
-for (const img of $$<HTMLImageElement>('.folder__art img')) if (img.complete && !img.naturalWidth) img.remove();
+function dropFailedThumbs() {
+  for (const img of $$<HTMLImageElement>('.folder__art img')) if (img.complete && !img.naturalWidth) img.remove();
+}
+dropFailedThumbs();
 
 /* ---------------- Boot ---------------- */
 
@@ -618,8 +711,30 @@ const startStudio = () => {
     .then((ok) => { if (!ok) fallback(); })
     .catch(fallback);
 };
-if ('requestIdleCallback' in window) window.requestIdleCallback(startStudio, { timeout: 1200 });
-else setTimeout(startStudio, 200);
+// Start only once the page has finished loading and the browser is idle, so
+// the 3D layer never competes with first paint or early input.
+const whenIdle = () => {
+  if ('requestIdleCallback' in window) window.requestIdleCallback(startStudio, { timeout: 2000 });
+  else setTimeout(startStudio, 300);
+};
+// Like any below-the-fold media, the meshes are not built until one of their
+// anchors is near the viewport (on phones the shelf strip sits below the
+// profile, so the 3D layer waits for the visitor to scroll towards it).
+const armStudio = () => {
+  const anchors = $$('[data-studio]').filter((el) => el.getClientRects().length > 0);
+  if (!('IntersectionObserver' in window) || anchors.length === 0) return whenIdle();
+  const observer = new IntersectionObserver(
+    (entries) => {
+      if (!entries.some((entry) => entry.isIntersecting)) return;
+      observer.disconnect();
+      whenIdle();
+    },
+    { rootMargin: '240px' },
+  );
+  for (const anchor of anchors) observer.observe(anchor);
+};
+if (document.readyState === 'complete') armStudio();
+else window.addEventListener('load', armStudio, { once: true });
 
 if (laptopEl) {
   laptop = initLaptop(laptopEl, {

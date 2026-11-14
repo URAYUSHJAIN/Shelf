@@ -50,8 +50,26 @@ export const skills = visible(raw.skills);
 export const articles = visible(raw.articles);
 export const social = visible(raw.social);
 
+/**
+ * Canonical origin (D-02). The owner has not chosen the host, so nothing is
+ * hard-coded or guessed: set SITE_ORIGIN (for example in the Vercel project's
+ * production environment) to an https origin without a path. Until then no
+ * canonical link, sitemap, Open Graph URL or JSON-LD is emitted.
+ */
+// Build-time only: this module is never bundled for the browser.
+declare const process: { env: Record<string, string | undefined> };
+
+function canonicalOrigin(): string | null {
+  const raw = (process.env.SITE_ORIGIN ?? '').trim().replace(/\/+$/, '');
+  if (!raw) return null;
+  if (!/^https:\/\/[a-z0-9.-]+(:\d+)?$/i.test(raw)) throw new Error(`SITE_ORIGIN must be an https origin without a path, got "${raw}"`);
+  return raw;
+}
+// Vercel preview deployments must never be indexed (seo-optimization.md §3).
+const previewDeploy = !!process.env.VERCEL_ENV && process.env.VERCEL_ENV !== 'production';
+
 export const site = {
-  title: 'The Shelf — Ayush Jain',
+  title: 'Ayush Jain — The Shelf',
   description: 'A personal archive by Ayush Jain: software projects, invention applications, experience and writing.',
   email: copy.publicEmail,
   // D-23 default: current live URL of the earlier portfolio.
@@ -61,9 +79,27 @@ export const site = {
   // D-12: owner-supplied "Currently Building" items. Null keeps the note on
   // verified featured projects instead of invented work-in-progress.
   currentlyBuilding: null as string[] | null,
-  // canonicalOrigin is null (implementation-policy.json). No guessed host.
-  origin: null as string | null,
+  origin: canonicalOrigin(),
+  /** False in review mode and on preview deployments: pages carry noindex and robots.txt disallows all. */
+  indexable: !REVIEW_MODE && !previewDeploy,
 };
+
+/**
+ * Crawler policy (D-10, ai-optimization.md §6), kept in one place and rendered
+ * by robots.txt. Search and user-triggered agents are named so a later blanket
+ * rule cannot block them by accident. Training crawlers follow the same default
+ * as the earlier site (allowed); move a token to `blocked` to opt out.
+ */
+export const crawlers = {
+  allowed: [
+    'Googlebot', 'Bingbot', 'DuckDuckBot', 'Applebot',
+    'OAI-SearchBot', 'ChatGPT-User', 'PerplexityBot', 'Perplexity-User', 'Claude-SearchBot', 'Claude-User',
+  ],
+  blocked: [] as string[],
+};
+
+/** Pages that exist for interaction only and stay out of search (still crawlable, so the noindex is seen). */
+export const NOINDEX_SURFACES = new Set(['laptop', 'contact']);
 
 export const DRAWERS = [
   { id: 'about', label: 'About Me', icon: 'person' },

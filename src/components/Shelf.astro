@@ -10,10 +10,17 @@ interface Props {
   title?: string;
   description?: string;
   noindex?: boolean;
+  ogType?: 'website' | 'profile';
+  jsonld?: Record<string, unknown> | null;
 }
-const { active = null, record = null, title = site.title, description = site.description, noindex = false } = Astro.props;
+const { active = null, record = null, title = site.title, description = site.description, noindex = false, ogType = 'website', jsonld = null } = Astro.props;
 ---
-<Base title={title} description={description} noindex={noindex}>
+<Base title={title} description={description} noindex={noindex} ogType={ogType} jsonld={jsonld}>
+  <Fragment slot="head">
+    <!-- The cabinet's walnut is the largest paint; fetch it with the stylesheet. -->
+    <link rel="preload" as="image" href="/textures/walnut-dark.webp" type="image/webp" fetchpriority="high" />
+    <link rel="preload" as="image" href="/textures/walnut.webp" type="image/webp" />
+  </Fragment>
   <main class="shelf" data-active={active ?? ''} data-record={record ?? ''}>
     <Scene active={active} />
     <Panels active={active} record={record} />

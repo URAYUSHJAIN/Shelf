@@ -36,7 +36,7 @@ const previewProjects = [...new Map([...completedItems, ...(photoProject ? [phot
     </div>
 
     {photoProject && (
-      <a class="board-polaroid" href={`/projects/${photoProject.slug}/`} data-board-preview={photoProject.slug} aria-label={`Preview ${photoProject.title}`} data-board-photo hidden={initialMode !== 'completed'}>
+      <a class="board-polaroid" href={`/projects/${photoProject.slug}/`} data-board-preview={photoProject.slug} data-board-photo hidden={initialMode !== 'completed'}>
         <span class="board-polaroid__image">
           {photo ? <img src={photo.thumb?.src ?? photo.full.src} alt={photo.alt} loading="lazy" width={photo.thumb?.width ?? photo.full.width} height={photo.thumb?.height ?? photo.full.height} /> : <span class="board-polaroid__placeholder">Project file</span>}
         </span>

@@ -242,3 +242,5 @@ Use `content/inventory/implementation-policy.json` for the exact eight drawers a
 ## Scene textures (D-45)
 
 `public/textures/walnut.webp`, `public/textures/walnut-dark.webp` and `public/textures/cork.webp` are procedural, seamless textures produced by `scripts/make-textures.mjs` (no third-party source, safe to publish). They are used by `src/styles/studio.css` and by the studio layer's wood material. `public/textures/world.webp` remains the globe's land mask. Regenerate with `node scripts/make-textures.mjs`; never hand-edit the outputs.
+
+`public/textures/globe.webp` (the antique globe map, derived from `world.webp`) and `public/textures/grain.webp` (a transparent paper-grain tile that replaced runtime SVG turbulence) are also produced by `scripts/make-textures.mjs` (D-46).

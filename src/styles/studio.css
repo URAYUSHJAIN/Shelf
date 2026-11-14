@@ -19,7 +19,7 @@
 body {
   background-color: var(--wall-2);
   background-image:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .42 0 0 0 0 .26 0 0 0 0 .14 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    url('/textures/grain.webp'),
     radial-gradient(ellipse 90% 60% at 50% 0%, #f6d7ae 0%, var(--wall-1) 40%, var(--wall-2) 75%, var(--wall-3) 100%);
 }
 
@@ -484,9 +484,6 @@ body {
 }
 
 /* ---------- Cabinet: a walnut carcass with eight fitted drawers (every layout mode) ---------- */
-.g-cabinet {
-  filter: drop-shadow(0 calc(18 * var(--u)) calc(16 * var(--u)) rgba(28, 10, 2, 0.5));
-}
 .g-cabinet::before {
   /* Cast shadow on the wall, thrown left and right of the carcass. */
   content: '';
@@ -788,8 +785,7 @@ body {
     border-bottom: 0;
     box-shadow: inset 0 calc(-40 * var(--u)) calc(60 * var(--u)) rgba(92, 44, 12, 0.28);
     background:
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .26 0 0 0 0 .12 0 0 0 .075 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='700'%3E%3Cfilter id='m'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.004 .006' numOctaves='3' seed='8' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .55 0 0 0 0 .3 0 0 0 0 .12 0 0 0 .5 -.16'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23m)'/%3E%3C/svg%3E"),
+      url('/textures/grain.webp'),
       linear-gradient(90deg, rgba(112, 56, 18, 0.5), transparent 20% 80%, rgba(112, 56, 18, 0.46)),
       linear-gradient(180deg, #e6b98c 0%, #e0ad7e 45%, #d39c6b 80%, #c0864f 100%);
   }
@@ -822,13 +818,11 @@ body {
   .lamp-glow {
     --x: 680; --y: 20; --w: 420; --h: 330;
     background: radial-gradient(ellipse 46% 48% at 44% 40%, #fff3cf66, #ffdca02e 50%, transparent 76%);
-    mix-blend-mode: screen;
     transition: opacity var(--t-light) ease-in-out;
   }
   .lamp-beam {
     --x: 300; --y: 0; --w: 240; --h: 300;
     background: radial-gradient(ellipse 50% 46% at 50% 40%, #fff0c95c, transparent 72%);
-    mix-blend-mode: screen;
     transition: opacity var(--t-light) ease-in-out;
   }
 
@@ -853,7 +847,6 @@ body {
       radial-gradient(calc(300 * var(--u)) calc(90 * var(--u)) at calc(760 * var(--u)) calc(30 * var(--u)), #ffd09447, transparent 72%),
       radial-gradient(calc(420 * var(--u)) calc(150 * var(--u)) at calc(1640 * var(--u)) calc(60 * var(--u)), #ffc98857, transparent 72%),
       linear-gradient(180deg, #ffe0b01f, transparent calc(60 * var(--u)));
-    mix-blend-mode: screen;
     transition: opacity var(--t-light) ease-in-out;
   }
   .desk-light {
@@ -1086,13 +1079,6 @@ body {
   .g-desk > .desk-plant {
     display: block;
     pointer-events: auto;
-    filter: drop-shadow(calc(-4 * var(--u)) calc(6 * var(--u)) calc(5 * var(--u)) rgba(24, 10, 2, 0.4));
-  }
-  .g-desk > .desk-mat {
-    filter: drop-shadow(0 calc(5 * var(--u)) calc(7 * var(--u)) rgba(10, 3, 0, 0.6));
-  }
-  .g-desk > .laptop {
-    filter: drop-shadow(0 calc(14 * var(--u)) calc(11 * var(--u)) rgba(8, 2, 0, 0.6));
   }
   /* Contact shadows under the meshes (the fallbacks draw their own). */
   .g-desk > [data-studio-ready]::before,
@@ -1218,13 +1204,12 @@ body {
     inset: calc(-320 * var(--u)) calc(-420 * var(--u));
     z-index: 6;
     pointer-events: none;
-    background: #1b0c05;
-    mix-blend-mode: multiply;
+    background: #150802;
     opacity: 0;
     transition: opacity var(--t-light) ease-in-out;
   }
   .stage[data-lamp='off'] .room-dim {
-    opacity: 0.46;
+    opacity: 0.42;
   }
   .stage[data-lamp='off'] .pendant-glow,
   .stage[data-lamp='off'] .lamp-glow,
